@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "regression.html",
+    "href": "regression.html",
+    "title": "Regression",
+    "section": "",
+    "text": "Regression\nThis section will investigate regression methods applied to financial data."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "Ebube Anozie\nPhD Student in Applied Mathematics\nUniversity of Colorado Boulder\n\n\n\n\nThis project investigates the application of machine learning methods to quantitative-finance problems. Throughout the semester, different machine learning techniques will be applied to financial data and evaluated from both computational and quantitative perspectives.\n\n\n\n\nHow effectively can machine learning methods identify useful patterns in financial market data?\n\n\n\n\nThroughout the project, I will investigate:\n\nRegression\nClustering\nDimensionality reduction\nEnsemble methods\nOther machine learning methods introduced in CSCI 5612\n\n\n\n\nThe goal is to understand not only how these models perform, but also how machine learning can be used as a tool for quantitative financial analysis.\n\n\n\n\nI am a PhD student in Applied Mathematics at the University of Colorado Boulder. My research interests include quantitative finance, mathematical modeling, numerical methods, and machine learning."
+  },
+  {
+    "objectID": "index.html#an-applied-study-of-machine-learning-methods-for-financial-data",
+    "href": "index.html#an-applied-study-of-machine-learning-methods-for-financial-data",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "Ebube Anozie\nPhD Student in Applied Mathematics\nUniversity of Colorado Boulder"
+  },
+  {
+    "objectID": "index.html#about-the-project",
+    "href": "index.html#about-the-project",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "This project investigates the application of machine learning methods to quantitative-finance problems. Throughout the semester, different machine learning techniques will be applied to financial data and evaluated from both computational and quantitative perspectives."
+  },
+  {
+    "objectID": "index.html#research-question",
+    "href": "index.html#research-question",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "How effectively can machine learning methods identify useful patterns in financial market data?"
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "Throughout the project, I will investigate:\n\nRegression\nClustering\nDimensionality reduction\nEnsemble methods\nOther machine learning methods introduced in CSCI 5612"
+  },
+  {
+    "objectID": "index.html#project-goals",
+    "href": "index.html#project-goals",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "The goal is to understand not only how these models perform, but also how machine learning can be used as a tool for quantitative financial analysis."
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Machine Learning in Quantitative Finance",
+    "section": "",
+    "text": "I am a PhD student in Applied Mathematics at the University of Colorado Boulder. My research interests include quantitative finance, mathematical modeling, numerical methods, and machine learning."
+  }
+]
