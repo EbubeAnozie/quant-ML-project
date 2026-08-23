@@ -1,0 +1,29 @@
+project:
+  type: website
+
+website:
+  title: "Machine Learning in Quantitative Finance"
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: data.qmd
+        text: Data
+      - href: regression.qmd
+        text: Regression
+      - href: clustering.qmd
+        text: Clustering
+      - href: dimensionality.qmd
+        text: Dimensionality Reduction
+      - href: ensembles.qmd
+        text: Ensemble Methods
+      - href: conclusion.qmd
+        text: Conclusions
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    smooth-scroll: true

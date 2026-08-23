@@ -1,0 +1,8 @@
+---
+title: "Regression"
+---
+
+# Regression
+
+This section will investigate regression methods applied to
+financial data.

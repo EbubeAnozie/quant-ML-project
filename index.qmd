@@ -1,0 +1,51 @@
+---
+title: "Machine Learning in Quantitative Finance"
+---
+
+# Machine Learning in Quantitative Finance
+
+## An Applied Study of Machine Learning Methods for Financial Data
+
+**Ebube Anozie**  
+PhD Student in Applied Mathematics  
+University of Colorado Boulder
+
+---
+
+## About the Project
+
+This project investigates the application of machine learning
+methods to quantitative-finance problems. Throughout the
+semester, different machine learning techniques will be
+applied to financial data and evaluated from both computational
+and quantitative perspectives.
+
+## Research Question
+
+> How effectively can machine learning methods identify useful
+> patterns in financial market data?
+
+## Methods
+
+Throughout the project, I will investigate:
+
+- Regression
+- Clustering
+- Dimensionality reduction
+- Ensemble methods
+- Other machine learning methods introduced in CSCI 5612
+
+## Project Goals
+
+The goal is to understand not only how these models perform,
+but also how machine learning can be used as a tool for
+quantitative financial analysis.
+
+---
+
+## About Me
+
+I am a PhD student in Applied Mathematics at the University of
+Colorado Boulder. My research interests include quantitative
+finance, mathematical modeling, numerical methods, and
+machine learning.
