@@ -4,48 +4,142 @@ title: "Machine Learning in Quantitative Finance"
 
 # Machine Learning in Quantitative Finance
 
-## An Applied Study of Machine Learning Methods for Financial Data
+## Applying Statistical Learning to Financial Market Data
 
 **Ebube Anozie**  
 PhD Student in Applied Mathematics  
 University of Colorado Boulder
 
+[View the code on GitHub](https://github.com/ebubeanozie/quant-ML-project)
+
 ---
 
 ## About the Project
 
-This project investigates the application of machine learning
-methods to quantitative-finance problems. Throughout the
-semester, different machine learning techniques will be
-applied to financial data and evaluated from both computational
-and quantitative perspectives.
+This portfolio explores the application of machine learning
+methods to quantitative-finance problems.
+
+Throughout the semester, I will apply statistical learning
+techniques to financial market data, investigate their
+computational properties, evaluate model performance, and
+interpret the results from a quantitative-finance perspective.
+
+The project is developed as part of **CSCI 5612: Machine
+Learning for Data Science** at the University of Colorado
+Boulder.
+
+---
 
 ## Research Question
 
-> How effectively can machine learning methods identify useful
-> patterns in financial market data?
+> **Can machine-learning methods identify useful and robust
+> patterns in financial market data?**
 
-## Methods
+The project investigates this question through a sequence of
+supervised and unsupervised learning methods.
 
-Throughout the project, I will investigate:
+---
+
+## Project Pipeline
+
+::: {.columns}
+
+::: {.column width="33%"}
+
+### 01 · Data
+
+**Financial Data**
+
+- Data acquisition
+- Data cleaning
+- Feature engineering
+- Exploratory analysis
+
+:::
+
+::: {.column width="33%"}
+
+### 02 · Machine Learning
+
+**Statistical Learning**
 
 - Regression
 - Clustering
 - Dimensionality reduction
 - Ensemble methods
-- Other machine learning methods introduced in CSCI 5612
 
-## Project Goals
+:::
 
-The goal is to understand not only how these models perform,
-but also how machine learning can be used as a tool for
-quantitative financial analysis.
+::: {.column width="33%"}
+
+### 03 · Quantitative Analysis
+
+**Model Evaluation**
+
+- Predictive performance
+- Model comparison
+- Visualization
+- Financial interpretation
+
+:::
+
+:::
+
+---
+
+## Methods
+
+The project will progressively incorporate the machine-learning
+methods covered in CSCI 5612.
+
+| Method | Objective | Status |
+|:---|:---|:---:|
+| Data Preparation | Clean and transform financial data | In progress |
+| Regression | Model relationships between financial variables | Upcoming |
+| Clustering | Identify groups and patterns in financial data | Upcoming |
+| Dimensionality Reduction | Extract important latent structure | Upcoming |
+| Ensemble Methods | Improve predictive performance | Upcoming |
+
+---
+
+## Why Quantitative Finance?
+
+Financial markets generate large, noisy, and high-dimensional
+datasets. Machine learning provides a collection of tools for
+extracting structure from these datasets and developing
+data-driven models.
+
+My broader interest lies at the intersection of:
+
+**Applied Mathematics · Machine Learning · Numerical Methods · Quantitative Finance**
+
+This project is an opportunity to explore how these areas can
+work together.
 
 ---
 
 ## About Me
 
 I am a PhD student in Applied Mathematics at the University of
-Colorado Boulder. My research interests include quantitative
-finance, mathematical modeling, numerical methods, and
-machine learning.
+Colorado Boulder.
+
+My interests include quantitative finance, machine learning,
+mathematical modeling, numerical methods, and computational
+science.
+
+I am particularly interested in developing mathematical and
+computational methods for large-scale, data-driven problems.
+
+---
+
+## Explore the Project
+
+Use the navigation bar above to explore the different stages of
+the project.
+
+As the semester progresses, each new machine-learning method
+will be added as a new section of this portfolio.
+
+---
+
+**Ebube Anozie · University of Colorado Boulder · 2026**

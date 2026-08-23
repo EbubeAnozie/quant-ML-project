@@ -5,25 +5,50 @@ website:
   title: "Machine Learning in Quantitative Finance"
 
   navbar:
+    background: dark
+    foreground: light
+
     left:
       - href: index.qmd
         text: Home
+
       - href: data.qmd
         text: Data
+
       - href: regression.qmd
         text: Regression
+
       - href: clustering.qmd
         text: Clustering
+
       - href: dimensionality.qmd
         text: Dimensionality Reduction
+
       - href: ensembles.qmd
         text: Ensemble Methods
+
       - href: conclusion.qmd
         text: Conclusions
 
+    right:
+      - icon: github
+        href: https://github.com/ebubeanozie/quant-ML-project
+        aria-label: GitHub
+
+  page-footer:
+    left: "© 2026 Ebube Anozie"
+    right:
+      - icon: github
+        href: https://github.com/ebubeanozie/quant-ML-project
+
 format:
   html:
-    theme: cosmo
-    toc: true
-    code-fold: true
+    theme:
+      - cosmo
+    toc: false
     smooth-scroll: true
+    page-layout: full
+    css: styles.css
+
+execute:
+  freeze: auto

@@ -1,0 +1,44 @@
+/* Hero section */
+
+#title-block-header {
+  display: none;
+}
+
+.hero {
+  padding: 5rem 0 4rem 0;
+}
+
+/* Headings */
+
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  margin-top: 2.5rem;
+}
+
+/* Links */
+
+a {
+  text-decoration: none;
+}
+
+/* Project cards */
+
+.card {
+  border-radius: 12px;
+}
+
+/* Tables */
+
+table {
+  width: 100%;
+}
+
+/* Footer */
+
+.nav-footer {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
