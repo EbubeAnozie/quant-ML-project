@@ -8,7 +8,7 @@ University of Colorado Boulder
 
 [View the code on GitHub](https://github.com/ebubeanozie/quant-ML-project)
 
----
+
 
 ## About the Project
 
@@ -16,14 +16,12 @@ The project is developed as part of **CSCI 5612: Machine
 Learning for Data Science** at the University of Colorado
 Boulder.
 
----
 
 ## Research Question
 
 > **What factors are associated with the financial performance
 > and risk of publicly traded companies??**
 
----
 
 ## About Me
 
@@ -31,13 +29,12 @@ I am a PhD student in Applied Mathematics at the University of
 Colorado Boulder. My research interests include quantitative
 finance, mathematical modeling, numerical methods, and
 machine learning.
----
+
 
 ## Explore the Project
 
 Use the navigation bar above to explore the different stages of
 the project.
 
----
 
 **Ebube Anozie · University of Colorado Boulder · 2026**

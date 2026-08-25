@@ -1,30 +1,32 @@
 ---
-title: "DataPrep/EDA"
+title: "Data Preparation and Exploratory Data Analysis"
 ---
 
-# Data Preparation and Exploratory Data Analysis
-
-## Data Sources
+# Where: Data Sources
 
 *To be completed.*
 
-## Data Collection $ API (Application Programming Interface)
+# How: Data Collection $ API (Application Programming Interface)
 (You will include your code as part of your submission)
 
 *To be completed.*
 
-## Raw Data
+# Why
+
+*To be completed.*
+
+# Raw Data
 
 *Links to raw datasets will be provided here.*
 
-## Data Preparation
+# Data Preparation
 
 *Data cleaning and transformation procedures will be documented here.*
 
-## Exploratory Data Analysis
+# Exploratory Data Analysis
 
 *Visualizations and findings will be added here.*
 
-## Initial Findings
+# Initial Findings
 
 *To be completed.*

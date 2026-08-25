@@ -2,24 +2,30 @@
 title: "Regression"
 ---
 
-# Regression
+# Overview
+- What the method is
+- How it works
+- Why it is appropriate for this project
+- What question you will investigate
+- Optional explanatory image/diagram
 
-## Overview
+# Data
+- Which variables/dataset are used
+- Small screenshot/table of the prepared data
+- Link to raw data
+- Link to clean data
+- Brief explanation of preprocessing
 
-*To be completed.*
+# Code
+- Link to GitHub code
+- Language: Python/R
+- Core packages
+- Brief description of implementation
+- No pasted code
 
-## Data Preparation
-
-*To be completed.*
-
-## Method
-
-*To be completed.*
-
-## Results
-
-*To be completed.*
-
-## Conclusions
-
-*To be completed.*
+# Results
+- Model parameters
+- Results and evaluation metrics
+- Tables/plots
+- Interpretation
+- What the results tell us about financial performance/risk
