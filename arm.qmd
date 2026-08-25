@@ -1,8 +1,8 @@
 ---
-title: "Regression"
+title: "ARM"
 ---
 
-# Regression
+# Association Rule Mining
 
 ## Overview
 

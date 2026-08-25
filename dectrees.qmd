@@ -1,8 +1,8 @@
 ---
-title: "Regression"
+title: "DecTrees"
 ---
 
-# Regression
+# Decision Trees
 
 ## Overview
 

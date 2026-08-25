@@ -1,0 +1,25 @@
+---
+title: "Conclusions"
+---
+
+# Conclusions
+
+## Overall Findings
+
+*To be completed at the end of the semester.*
+
+## Comparison of Methods
+
+*To be completed.*
+
+## Key Insights
+
+*To be completed.*
+
+## Limitations
+
+*To be completed.*
+
+## Future Work
+
+*To be completed.*

@@ -1,0 +1,44 @@
+---
+title: "Introduction"
+---
+
+# Project Overview
+
+## Research Question
+
+**What factors are associated with the financial performance and risk of publicly traded companies?**
+
+## Motivation
+
+Financial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics. This project uses machine learning and data science methods to investigate relationships among these factors.
+
+## Project Objectives
+
+This project will:
+
+1. Collect financial, economic, market, and other relevant data.
+2. Clean and prepare the data for analysis.
+3. Explore patterns and relationships using data visualization.
+4. Apply multiple machine learning methods.
+5. Compare the results across methods.
+6. Identify important factors associated with financial performance and risk.
+
+## Research Questions
+
+*To be developed as part of Module 1.*
+
+## Data Sources
+
+*To be completed after data collection.*
+
+## Machine Learning Methods
+
+The project will apply:
+
+- Clustering
+- Association Rule Mining (ARM)
+- Naive Bayes
+- Decision Trees
+- Support Vector Machines (SVMs)
+- Regression
+- Neural Networks

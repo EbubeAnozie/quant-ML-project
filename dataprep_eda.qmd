@@ -1,0 +1,29 @@
+---
+title: "DataPrep/EDA"
+---
+
+# Data Preparation and Exploratory Data Analysis
+
+## Data Sources
+
+*To be completed.*
+
+## Data Collection
+
+*To be completed.*
+
+## Raw Data
+
+*Links to raw datasets will be provided here.*
+
+## Data Preparation
+
+*Data cleaning and transformation procedures will be documented here.*
+
+## Exploratory Data Analysis
+
+*Visualizations and findings will be added here.*
+
+## Initial Findings
+
+*To be completed.*
