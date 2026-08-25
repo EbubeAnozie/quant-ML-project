@@ -14,22 +14,22 @@ website:
         text: Introduction
 
       - href: dataprep_eda.qmd
-        text: DataPrep_EDA
+        text: DataPrep/EDA
 
       - href: clustering.qmd
         text: Clustering
 
       - href: arm.qmd
-        text: ARM
+        text: ARM (Association Rule Mining)
 
       - href: naivebayes.qmd
-        text: NaiveBayes
+        text: NB
 
       - href: dectrees.qmd
-        text: DecTrees
+        text: DT
 
       - href: svms.qmd
-        text: SVMs
+        text: SVM
 
       - href: regression.qmd
         text: Regression
