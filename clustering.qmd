@@ -1,0 +1,33 @@
+---
+title: "Clustering"
+---
+
+# Clustering
+
+## Overview
+- What the method is
+- How it works
+- Why it is appropriate for this project
+- What question you will investigate
+- Optional explanatory image/diagram
+
+## Data
+- Which variables/dataset are used
+- Small screenshot/table of the prepared data
+- Link to raw data
+- Link to clean data
+- Brief explanation of preprocessing
+
+## Code
+- Link to GitHub code
+- Language: Python/R
+- Core packages
+- Brief description of implementation
+- No pasted code
+
+## Results
+- Model parameters
+- Results and evaluation metrics
+- Tables/plots
+- Interpretation
+- What the results tell us about financial performance/risk
