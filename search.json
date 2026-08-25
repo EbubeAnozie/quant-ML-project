@@ -86,9 +86,37 @@
   {
     "objectID": "clustering.html",
     "href": "clustering.html",
-    "title": "",
+    "title": "Clustering",
     "section": "",
-    "text": "Code"
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\n\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\n\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\n\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "clustering.html#overview",
+    "href": "clustering.html#overview",
+    "title": "Clustering",
+    "section": "",
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram"
+  },
+  {
+    "objectID": "clustering.html#data",
+    "href": "clustering.html#data",
+    "title": "Clustering",
+    "section": "",
+    "text": "Which variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing"
+  },
+  {
+    "objectID": "clustering.html#code",
+    "href": "clustering.html#code",
+    "title": "Clustering",
+    "section": "",
+    "text": "Link to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code"
+  },
+  {
+    "objectID": "clustering.html#results",
+    "href": "clustering.html#results",
+    "title": "Clustering",
+    "section": "",
+    "text": "Model parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "dimensionality.html",
@@ -151,42 +179,35 @@
     "href": "arm.html",
     "title": "ARM",
     "section": "",
-    "text": "To be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\n\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\n\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\n\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "arm.html#overview",
     "href": "arm.html#overview",
     "title": "ARM",
     "section": "",
-    "text": "To be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram"
   },
   {
-    "objectID": "arm.html#data-preparation",
-    "href": "arm.html#data-preparation",
+    "objectID": "arm.html#data",
+    "href": "arm.html#data",
     "title": "ARM",
     "section": "",
-    "text": "To be completed."
+    "text": "Which variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing"
   },
   {
-    "objectID": "arm.html#method",
-    "href": "arm.html#method",
+    "objectID": "arm.html#code",
+    "href": "arm.html#code",
     "title": "ARM",
     "section": "",
-    "text": "To be completed."
+    "text": "Link to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code"
   },
   {
     "objectID": "arm.html#results",
     "href": "arm.html#results",
     "title": "ARM",
     "section": "",
-    "text": "To be completed."
-  },
-  {
-    "objectID": "arm.html#conclusions",
-    "href": "arm.html#conclusions",
-    "title": "ARM",
-    "section": "",
-    "text": "To be completed."
+    "text": "Model parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "regression.html",
@@ -235,42 +256,35 @@
     "href": "svms.html",
     "title": "SVMs",
     "section": "",
-    "text": "To be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\n\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\n\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\n\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "svms.html#overview",
     "href": "svms.html#overview",
     "title": "SVMs",
     "section": "",
-    "text": "To be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram"
   },
   {
-    "objectID": "svms.html#data-preparation",
-    "href": "svms.html#data-preparation",
+    "objectID": "svms.html#data",
+    "href": "svms.html#data",
     "title": "SVMs",
     "section": "",
-    "text": "To be completed."
+    "text": "Which variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing"
   },
   {
-    "objectID": "svms.html#method",
-    "href": "svms.html#method",
+    "objectID": "svms.html#code",
+    "href": "svms.html#code",
     "title": "SVMs",
     "section": "",
-    "text": "To be completed."
+    "text": "Link to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code"
   },
   {
     "objectID": "svms.html#results",
     "href": "svms.html#results",
     "title": "SVMs",
     "section": "",
-    "text": "To be completed."
-  },
-  {
-    "objectID": "svms.html#conclusions",
-    "href": "svms.html#conclusions",
-    "title": "SVMs",
-    "section": "",
-    "text": "To be completed."
+    "text": "Model parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "ensembles.html",
@@ -326,42 +340,35 @@
     "href": "dectrees.html",
     "title": "DecTrees",
     "section": "",
-    "text": "To be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed.\n\n\n\nTo be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\n\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\n\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\n\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "dectrees.html#overview",
     "href": "dectrees.html#overview",
     "title": "DecTrees",
     "section": "",
-    "text": "To be completed."
+    "text": "What the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram"
   },
   {
-    "objectID": "dectrees.html#data-preparation",
-    "href": "dectrees.html#data-preparation",
+    "objectID": "dectrees.html#data",
+    "href": "dectrees.html#data",
     "title": "DecTrees",
     "section": "",
-    "text": "To be completed."
+    "text": "Which variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing"
   },
   {
-    "objectID": "dectrees.html#method",
-    "href": "dectrees.html#method",
+    "objectID": "dectrees.html#code",
+    "href": "dectrees.html#code",
     "title": "DecTrees",
     "section": "",
-    "text": "To be completed."
+    "text": "Link to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code"
   },
   {
     "objectID": "dectrees.html#results",
     "href": "dectrees.html#results",
     "title": "DecTrees",
     "section": "",
-    "text": "To be completed."
-  },
-  {
-    "objectID": "dectrees.html#conclusions",
-    "href": "dectrees.html#conclusions",
-    "title": "DecTrees",
-    "section": "",
-    "text": "To be completed."
+    "text": "Model parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "index.html",
