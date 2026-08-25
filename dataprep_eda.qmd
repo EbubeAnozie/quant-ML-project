@@ -8,7 +8,8 @@ title: "DataPrep/EDA"
 
 *To be completed.*
 
-## Data Collection
+## Data Collection $ API (Application Programming Interface)
+(You will include your code as part of your submission)
 
 *To be completed.*
 

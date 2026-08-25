@@ -53,7 +53,7 @@
     "href": "dataprep_eda.html",
     "title": "DataPrep/EDA",
     "section": "",
-    "text": "To be completed.\n\n\n\nTo be completed.\n\n\n\nLinks to raw datasets will be provided here.\n\n\n\nData cleaning and transformation procedures will be documented here.\n\n\n\nVisualizations and findings will be added here.\n\n\n\nTo be completed."
+    "text": "To be completed.\n\n\n\n(You will include your code as part of your submission)\nTo be completed.\n\n\n\nLinks to raw datasets will be provided here.\n\n\n\nData cleaning and transformation procedures will be documented here.\n\n\n\nVisualizations and findings will be added here.\n\n\n\nTo be completed."
   },
   {
     "objectID": "dataprep_eda.html#data-sources",
@@ -63,11 +63,11 @@
     "text": "To be completed."
   },
   {
-    "objectID": "dataprep_eda.html#data-collection",
-    "href": "dataprep_eda.html#data-collection",
+    "objectID": "dataprep_eda.html#data-collection-api-application-programming-interface",
+    "href": "dataprep_eda.html#data-collection-api-application-programming-interface",
     "title": "DataPrep/EDA",
     "section": "",
-    "text": "To be completed."
+    "text": "(You will include your code as part of your submission)\nTo be completed."
   },
   {
     "objectID": "dataprep_eda.html#raw-data",
@@ -154,11 +154,18 @@
     "text": "Research Question\n\nWhat factors are associated with the financial performance and risk of publicly traded companies??"
   },
   {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Financial Performance and Risk of Publicly Traded Companies",
+    "section": "About Me",
+    "text": "About Me\nI am a PhD student in Applied Mathematics at the University of Colorado Boulder. My research interests include quantitative finance, mathematical modeling, numerical methods, and machine learning. —"
+  },
+  {
     "objectID": "index.html#explore-the-project",
     "href": "index.html#explore-the-project",
     "title": "Financial Performance and Risk of Publicly Traded Companies",
     "section": "Explore the Project",
-    "text": "Explore the Project\nUse the navigation bar above to explore the different stages of the project. —\nEbube Anozie · University of Colorado Boulder · 2026"
+    "text": "Explore the Project\nUse the navigation bar above to explore the different stages of the project.\n\nEbube Anozie · University of Colorado Boulder · 2026"
   },
   {
     "objectID": "dimensionality.html",
