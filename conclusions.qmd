@@ -2,24 +2,22 @@
 title: "Conclusions"
 ---
 
-# Conclusions
-
-## Overall Findings
+# Overall Findings
 
 *To be completed at the end of the semester.*
 
-## Comparison of Methods
+# Comparison of Methods
 
 *To be completed.*
 
-## Key Insights
+# Key Insights
 
 *To be completed.*
 
-## Limitations
+# Limitations
 
 *To be completed.*
 
-## Future Work
+# Future Work
 
 *To be completed.*
