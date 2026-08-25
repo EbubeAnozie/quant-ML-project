@@ -142,65 +142,30 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "Ebube Anozie\nPhD Student in Applied Mathematics\nUniversity of Colorado Boulder\nView the code on GitHub\n\n\n\n\nThis portfolio explores the application of machine learning methods to quantitative-finance problems.\nThroughout the semester, I will apply statistical learning techniques to financial market data, investigate their computational properties, evaluate model performance, and interpret the results from a quantitative-finance perspective.\nThe project is developed as part of CSCI 5612: Machine Learning for Data Science at the University of Colorado Boulder.\n\n\n\n\n\nCan machine-learning methods identify useful and robust patterns in financial market data?\n\nThe project investigates this question through a sequence of supervised and unsupervised learning methods.\n\n\n\n\n\n\n\n\nFinancial Data\n\nData acquisition\nData cleaning\nFeature engineering\nExploratory analysis\n\n\n\n\n\nStatistical Learning\n\nRegression\nClustering\nDimensionality reduction\nEnsemble methods\n\n\n\n\n\nModel Evaluation\n\nPredictive performance\nModel comparison\nVisualization\nFinancial interpretation\n\n\n\n\n\n\n\n\nThe project will progressively incorporate the machine-learning methods covered in CSCI 5612.\n\n\n\n\n\n\n\n\nMethod\nObjective\nStatus\n\n\n\n\nData Preparation\nClean and transform financial data\nIn progress\n\n\nRegression\nModel relationships between financial variables\nUpcoming\n\n\nClustering\nIdentify groups and patterns in financial data\nUpcoming\n\n\nDimensionality Reduction\nExtract important latent structure\nUpcoming\n\n\nEnsemble Methods\nImprove predictive performance\nUpcoming\n\n\n\n\n\n\n\nFinancial markets generate large, noisy, and high-dimensional datasets. Machine learning provides a collection of tools for extracting structure from these datasets and developing data-driven models.\nMy broader interest lies at the intersection of:\nApplied Mathematics · Machine Learning · Numerical Methods · Quantitative Finance\nThis project is an opportunity to explore how these areas can work together.\n\n\n\n\nI am a PhD student in Applied Mathematics at the University of Colorado Boulder.\nMy interests include quantitative finance, machine learning, mathematical modeling, numerical methods, and computational science.\nI am particularly interested in developing mathematical and computational methods for large-scale, data-driven problems.\n\n\n\n\nUse the navigation bar above to explore the different stages of the project.\nAs the semester progresses, each new machine-learning method will be added as a new section of this portfolio.\n\nEbube Anozie · University of Colorado Boulder · 2026"
-  },
-  {
-    "objectID": "index.html#applying-statistical-learning-to-financial-market-data",
-    "href": "index.html#applying-statistical-learning-to-financial-market-data",
-    "title": "Machine Learning in Quantitative Finance",
+    "title": "Financial Performance and Risk of Publicly Traded Companies",
     "section": "",
     "text": "Ebube Anozie\nPhD Student in Applied Mathematics\nUniversity of Colorado Boulder\nView the code on GitHub"
   },
   {
     "objectID": "index.html#about-the-project",
     "href": "index.html#about-the-project",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "This portfolio explores the application of machine learning methods to quantitative-finance problems.\nThroughout the semester, I will apply statistical learning techniques to financial market data, investigate their computational properties, evaluate model performance, and interpret the results from a quantitative-finance perspective.\nThe project is developed as part of CSCI 5612: Machine Learning for Data Science at the University of Colorado Boulder."
+    "title": "Financial Performance and Risk of Publicly Traded Companies",
+    "section": "About the Project",
+    "text": "About the Project\nThe project is developed as part of CSCI 5612: Machine Learning for Data Science at the University of Colorado Boulder."
   },
   {
     "objectID": "index.html#research-question",
     "href": "index.html#research-question",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "Can machine-learning methods identify useful and robust patterns in financial market data?\n\nThe project investigates this question through a sequence of supervised and unsupervised learning methods."
-  },
-  {
-    "objectID": "index.html#project-pipeline",
-    "href": "index.html#project-pipeline",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "Financial Data\n\nData acquisition\nData cleaning\nFeature engineering\nExploratory analysis\n\n\n\n\n\nStatistical Learning\n\nRegression\nClustering\nDimensionality reduction\nEnsemble methods\n\n\n\n\n\nModel Evaluation\n\nPredictive performance\nModel comparison\nVisualization\nFinancial interpretation"
-  },
-  {
-    "objectID": "index.html#methods",
-    "href": "index.html#methods",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "The project will progressively incorporate the machine-learning methods covered in CSCI 5612.\n\n\n\n\n\n\n\n\nMethod\nObjective\nStatus\n\n\n\n\nData Preparation\nClean and transform financial data\nIn progress\n\n\nRegression\nModel relationships between financial variables\nUpcoming\n\n\nClustering\nIdentify groups and patterns in financial data\nUpcoming\n\n\nDimensionality Reduction\nExtract important latent structure\nUpcoming\n\n\nEnsemble Methods\nImprove predictive performance\nUpcoming"
-  },
-  {
-    "objectID": "index.html#why-quantitative-finance",
-    "href": "index.html#why-quantitative-finance",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "Financial markets generate large, noisy, and high-dimensional datasets. Machine learning provides a collection of tools for extracting structure from these datasets and developing data-driven models.\nMy broader interest lies at the intersection of:\nApplied Mathematics · Machine Learning · Numerical Methods · Quantitative Finance\nThis project is an opportunity to explore how these areas can work together."
-  },
-  {
-    "objectID": "index.html#about-me",
-    "href": "index.html#about-me",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "I am a PhD student in Applied Mathematics at the University of Colorado Boulder.\nMy interests include quantitative finance, machine learning, mathematical modeling, numerical methods, and computational science.\nI am particularly interested in developing mathematical and computational methods for large-scale, data-driven problems."
+    "title": "Financial Performance and Risk of Publicly Traded Companies",
+    "section": "Research Question",
+    "text": "Research Question\n\nWhat factors are associated with the financial performance and risk of publicly traded companies??"
   },
   {
     "objectID": "index.html#explore-the-project",
     "href": "index.html#explore-the-project",
-    "title": "Machine Learning in Quantitative Finance",
-    "section": "",
-    "text": "Use the navigation bar above to explore the different stages of the project.\nAs the semester progresses, each new machine-learning method will be added as a new section of this portfolio.\n\nEbube Anozie · University of Colorado Boulder · 2026"
+    "title": "Financial Performance and Risk of Publicly Traded Companies",
+    "section": "Explore the Project",
+    "text": "Explore the Project\nUse the navigation bar above to explore the different stages of the project. —\nEbube Anozie · University of Colorado Boulder · 2026"
   },
   {
     "objectID": "dimensionality.html",

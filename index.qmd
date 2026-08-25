@@ -1,10 +1,6 @@
 ---
-title: "Machine Learning in Quantitative Finance"
+title: "Financial Performance and Risk of Publicly Traded Companies"
 ---
-
-# Machine Learning in Quantitative Finance
-
-## Applying Statistical Learning to Financial Market Data
 
 **Ebube Anozie**  
 PhD Student in Applied Mathematics  
@@ -16,14 +12,6 @@ University of Colorado Boulder
 
 ## About the Project
 
-This portfolio explores the application of machine learning
-methods to quantitative-finance problems.
-
-Throughout the semester, I will apply statistical learning
-techniques to financial market data, investigate their
-computational properties, evaluate model performance, and
-interpret the results from a quantitative-finance perspective.
-
 The project is developed as part of **CSCI 5612: Machine
 Learning for Data Science** at the University of Colorado
 Boulder.
@@ -32,114 +20,14 @@ Boulder.
 
 ## Research Question
 
-> **Can machine-learning methods identify useful and robust
-> patterns in financial market data?**
+> **What factors are associated with the financial performance
+> and risk of publicly traded companies??**
 
-The project investigates this question through a sequence of
-supervised and unsupervised learning methods.
-
----
-
-## Project Pipeline
-
-::: {.columns}
-
-::: {.column width="33%"}
-
-### 01 · Data
-
-**Financial Data**
-
-- Data acquisition
-- Data cleaning
-- Feature engineering
-- Exploratory analysis
-
-:::
-
-::: {.column width="33%"}
-
-### 02 · Machine Learning
-
-**Statistical Learning**
-
-- Regression
-- Clustering
-- Dimensionality reduction
-- Ensemble methods
-
-:::
-
-::: {.column width="33%"}
-
-### 03 · Quantitative Analysis
-
-**Model Evaluation**
-
-- Predictive performance
-- Model comparison
-- Visualization
-- Financial interpretation
-
-:::
-
-:::
-
----
-
-## Methods
-
-The project will progressively incorporate the machine-learning
-methods covered in CSCI 5612.
-
-| Method | Objective | Status |
-|:---|:---|:---:|
-| Data Preparation | Clean and transform financial data | In progress |
-| Regression | Model relationships between financial variables | Upcoming |
-| Clustering | Identify groups and patterns in financial data | Upcoming |
-| Dimensionality Reduction | Extract important latent structure | Upcoming |
-| Ensemble Methods | Improve predictive performance | Upcoming |
-
----
-
-## Why Quantitative Finance?
-
-Financial markets generate large, noisy, and high-dimensional
-datasets. Machine learning provides a collection of tools for
-extracting structure from these datasets and developing
-data-driven models.
-
-My broader interest lies at the intersection of:
-
-**Applied Mathematics · Machine Learning · Numerical Methods · Quantitative Finance**
-
-This project is an opportunity to explore how these areas can
-work together.
-
----
-
-## About Me
-
-I am a PhD student in Applied Mathematics at the University of
-Colorado Boulder.
-
-My interests include quantitative finance, machine learning,
-mathematical modeling, numerical methods, and computational
-science.
-
-I am particularly interested in developing mathematical and
-computational methods for large-scale, data-driven problems.
-
----
 
 ## Explore the Project
 
 Use the navigation bar above to explore the different stages of
 the project.
-
-As the semester progresses, each new machine-learning method
-will be added as a new section of this portfolio.
-
 ---
 
 **Ebube Anozie · University of Colorado Boulder · 2026**
