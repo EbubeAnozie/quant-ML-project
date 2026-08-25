@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Financial Performance and Risk of Publicly Traded Companies"
+  #title: "Financial Performance and Risk of Publicly Traded Companies"
 
   navbar:
     left:
@@ -20,7 +20,7 @@ website:
         text: Clustering
 
       - href: arm.qmd
-        text: ARM (Association Rule Mining)
+        text: ARM
 
       - href: naivebayes.qmd
         text: NB
