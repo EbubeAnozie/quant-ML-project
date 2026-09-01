@@ -1,0 +1,15 @@
+## Company Financial Data
+
+**Source**: SEC EDGAR CompanyFacts API  
+**Raw data**: [`company_financials_raw.csv`](../data/raw/company_financials_raw.csv)  
+**Clean data**: [`company_financials_clean.csv`](../data/clean/company_financials_clean.csv)  
+
+The dataset includes 40 publicly traded companies across 8 sectors, with key financial metrics for the most recent fiscal year (10-K filing). Derived metrics include ROA, ROE, debt-to-equity, and profit margin.
+
+```{r}
+#| label: load-financials
+#| echo: true
+library(readr)
+fin <- read_csv("../data/clean/company_financials_clean.csv")
+head(fin)
+```
