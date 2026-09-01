@@ -4,13 +4,14 @@ title: "Introduction"
 
 # Project Overview
 
-## Research Question
+## Question
 
-**What factors are associated with the financial performance and risk of publicly traded companies?**
+**What factors are associated with differences in the financial performance of publicly traded companies?**
 
 ## Motivation
 
-Financial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics. This project uses machine learning and data science methods to investigate relationships among these factors.
+Financial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics.
+This project uses machine learning and data science methods to investigate relationships among these factors.
 
 ## Project Objectives
 
@@ -23,9 +24,6 @@ This project will:
 5. Compare the results across methods.
 6. Identify important factors associated with financial performance and risk.
 
-## Research Questions
-
-*To be developed as part of Module 1.*
 
 ## Data Sources
 

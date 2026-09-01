@@ -19,16 +19,15 @@ Boulder.
 
 ## Research Question
 
-> **What factors are associated with the financial performance
-> and risk of publicly traded companies??**
-
+> **What factors are associated with differences in the financial performance
+> of publicly traded companies?**
 
 ## About Me
 
 I am a PhD student in Applied Mathematics at the University of
-Colorado Boulder. My research interests include quantitative
-finance, mathematical modeling, numerical methods, and
-machine learning.
+Colorado Boulder. My research interests are in the mathematics of machine learning,
+and quantitative finance. I study the mathematical mechanisms underlying generative models.
+Learn more about me here (cv)
 
 
 ## Explore the Project
