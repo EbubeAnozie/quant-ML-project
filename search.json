@@ -95,14 +95,14 @@
     "href": "index.html#research-question",
     "title": "Financial Performance and Risk of Publicly Traded Companies",
     "section": "Research Question",
-    "text": "Research Question\n\nWhat factors are associated with the financial performance and risk of publicly traded companies??"
+    "text": "Research Question\n\nWhat factors are associated with differences in the financial performance of publicly traded companies?"
   },
   {
     "objectID": "index.html#about-me",
     "href": "index.html#about-me",
     "title": "Financial Performance and Risk of Publicly Traded Companies",
     "section": "About Me",
-    "text": "About Me\nI am a PhD student in Applied Mathematics at the University of Colorado Boulder. My research interests include quantitative finance, mathematical modeling, numerical methods, and machine learning."
+    "text": "About Me\nI am a PhD student in Applied Mathematics at the University of Colorado Boulder. My research interests are in the mathematics of machine learning, and quantitative finance. I study the mathematical mechanisms underlying generative models. Learn more about me here (cv)"
   },
   {
     "objectID": "index.html#explore-the-project",
@@ -123,14 +123,14 @@
     "href": "introduction.html",
     "title": "Introduction",
     "section": "",
-    "text": "What factors are associated with the financial performance and risk of publicly traded companies?\n\n\n\nFinancial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics. This project uses machine learning and data science methods to investigate relationships among these factors.\n\n\n\nThis project will:\n\nCollect financial, economic, market, and other relevant data.\nClean and prepare the data for analysis.\nExplore patterns and relationships using data visualization.\nApply multiple machine learning methods.\nCompare the results across methods.\nIdentify important factors associated with financial performance and risk.\n\n\n\n\nTo be developed as part of Module 1.\n\n\n\nTo be completed after data collection.\n\n\n\nThe project will apply:\n\nClustering\nAssociation Rule Mining (ARM)\nNaive Bayes\nDecision Trees\nSupport Vector Machines (SVMs)\nRegression\nNeural Networks"
+    "text": "What factors are associated with differences in the financial performance of publicly traded companies?\n\n\n\nFinancial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics. This project uses machine learning and data science methods to investigate relationships among these factors.\n\n\n\nThis project will:\n\nCollect financial, economic, market, and other relevant data.\nClean and prepare the data for analysis.\nExplore patterns and relationships using data visualization.\nApply multiple machine learning methods.\nCompare the results across methods.\nIdentify important factors associated with financial performance and risk.\n\n\n\n\nTo be completed after data collection.\n\n\n\nThe project will apply:\n\nClustering\nAssociation Rule Mining (ARM)\nNaive Bayes\nDecision Trees\nSupport Vector Machines (SVMs)\nRegression\nNeural Networks"
   },
   {
-    "objectID": "introduction.html#research-question",
-    "href": "introduction.html#research-question",
+    "objectID": "introduction.html#question",
+    "href": "introduction.html#question",
     "title": "Introduction",
     "section": "",
-    "text": "What factors are associated with the financial performance and risk of publicly traded companies?"
+    "text": "What factors are associated with differences in the financial performance of publicly traded companies?"
   },
   {
     "objectID": "introduction.html#motivation",
@@ -145,13 +145,6 @@
     "title": "Introduction",
     "section": "",
     "text": "This project will:\n\nCollect financial, economic, market, and other relevant data.\nClean and prepare the data for analysis.\nExplore patterns and relationships using data visualization.\nApply multiple machine learning methods.\nCompare the results across methods.\nIdentify important factors associated with financial performance and risk."
-  },
-  {
-    "objectID": "introduction.html#research-questions",
-    "href": "introduction.html#research-questions",
-    "title": "Introduction",
-    "section": "",
-    "text": "To be developed as part of Module 1."
   },
   {
     "objectID": "introduction.html#data-sources",
