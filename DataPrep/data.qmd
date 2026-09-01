@@ -13,3 +13,16 @@ library(readr)
 fin <- read_csv("../data/clean/company_financials_clean.csv")
 head(fin)
 ```
+
+```{r}
+#| label: missing-financials
+#| echo: true
+library(readr)
+fin <- read_csv("../data/clean/company_financials_clean.csv")
+
+# Count missing values per column
+colSums(is.na(fin))
+
+# Rows with any missing values
+fin[!complete.cases(fin), ]
+```
