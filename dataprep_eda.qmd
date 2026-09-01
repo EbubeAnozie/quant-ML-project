@@ -4,29 +4,117 @@ title: "Data Preparation and Exploratory Data Analysis"
 
 # Where: Data Sources
 
-*To be completed.*
+The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. We selected 40 large companies across eight sectors to ensure diversity.
 
-# How: Data Collection $ API (Application Programming Interface)
-(You will include your code as part of your submission)
+Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.
 
-*To be completed.*
+# How: Data Collection & API
+
+We used Python to interact with the SEC API. The script performs the following steps:
+
+1. Fetch the official company ticker → CIK mapping from `company_tickers.json`.
+2. Select a list of tickers (40 companies).
+3. For each company, call the CompanyFacts endpoint:  
+   `https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json`
+4. Extract key US-GAAP financial metrics from the latest 10-K filing.
+5. Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).
+6. Save raw and clean CSV files.
+
+The full Python script is available at [`code/company_financials.py`](../code/company_financials.py).
+
+```{r}
+#| label: show-python-script
+#| echo: false
+#| eval: false
+# This chunk is only a placeholder; the actual Python code is in the repository.
+```
 
 # Why
 
-*To be completed.*
+The project aims to **understand the drivers of financial performance** in publicly traded companies. Financial statements provide the fundamental measures of performance (e.g., profitability, leverage, liquidity). By combining them with market and macroeconomic data later, we can build machine learning models to identify which factors are most associated with company success.
 
 # Raw Data
 
-*Links to raw datasets will be provided here.*
+The raw data, exactly as returned by the SEC API, is stored in:
+
+- [`company_financials_raw.csv`](data/raw/company_financials_raw.csv)
+
+This file contains one row per company (latest fiscal year) with raw financial values in USD.
 
 # Data Preparation
 
-*Data cleaning and transformation procedures will be documented here.*
+Cleaning steps performed in Python:
+
+- Converted numeric columns to float.
+- Removed rows where critical values were completely missing (if any).
+- Computed derived metrics:
+  - **ROA** = Net Income / Total Assets
+  - **ROE** = Net Income / Total Equity
+  - **Debt-to-Equity** = Long-Term Debt / Total Equity
+  - **Profit Margin** = Net Income / Revenue
+- Added a sector column based on ticker (manual mapping).
+
+The clean dataset is stored in:
+
+- [`company_financials_clean.csv`](data/clean/company_financials_clean.csv)
+
+Missing values are retained for now; they will be handled during modeling (e.g., imputation or dropping columns with excessive missingness).
 
 # Exploratory Data Analysis
 
-*Visualizations and findings will be added here.*
+Load the clean data and inspect basic structure:
+
+```{r}
+#| label: load-clean-fin
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+fin <- read_csv("data/clean/company_financials_clean.csv")
+glimpse(fin)
+```
+
+## Summary statistics
+
+```{r}
+#| label: summary-stats
+summary(fin %>% select(Revenue, NetIncome, TotalAssets, ROA, ROE, Debt_to_Equity, Profit_Margin))
+```
+
+## Distribution of ROA by sector
+
+```{r}
+#| label: roa-by-sector
+#| fig-cap: "Return on Assets by Sector"
+#| fig-width: 8
+#| fig-height: 5
+fin %>%
+  ggplot(aes(x = reorder(sector, ROA, FUN = median), y = ROA, fill = sector)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(x = "Sector", y = "Return on Assets", title = "ROA Distribution by Sector") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Revenue vs. Net Income
+
+```{r}
+#| label: rev-vs-netincome
+#| fig-cap: "Revenue vs Net Income (log scale)"
+fin %>%
+  ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +
+  geom_point(size = 2) +
+  scale_x_log10(labels = scales::dollar_format()) +
+  scale_y_log10(labels = scales::dollar_format()) +
+  labs(x = "Revenue (log USD)", y = "Net Income (log USD)", title = "Revenue vs. Net Income") +
+  theme_minimal()
+```
 
 # Initial Findings
 
-*To be completed.*
+- The dataset contains **40 companies** across **8 sectors**.
+- Some financial metrics are missing for certain companies (e.g., long-term debt may be zero or not reported separately).
+- ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.
+- There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.
+- These initial observations set the stage for integrating additional data sources and building predictive models in later modules.
