@@ -186,11 +186,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#where-data-sources" id="toc-where-data-sources" class="nav-link active" data-scroll-target="#where-data-sources">Where: Data Sources</a></li>
-  <li><a href="#how-data-collection-api-application-programming-interface" id="toc-how-data-collection-api-application-programming-interface" class="nav-link" data-scroll-target="#how-data-collection-api-application-programming-interface">How: Data Collection $ API (Application Programming Interface)</a></li>
+  <li><a href="#how-data-collection-api" id="toc-how-data-collection-api" class="nav-link" data-scroll-target="#how-data-collection-api">How: Data Collection &amp; API</a></li>
   <li><a href="#why" id="toc-why" class="nav-link" data-scroll-target="#why">Why</a></li>
   <li><a href="#raw-data" id="toc-raw-data" class="nav-link" data-scroll-target="#raw-data">Raw Data</a></li>
   <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
-  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics">Summary statistics</a></li>
+  <li><a href="#distribution-of-roa-by-sector" id="toc-distribution-of-roa-by-sector" class="nav-link" data-scroll-target="#distribution-of-roa-by-sector">Distribution of ROA by sector</a></li>
+  <li><a href="#revenue-vs.-net-income" id="toc-revenue-vs.-net-income" class="nav-link" data-scroll-target="#revenue-vs.-net-income">Revenue vs.&nbsp;Net Income</a></li>
+  </ul></li>
   <li><a href="#initial-findings" id="toc-initial-findings" class="nav-link" data-scroll-target="#initial-findings">Initial Findings</a></li>
   </ul>
 </nav>
@@ -200,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Data Preparation and Exploratory Data Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Data Preparation and Exploratory Data Analysis</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -219,32 +224,218 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="where-data-sources" class="level1">
 <h1>Where: Data Sources</h1>
-<p><em>To be completed.</em></p>
+<p>The primary dataset comes from the <strong>U.S. Securities and Exchange Commission (SEC) EDGAR</strong> system, using the <strong>CompanyFacts API</strong>. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. We selected 40 large companies across eight sectors to ensure diversity.</p>
+<p>Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.</p>
 </section>
-<section id="how-data-collection-api-application-programming-interface" class="level1">
-<h1>How: Data Collection $ API (Application Programming Interface)</h1>
-<p>(You will include your code as part of your submission)</p>
-<p><em>To be completed.</em></p>
+<section id="how-data-collection-api" class="level1">
+<h1>How: Data Collection &amp; API</h1>
+<p>We used Python to interact with the SEC API. The script performs the following steps:</p>
+<ol type="1">
+<li>Fetch the official company ticker → CIK mapping from <code>company_tickers.json</code>.</li>
+<li>Select a list of tickers (40 companies).</li>
+<li>For each company, call the CompanyFacts endpoint:<br>
+<code>https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json</code></li>
+<li>Extract key US-GAAP financial metrics from the latest 10-K filing.</li>
+<li>Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).</li>
+<li>Save raw and clean CSV files.</li>
+</ol>
+<p>The full Python script is available at <a href="../code/company_financials.py"><code>code/company_financials.py</code></a>.</p>
 </section>
 <section id="why" class="level1">
 <h1>Why</h1>
-<p><em>To be completed.</em></p>
+<p>The project aims to <strong>understand the drivers of financial performance</strong> in publicly traded companies. Financial statements provide the fundamental measures of performance (e.g., profitability, leverage, liquidity). By combining them with market and macroeconomic data later, we can build machine learning models to identify which factors are most associated with company success.</p>
 </section>
 <section id="raw-data" class="level1">
 <h1>Raw Data</h1>
-<p><em>Links to raw datasets will be provided here.</em></p>
+<p>The raw data, exactly as returned by the SEC API, is stored in:</p>
+<ul>
+<li><a href="data/raw/company_financials_raw.csv"><code>company_financials_raw.csv</code></a></li>
+</ul>
+<p>This file contains one row per company (latest fiscal year) with raw financial values in USD.</p>
 </section>
 <section id="data-preparation" class="level1">
 <h1>Data Preparation</h1>
-<p><em>Data cleaning and transformation procedures will be documented here.</em></p>
+<p>Cleaning steps performed in Python:</p>
+<ul>
+<li>Converted numeric columns to float.</li>
+<li>Removed rows where critical values were completely missing (if any).</li>
+<li>Computed derived metrics:
+<ul>
+<li><strong>ROA</strong> = Net Income / Total Assets</li>
+<li><strong>ROE</strong> = Net Income / Total Equity</li>
+<li><strong>Debt-to-Equity</strong> = Long-Term Debt / Total Equity</li>
+<li><strong>Profit Margin</strong> = Net Income / Revenue</li>
+</ul></li>
+<li>Added a sector column based on ticker (manual mapping).</li>
+</ul>
+<p>The clean dataset is stored in:</p>
+<ul>
+<li><a href="data/clean/company_financials_clean.csv"><code>company_financials_clean.csv</code></a></li>
+</ul>
+<p>Missing values are retained for now; they will be handled during modeling (e.g., imputation or dropping columns with excessive missingness).</p>
 </section>
 <section id="exploratory-data-analysis" class="level1">
 <h1>Exploratory Data Analysis</h1>
-<p><em>Visualizations and findings will be added here.</em></p>
+<p>Load the clean data and inspect basic structure:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 40 Columns: 17</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr   (3): ticker, company, sector
+dbl  (13): fiscal_year, Revenue, NetIncome, TotalAssets, TotalLiabilities, T...
+date  (1): fiscal_year_end
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 40
+Columns: 17
+$ ticker             &lt;chr&gt; "NVDA", "AAPL", "GOOGL", "MSFT", "META", "TSLA", "J…
+$ company            &lt;chr&gt; "NVIDIA CORP", "Apple Inc.", "Alphabet Inc.", "MICR…
+$ sector             &lt;chr&gt; "Technology", "Technology", "Technology", "Technolo…
+$ fiscal_year        &lt;dbl&gt; 2026, 2018, 2025, 2010, 2017, 2025, 2025, 2026, 202…
+$ fiscal_year_end    &lt;date&gt; 2026-01-25, 2018-09-29, 2025-12-31, 2010-06-30, 20…
+$ Revenue            &lt;dbl&gt; 60922000000, 215639000000, 307394000000, 1376200000…
+$ NetIncome          &lt;dbl&gt; 29760000000, 45687000000, 73795000000, 4289000000, …
+$ TotalAssets        &lt;dbl&gt; 1.116010e+11, 3.753190e+11, 4.502560e+11, 7.788800e…
+$ TotalLiabilities   &lt;dbl&gt; 3.227400e+10, 2.412720e+11, 1.251720e+11, NA, 5.767…
+$ TotalEquity        &lt;dbl&gt; 22101000000, 119355000000, 256144000000, 3628600000…
+$ LongTermDebt       &lt;dbl&gt; 8463000000, 97207000000, 10883000000, 3746000000, N…
+$ OperatingIncome    &lt;dbl&gt; 32972000000, 60024000000, 84293000000, 22271000000,…
+$ CashFromOperations &lt;dbl&gt; 28090000000, 66231000000, 101746000000, 21612000000…
+$ ROA                &lt;dbl&gt; 2.666643e-01, 1.217284e-01, 1.638957e-01, 5.506625e…
+$ ROE                &lt;dbl&gt; 1.346545405, 0.382782456, 0.288099663, 0.118199857,…
+$ Debt_to_Equity     &lt;dbl&gt; 0.38292385, 0.81443593, 0.04248782, 0.10323541, NA,…
+$ Profit_Margin      &lt;dbl&gt; 0.488493483, 0.211867983, 0.240066494, 0.311655283,…</code></pre>
+</div>
+</div>
+<section id="summary-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="summary-statistics">Summary statistics</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fin <span class="sc">%&gt;%</span> <span class="fu">select</span>(Revenue, NetIncome, TotalAssets, ROA, ROE, Debt_to_Equity, Profit_Margin))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Revenue            NetIncome           TotalAssets       
+ Min.   :1.511e+09   Min.   :-2.222e+09   Min.   :1.276e+10  
+ 1st Qu.:2.601e+10   1st Qu.: 2.190e+09   1st Qu.:6.724e+10  
+ Median :5.983e+10   Median : 6.943e+09   Median :1.144e+11  
+ Mean   :9.755e+10   Mean   : 1.201e+10   Mean   :3.740e+11  
+ 3rd Qu.:9.827e+10   3rd Qu.: 1.491e+10   3rd Qu.:2.535e+11  
+ Max.   :6.481e+11   Max.   : 7.380e+10   Max.   :3.875e+12  
+                                                             
+      ROA                ROE           Debt_to_Equity     Profit_Margin     
+ Min.   :-0.02058   Min.   :-1.41079   Min.   :-13.7219   Min.   :-0.17383  
+ 1st Qu.: 0.02089   1st Qu.: 0.09275   1st Qu.:  0.3750   1st Qu.: 0.05801  
+ Median : 0.05592   Median : 0.15103   Median :  0.7441   Median : 0.12269  
+ Mean   : 0.06782   Mean   : 0.51265   Mean   :  1.7105   Mean   : 0.14067  
+ 3rd Qu.: 0.10863   3rd Qu.: 0.30889   3rd Qu.:  1.3132   3rd Qu.: 0.21744  
+ Max.   : 0.26666   Max.   :11.96049   Max.   : 30.6025   Max.   : 0.48849  
+                                       NAs    :9                            </code></pre>
+</div>
+</div>
+</section>
+<section id="distribution-of-roa-by-sector" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-roa-by-sector">Distribution of ROA by sector</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, ROA, <span class="at">FUN =</span> median), <span class="at">y =</span> ROA, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"ROA Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/roa-by-sector-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Return on Assets by Sector</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="revenue-vs.-net-income" class="level2">
+<h2 class="anchored" data-anchor-id="revenue-vs.-net-income">Revenue vs.&nbsp;Net Income</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Revenue, <span class="at">y =</span> NetIncome, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>()) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>()) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Revenue (log USD)"</span>, <span class="at">y =</span> <span class="st">"Net Income (log USD)"</span>, <span class="at">title =</span> <span class="st">"Revenue vs. Net Income"</span>) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in transformation$transform(x): NaNs produced</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in scale_y_log10(labels = scales::dollar_format()): log-10
+transformation introduced infinite values.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/rev-vs-netincome-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Revenue vs Net Income (log scale)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="initial-findings" class="level1">
 <h1>Initial Findings</h1>
-<p><em>To be completed.</em></p>
+<ul>
+<li>The dataset contains <strong>40 companies</strong> across <strong>8 sectors</strong>.</li>
+<li>Some financial metrics are missing for certain companies (e.g., long-term debt may be zero or not reported separately).</li>
+<li>ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.</li>
+<li>There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.</li>
+<li>These initial observations set the stage for integrating additional data sources and building predictive models in later modules.</li>
+</ul>
 
 
 <!-- -->
@@ -703,38 +894,127 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Preparation and Exploratory Data Analysis"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Where: Data Sources</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># How: Data Collection $ API (Application Programming Interface)</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>(You will include your code as part of your submission)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu"># Why</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu"># Raw Data</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>*Links to raw datasets will be provided here.*</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Preparation</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>*Data cleaning and transformation procedures will be documented here.*</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploratory Data Analysis</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>*Visualizations and findings will be added here.*</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Initial Findings</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Preparation and Exploratory Data Analysis"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Where: Data Sources</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. We selected 40 large companies across eight sectors to ensure diversity.</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu"># How: Data Collection &amp; API</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>We used Python to interact with the SEC API. The script performs the following steps:</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Fetch the official company ticker → CIK mapping from <span class="in">`company_tickers.json`</span>.</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Select a list of tickers (40 companies).</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>For each company, call the CompanyFacts endpoint:  </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>   <span class="in">`https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json`</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Extract key US-GAAP financial metrics from the latest 10-K filing.</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Save raw and clean CSV files.</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>The full Python script is available at <span class="co">[</span><span class="ot">`code/company_financials.py`</span><span class="co">](../code/company_financials.py)</span>.</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: show-python-script</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co"># This chunk is only a placeholder; the actual Python code is in the repository.</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="fu"># Why</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>The project aims to **understand the drivers of financial performance** in publicly traded companies. Financial statements provide the fundamental measures of performance (e.g., profitability, leverage, liquidity). By combining them with market and macroeconomic data later, we can build machine learning models to identify which factors are most associated with company success.</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="fu"># Raw Data</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>The raw data, exactly as returned by the SEC API, is stored in:</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">`company_financials_raw.csv`</span><span class="co">](data/raw/company_financials_raw.csv)</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>This file contains one row per company (latest fiscal year) with raw financial values in USD.</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Preparation</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>Cleaning steps performed in Python:</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Converted numeric columns to float.</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Removed rows where critical values were completely missing (if any).</span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Computed derived metrics:</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>**ROA** = Net Income / Total Assets</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>**ROE** = Net Income / Total Equity</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>**Debt-to-Equity** = Long-Term Debt / Total Equity</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>**Profit Margin** = Net Income / Revenue</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Added a sector column based on ticker (manual mapping).</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>The clean dataset is stored in:</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">`company_financials_clean.csv`</span><span class="co">](data/clean/company_financials_clean.csv)</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>Missing values are retained for now; they will be handled during modeling (e.g., imputation or dropping columns with excessive missingness).</span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploratory Data Analysis</span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>Load the clean data and inspect basic structure:</span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-clean-fin</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>)</span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fin)</span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary statistics</span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: summary-stats</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fin <span class="sc">%&gt;%</span> <span class="fu">select</span>(Revenue, NetIncome, TotalAssets, ROA, ROE, Debt_to_Equity, Profit_Margin))</span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distribution of ROA by sector</span></span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: roa-by-sector</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Return on Assets by Sector"</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, ROA, <span class="at">FUN =</span> median), <span class="at">y =</span> ROA, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"ROA Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Revenue vs. Net Income</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rev-vs-netincome</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Revenue vs Net Income (log scale)"</span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Revenue, <span class="at">y =</span> NetIncome, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>()) <span class="sc">+</span></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>()) <span class="sc">+</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Revenue (log USD)"</span>, <span class="at">y =</span> <span class="st">"Net Income (log USD)"</span>, <span class="at">title =</span> <span class="st">"Revenue vs. Net Income"</span>) <span class="sc">+</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a><span class="fu"># Initial Findings</span></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The dataset contains **40 companies** across **8 sectors**.</span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Some financial metrics are missing for certain companies (e.g., long-term debt may be zero or not reported separately).</span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.</span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.</span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>These initial observations set the stage for integrating additional data sources and building predictive models in later modules.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
