@@ -51,15 +51,29 @@ print(f"Selected {len(selected_df)} companies.")
 
 
 # Extract concepts
-concepts = {
-    "Revenue": "RevenueFromContractWithCustomerExcludingInterest",
-    "NetIncome": "NetIncomeLoss",
-    "TotalAssets": "Assets",
-    "TotalLiabilities": "Liabilities",
-    "TotalEquity": "StockholdersEquity",
-    "LongTermDebt": "LongTermDebtNoncurrent",
-    "OperatingIncome": "OperatingIncomeLoss",
-    "CashFromOperations": "NetCashProvidedByUsedInOperatingActivities"
+concept_tags = {
+    "Revenue": [
+        "RevenueFromContractWithCustomerExcludingInterest",
+        "Revenues",
+        "SalesRevenueNet",
+        "RevenueFromContractWithCustomerIncludingAssessedTax"
+    ],
+    "NetIncome": [
+        "NetIncomeLoss",
+        "ProfitLoss"
+    ],
+    "TotalAssets": ["Assets"],
+    "TotalLiabilities": ["Liabilities"],
+    "TotalEquity": [
+        "StockholdersEquity",
+        "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+    ],
+    "LongTermDebt": [
+        "LongTermDebtNoncurrent",
+        "LongTermDebt"
+    ],
+    "OperatingIncome": ["OperatingIncomeLoss"],
+    "CashFromOperations": ["NetCashProvidedByUsedInOperatingActivities"]
 }
 
 # Build raw data
@@ -122,16 +136,18 @@ for idx, row in selected_df.iterrows():
         "fiscal_year_end": latest_end
     }
 
-    for col_name, concept in concepts.items():
-        # Try to get the value for the same fiscal year
+    for col_name, tag_list in concept_tags.items():
         val = None
-        if concept in us_gaap:
-            units = us_gaap[concept].get("units", {})
-            if "USD" in units:
-                for item in units["USD"]:
-                    if item.get("fy") == latest_fy and item.get("form") == "10-K":
-                        val = item.get("val")
-                        break
+        for tag in tag_list:
+            if tag in us_gaap:
+                units = us_gaap[tag].get("units", {})
+                if "USD" in units:
+                    for item in units["USD"]:
+                        if item.get("fy") == latest_fy and item.get("form") == "10-K":
+                            val = item.get("val")
+                            break
+                if val is not None:
+                    break
         row_data[col_name] = val
 
     raw_rows.append(row_data)
@@ -150,12 +166,9 @@ print(f"\nRaw data saved to {raw_file}")
 clean_df = raw_df.copy()
 
 # Convert numeric columns to float
-numeric_cols = list(concepts.keys())
+numeric_cols = list(concept_tags.keys())
 for col in numeric_cols:
     clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
-
-# Drop rows with missing critical values
-clean_df = clean_df.dropna(subset=["Revenue", "NetIncome", "TotalAssets", "TotalEquity"])
 
 # Compute ratios
 clean_df["ROA"] = clean_df["NetIncome"] / clean_df["TotalAssets"]

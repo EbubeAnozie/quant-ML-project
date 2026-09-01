@@ -208,10 +208,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/clean/company_financials_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 0 Columns: 17
+<pre><code>Rows: 40 Columns: 17
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (17): ticker, company, sector, fiscal_year, fiscal_year_end, Revenue, Ne...
+chr   (3): ticker, company, sector
+dbl  (13): fiscal_year, Revenue, NetIncome, TotalAssets, TotalLiabilities, T...
+date  (1): fiscal_year_end
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
@@ -221,12 +223,19 @@ chr (17): ticker, company, sector, fiscal_year, fiscal_year_end, Revenue, Ne...
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 0 × 17
-# ℹ 17 variables: ticker &lt;chr&gt;, company &lt;chr&gt;, sector &lt;chr&gt;, fiscal_year &lt;chr&gt;,
-#   fiscal_year_end &lt;chr&gt;, Revenue &lt;chr&gt;, NetIncome &lt;chr&gt;, TotalAssets &lt;chr&gt;,
-#   TotalLiabilities &lt;chr&gt;, TotalEquity &lt;chr&gt;, LongTermDebt &lt;chr&gt;,
-#   OperatingIncome &lt;chr&gt;, CashFromOperations &lt;chr&gt;, ROA &lt;chr&gt;, ROE &lt;chr&gt;,
-#   Debt_to_Equity &lt;chr&gt;, Profit_Margin &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 6 × 17
+  ticker company            sector fiscal_year fiscal_year_end Revenue NetIncome
+  &lt;chr&gt;  &lt;chr&gt;              &lt;chr&gt;        &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+1 NVDA   NVIDIA CORP        Techn…        2026 2026-01-25      6.09e10   2.98e10
+2 AAPL   Apple Inc.         Techn…        2018 2018-09-29      2.16e11   4.57e10
+3 GOOGL  Alphabet Inc.      Techn…        2025 2025-12-31      3.07e11   7.38e10
+4 MSFT   MICROSOFT CORP     Techn…        2010 2010-06-30      1.38e10   4.29e 9
+5 META   Meta Platforms, I… Commu…        2017 2017-12-31      1.79e10   3.69e 9
+6 TSLA   Tesla, Inc.        Consu…        2025 2025-12-31      9.68e10   1.50e10
+# ℹ 10 more variables: TotalAssets &lt;dbl&gt;, TotalLiabilities &lt;dbl&gt;,
+#   TotalEquity &lt;dbl&gt;, LongTermDebt &lt;dbl&gt;, OperatingIncome &lt;dbl&gt;,
+#   CashFromOperations &lt;dbl&gt;, ROA &lt;dbl&gt;, ROE &lt;dbl&gt;, Debt_to_Equity &lt;dbl&gt;,
+#   Profit_Margin &lt;dbl&gt;</code></pre>
 </div>
 </div>
 
