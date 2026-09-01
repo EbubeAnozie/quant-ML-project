@@ -238,6 +238,66 @@ date  (1): fiscal_year_end
 #   Profit_Margin &lt;dbl&gt;</code></pre>
 </div>
 </div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/clean/company_financials_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 40 Columns: 17
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr   (3): ticker, company, sector
+dbl  (13): fiscal_year, Revenue, NetIncome, TotalAssets, TotalLiabilities, T...
+date  (1): fiscal_year_end
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count missing values per column</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(fin))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            ticker            company             sector        fiscal_year 
+                 0                  0                  0                  0 
+   fiscal_year_end            Revenue          NetIncome        TotalAssets 
+                 0                  0                  0                  0 
+  TotalLiabilities        TotalEquity       LongTermDebt    OperatingIncome 
+                14                  0                  9                 10 
+CashFromOperations                ROA                ROE     Debt_to_Equity 
+                 2                  0                  0                  9 
+     Profit_Margin 
+                 0 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows with any missing values</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fin[<span class="sc">!</span><span class="fu">complete.cases</span>(fin), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 27 × 17
+   ticker company           sector fiscal_year fiscal_year_end Revenue NetIncome
+   &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;        &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+ 1 MSFT   MICROSOFT CORP    Techn…        2010 2010-06-30      1.38e10   4.29e 9
+ 2 META   Meta Platforms, … Commu…        2017 2017-12-31      1.79e10   3.69e 9
+ 3 JPM    JPMORGAN CHASE &amp;… Finan…        2025 2025-12-31      1.58e11   4.96e10
+ 4 WMT    Walmart Inc.      Consu…        2026 2026-01-31      6.48e11   1.55e10
+ 5 ABBV   AbbVie Inc.       Healt…        2025 2025-12-31      5.43e10   4.86e 9
+ 6 BAC    BANK OF AMERICA … Finan…        2025 2025-12-31      1.03e11   2.63e10
+ 7 CVX    CHEVRON CORP      Energy        2025 2025-12-31      2.01e11   2.14e10
+ 8 KO     COCA COLA CO      Consu…        2025 2025-12-31      4.58e10   1.07e10
+ 9 MRK    Merck &amp; Co., Inc. Healt…        2025 2025-12-31      6.01e10   3.65e 8
+10 GE     GENERAL ELECTRIC… Indus…        2025 2025-12-31      3.53e10   9.48e 9
+# ℹ 17 more rows
+# ℹ 10 more variables: TotalAssets &lt;dbl&gt;, TotalLiabilities &lt;dbl&gt;,
+#   TotalEquity &lt;dbl&gt;, LongTermDebt &lt;dbl&gt;, OperatingIncome &lt;dbl&gt;,
+#   CashFromOperations &lt;dbl&gt;, ROA &lt;dbl&gt;, ROE &lt;dbl&gt;, Debt_to_Equity &lt;dbl&gt;,
+#   Profit_Margin &lt;dbl&gt;</code></pre>
+</div>
+</div>
 
 
 <!-- -->
@@ -696,21 +756,34 @@ date  (1): fiscal_year_end
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Company Financial Data</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>**Source**: SEC EDGAR CompanyFacts API  </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>**Raw data**: <span class="co">[</span><span class="ot">`company_financials_raw.csv`</span><span class="co">](../data/raw/company_financials_raw.csv)</span>  </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>**Clean data**: <span class="co">[</span><span class="ot">`company_financials_clean.csv`</span><span class="co">](../data/clean/company_financials_clean.csv)</span>  </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>The dataset includes 40 publicly traded companies across 8 sectors, with key financial metrics for the most recent fiscal year (10-K filing). Derived metrics include ROA, ROE, debt-to-equity, and profit margin.</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-financials</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/clean/company_financials_clean.csv"</span>)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fin)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Company Financial Data</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>**Source**: SEC EDGAR CompanyFacts API  </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>**Raw data**: <span class="co">[</span><span class="ot">`company_financials_raw.csv`</span><span class="co">](../data/raw/company_financials_raw.csv)</span>  </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>**Clean data**: <span class="co">[</span><span class="ot">`company_financials_clean.csv`</span><span class="co">](../data/clean/company_financials_clean.csv)</span>  </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>The dataset includes 40 publicly traded companies across 8 sectors, with key financial metrics for the most recent fiscal year (10-K filing). Derived metrics include ROA, ROE, debt-to-equity, and profit margin.</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-financials</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/clean/company_financials_clean.csv"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fin)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: missing-financials</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/clean/company_financials_clean.csv"</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Count missing values per column</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(fin))</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows with any missing values</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>fin[<span class="sc">!</span><span class="fu">complete.cases</span>(fin), ]</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
