@@ -7,74 +7,25 @@
     "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
-    "objectID": "naivebayes.html",
-    "href": "naivebayes.html",
-    "title": "Naive Bayes",
+    "objectID": "DataPrep/data.html",
+    "href": "DataPrep/data.html",
+    "title": "",
     "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+    "text": "CodeShow All CodeHide All CodeView Source"
   },
   {
-    "objectID": "clustering.html",
-    "href": "clustering.html",
-    "title": "Clustering",
-    "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+    "objectID": "DataPrep/data.html#company-financial-data",
+    "href": "DataPrep/data.html#company-financial-data",
+    "title": "",
+    "section": "Company Financial Data",
+    "text": "Company Financial Data\nSource: SEC EDGAR CompanyFacts API\nRaw data: company_financials_raw.csv\nClean data: company_financials_clean.csv\nThe dataset includes 40 publicly traded companies across 8 sectors, with key financial metrics for the most recent fiscal year (10-K filing). Derived metrics include ROA, ROE, debt-to-equity, and profit margin.\n\n\nCode\nlibrary(readr)\nfin &lt;- read_csv(\"../data/clean/company_financials_clean.csv\")\n\n\nRows: 40 Columns: 17\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr   (3): ticker, company, sector\ndbl  (13): fiscal_year, Revenue, NetIncome, TotalAssets, TotalLiabilities, T...\ndate  (1): fiscal_year_end\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nCode\nhead(fin)\n\n\n# A tibble: 6 × 17\n  ticker company            sector fiscal_year fiscal_year_end Revenue NetIncome\n  &lt;chr&gt;  &lt;chr&gt;              &lt;chr&gt;        &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;     &lt;dbl&gt;\n1 NVDA   NVIDIA CORP        Techn…        2026 2026-01-25      6.09e10   2.98e10\n2 AAPL   Apple Inc.         Techn…        2018 2018-09-29      2.16e11   4.57e10\n3 GOOGL  Alphabet Inc.      Techn…        2025 2025-12-31      3.07e11   7.38e10\n4 MSFT   MICROSOFT CORP     Techn…        2010 2010-06-30      1.38e10   4.29e 9\n5 META   Meta Platforms, I… Commu…        2017 2017-12-31      1.79e10   3.69e 9\n6 TSLA   Tesla, Inc.        Consu…        2025 2025-12-31      9.68e10   1.50e10\n# ℹ 10 more variables: TotalAssets &lt;dbl&gt;, TotalLiabilities &lt;dbl&gt;,\n#   TotalEquity &lt;dbl&gt;, LongTermDebt &lt;dbl&gt;, OperatingIncome &lt;dbl&gt;,\n#   CashFromOperations &lt;dbl&gt;, ROA &lt;dbl&gt;, ROE &lt;dbl&gt;, Debt_to_Equity &lt;dbl&gt;,\n#   Profit_Margin &lt;dbl&gt;"
   },
   {
-    "objectID": "dimensionality.html",
-    "href": "dimensionality.html",
+    "objectID": "data.html",
+    "href": "data.html",
     "title": "",
     "section": "",
     "text": "Code"
-  },
-  {
-    "objectID": "dataprep_eda.html",
-    "href": "dataprep_eda.html",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "",
-    "text": "Where: Data Sources\nTo be completed.\n\n\nHow: Data Collection $ API (Application Programming Interface)\n(You will include your code as part of your submission)\nTo be completed.\n\n\nWhy\nTo be completed.\n\n\nRaw Data\nLinks to raw datasets will be provided here.\n\n\nData Preparation\nData cleaning and transformation procedures will be documented here.\n\n\nExploratory Data Analysis\nVisualizations and findings will be added here.\n\n\nInitial Findings\nTo be completed."
-  },
-  {
-    "objectID": "arm.html",
-    "href": "arm.html",
-    "title": "Association Rule Mining",
-    "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
-  },
-  {
-    "objectID": "regression.html",
-    "href": "regression.html",
-    "title": "Regression",
-    "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
-  },
-  {
-    "objectID": "svms.html",
-    "href": "svms.html",
-    "title": "Support Vector Machines",
-    "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
-  },
-  {
-    "objectID": "ensembles.html",
-    "href": "ensembles.html",
-    "title": "",
-    "section": "",
-    "text": "Code"
-  },
-  {
-    "objectID": "conclusions.html",
-    "href": "conclusions.html",
-    "title": "Conclusions",
-    "section": "",
-    "text": "Overall Findings\nTo be completed at the end of the semester.\n\n\nComparison of Methods\nTo be completed.\n\n\nKey Insights\nTo be completed.\n\n\nLimitations\nTo be completed.\n\n\nFuture Work\nTo be completed."
-  },
-  {
-    "objectID": "dectrees.html",
-    "href": "dectrees.html",
-    "title": "Decision Trees",
-    "section": "",
-    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "index.html",
@@ -112,11 +63,74 @@
     "text": "Explore the Project\nUse the navigation bar above to explore the different stages of the project.\nEbube Anozie · University of Colorado Boulder · 2026"
   },
   {
-    "objectID": "data.html",
-    "href": "data.html",
+    "objectID": "dectrees.html",
+    "href": "dectrees.html",
+    "title": "Decision Trees",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "conclusions.html",
+    "href": "conclusions.html",
+    "title": "Conclusions",
+    "section": "",
+    "text": "Overall Findings\nTo be completed at the end of the semester.\n\n\nComparison of Methods\nTo be completed.\n\n\nKey Insights\nTo be completed.\n\n\nLimitations\nTo be completed.\n\n\nFuture Work\nTo be completed."
+  },
+  {
+    "objectID": "ensembles.html",
+    "href": "ensembles.html",
     "title": "",
     "section": "",
     "text": "Code"
+  },
+  {
+    "objectID": "svms.html",
+    "href": "svms.html",
+    "title": "Support Vector Machines",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "regression.html",
+    "href": "regression.html",
+    "title": "Regression",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "arm.html",
+    "href": "arm.html",
+    "title": "Association Rule Mining",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "dataprep_eda.html",
+    "href": "dataprep_eda.html",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "",
+    "text": "Where: Data Sources\nTo be completed.\n\n\nHow: Data Collection $ API (Application Programming Interface)\n(You will include your code as part of your submission)\nTo be completed.\n\n\nWhy\nTo be completed.\n\n\nRaw Data\nLinks to raw datasets will be provided here.\n\n\nData Preparation\nData cleaning and transformation procedures will be documented here.\n\n\nExploratory Data Analysis\nVisualizations and findings will be added here.\n\n\nInitial Findings\nTo be completed."
+  },
+  {
+    "objectID": "dimensionality.html",
+    "href": "dimensionality.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "clustering.html",
+    "href": "clustering.html",
+    "title": "Clustering",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
+  },
+  {
+    "objectID": "naivebayes.html",
+    "href": "naivebayes.html",
+    "title": "Naive Bayes",
+    "section": "",
+    "text": "Overview\n\nWhat the method is\nHow it works\nWhy it is appropriate for this project\nWhat question you will investigate\nOptional explanatory image/diagram\n\n\n\nData\n\nWhich variables/dataset are used\nSmall screenshot/table of the prepared data\nLink to raw data\nLink to clean data\nBrief explanation of preprocessing\n\n\n\nCode\n\nLink to GitHub code\nLanguage: Python/R\nCore packages\nBrief description of implementation\nNo pasted code\n\n\n\nResults\n\nModel parameters\nResults and evaluation metrics\nTables/plots\nInterpretation\nWhat the results tell us about financial performance/risk"
   },
   {
     "objectID": "introduction.html",
