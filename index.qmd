@@ -1,5 +1,5 @@
 ---
-title: "Financial Performance and Risk of Publicly Traded Companies"
+title: "Understanding Corporate Financial Performance Through Machine Learning"
 ---
 
 **Ebube Anozie**  
