@@ -2,15 +2,15 @@
 title: "Data Preparation and Exploratory Data Analysis"
 ---
 
-# Where: Data Sources
+# Data Sources
 
-The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. We selected 40 large companies across eight sectors to ensure diversity.
+The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.
 
 Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.
 
-# How: Data Collection & API
+# Data Collection & API
 
-We used Python to interact with the SEC API. The script performs the following steps:
+This dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API.  The script performs the following steps:
 
 1. Fetch the official company ticker → CIK mapping from `company_tickers.json`.
 2. Select a list of tickers (40 companies).
@@ -20,18 +20,11 @@ We used Python to interact with the SEC API. The script performs the following s
 5. Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).
 6. Save raw and clean CSV files.
 
-The full Python script is available at [`code/company_financials.py`](../code/company_financials.py).
+**API endpoint example:**  
+`https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json`  
+(where `0000320193` is the CIK for Apple Inc.)
 
-```{r}
-#| label: show-python-script
-#| echo: false
-#| eval: false
-# This chunk is only a placeholder; the actual Python code is in the repository.
-```
-
-# Why
-
-The project aims to **understand the drivers of financial performance** in publicly traded companies. Financial statements provide the fundamental measures of performance (e.g., profitability, leverage, liquidity). By combining them with market and macroeconomic data later, we can build machine learning models to identify which factors are most associated with company success.
+**See the full Python code:** [`code/company_financials.py`](code/company_financials.py)
 
 # Raw Data
 
@@ -39,14 +32,54 @@ The raw data, exactly as returned by the SEC API, is stored in:
 
 - [`company_financials_raw.csv`](data/raw/company_financials_raw.csv)
 
-This file contains one row per company (latest fiscal year) with raw financial values in USD.
+This file contains one row per company (latest fiscal year) with some missing financial values and information as shown in the preview below. 
+
+## Raw Data Preview
+
+```{r}
+#| label: raw-preview
+#| echo: false
+#| message: false
+#| warning: false
+library(readr)
+library(dplyr)
+library(gt)
+
+raw <- read_csv("data/raw/company_financials_raw.csv", show_col_types = FALSE)
+
+# Keep only first 10 rows and a few key columns for the image
+raw_preview <- raw %>%
+  slice_head(n = 10) %>%
+  select(ticker, company, fiscal_year, Revenue, NetIncome, TotalLiabilities, LongTermDebt, TotalAssets, TotalEquity)
+
+# Create a gt table and save as PNG
+gt_table <- raw_preview %>%
+  gt() %>%
+  tab_header(title = "Raw Financial Data (First 10 Rows)") %>%
+  fmt_number(columns = where(is.numeric), decimals = 0) %>%
+  cols_label(
+    ticker = "Ticker",
+    company = "Company",
+    fiscal_year = "FY",
+    Revenue = "Revenue (USD)",
+    NetIncome = "Net Income (USD)",
+    TotalLiabilities = "Total Liabilities (USD)",
+    LongTermDebt = "Long Term Debt (USD)",
+    TotalEquity = "Total Equity (USD)"
+  ) %>%
+  tab_options(table.font.size = "small", data_row.padding = px(3))
+
+gtsave(gt_table, "raw_preview.png", expand = 10)
+```
+
+![Raw data preview](raw_preview.png)
 
 # Data Preparation
 
-Cleaning steps performed in Python:
+Cleaning and transformation steps performed in Python:
 
 - Converted numeric columns to float.
-- Removed rows where critical values were completely missing (if any).
+- **Imputed missing values** in financial columns using the **sector median** (with global median as fallback).
 - Computed derived metrics:
   - **ROA** = Net Income / Total Assets
   - **ROE** = Net Income / Total Equity
@@ -58,28 +91,93 @@ The clean dataset is stored in:
 
 - [`company_financials_clean.csv`](data/clean/company_financials_clean.csv)
 
-Missing values are retained for now; they will be handled during modeling (e.g., imputation or dropping columns with excessive missingness).
+A preview is shown below
 
-# Exploratory Data Analysis
-
-Load the clean data and inspect basic structure:
+## Clean Data Preview
 
 ```{r}
-#| label: load-clean-fin
+#| label: clean-preview
+#| echo: false
+#| message: false
+#| warning: false
 library(readr)
 library(dplyr)
-library(ggplot2)
+library(gt)
 
-fin <- read_csv("data/clean/company_financials_clean.csv")
-glimpse(fin)
+clean <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+
+clean_preview <- clean %>%
+  slice_head(n = 10) %>%
+  select(ticker, company, sector, Revenue, NetIncome, TotalLiabilities, LongTermDebt, ROA, ROE, Debt_to_Equity)
+
+gt_table_clean <- clean_preview %>%
+  gt() %>%
+  tab_header(title = "Clean Financial Data (First 10 Rows)") %>%
+  fmt_number(columns = where(is.numeric), decimals = 3) %>%
+  fmt_currency(columns = c(Revenue, NetIncome), currency = "USD", decimals = 0) %>%
+  cols_label(
+    ticker = "Ticker",
+    company = "Company",
+    sector = "Sector",
+    Revenue = "Revenue (USD)",
+    NetIncome = "Net Income (USD)",
+    TotalLiabilities = "Total Liabilities (USD)",
+    LongTermDebt = "Long Term Debt (USD)",
+    ROA = "ROA",
+    ROE = "ROE",
+    Debt_to_Equity = "Debt/Equity"
+  ) %>%
+  tab_options(table.font.size = "small", data_row.padding = px(3))
+
+gtsave(gt_table_clean, "clean_preview.png", expand = 10)
 ```
+
+![Clean data preview](clean_preview.png)
+
+# Exploratory Data Analysis
 
 ## Summary statistics
 
 ```{r}
-#| label: summary-stats
-summary(fin %>% select(Revenue, NetIncome, TotalAssets, ROA, ROE, Debt_to_Equity, Profit_Margin))
+#| label: summary-stats-table
+#| echo: false
+#| message: false
+#| warning: false
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gt)
+
+fin <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+
+summary_stats <- fin %>%
+  select(Revenue, NetIncome, TotalAssets, ROA, ROE, Debt_to_Equity, Profit_Margin) %>%
+  summarise(across(everything(), 
+                   list(
+                     Min = ~min(.x, na.rm = TRUE),
+                     Q1 = ~quantile(.x, 0.25, na.rm = TRUE),
+                     Median = ~median(.x, na.rm = TRUE),
+                     Mean = ~mean(.x, na.rm = TRUE),
+                     Q3 = ~quantile(.x, 0.75, na.rm = TRUE),
+                     Max = ~max(.x, na.rm = TRUE),
+                     SD = ~sd(.x, na.rm = TRUE)
+                   ))) %>%
+  pivot_longer(cols = everything(), names_to = "Statistic", values_to = "Value") %>%
+  separate(Statistic, into = c("Variable", "Stat"), sep = "_(?=[^_]+$)") %>%
+  pivot_wider(names_from = Stat, values_from = Value) %>%
+  select(Variable, Min, Q1, Median, Mean, Q3, Max, SD)
+
+gt_summary <- summary_stats %>%
+  gt() %>%
+  tab_header(title = "Summary Statistics for Financial Variables") %>%
+  fmt_auto(columns = where(is.numeric)) %>%
+  cols_label(Variable = "Variable") %>%
+  tab_options(table.font.size = "small", data_row.padding = px(3))
+
+gtsave(gt_summary, "summary_stats.png", expand = 10)
 ```
+
+![Summary statistics](summary_stats.png)
 
 ## Distribution of ROA by sector
 
@@ -101,20 +199,30 @@ fin %>%
 
 ```{r}
 #| label: rev-vs-netincome
-#| fig-cap: "Revenue vs Net Income (log scale)"
+#| fig-cap: "Revenue vs Net Income (signed square root scale)"
+#| fig-width: 10
+#| fig-height: 7
+library(scales)
+
+signed_sqrt <- trans_new("signed_sqrt",
+  transform = function(x) sign(x) * sqrt(abs(x)),
+  inverse = function(x) sign(x) * x^2,
+  domain = c(-Inf, Inf)
+)
+
 fin %>%
   ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +
-  geom_point(size = 2) +
-  scale_x_log10(labels = scales::dollar_format()) +
-  scale_y_log10(labels = scales::dollar_format()) +
-  labs(x = "Revenue (log USD)", y = "Net Income (log USD)", title = "Revenue vs. Net Income") +
+  geom_point(size = 3, alpha = 0.7, position = position_jitter(width = 0.02, height = 0.02)) +
+  scale_x_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = "B")) +
+  scale_y_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = "B")) +
+  labs(x = "Revenue (Signed Sqrt Scale, Billions)", y = "Net Income (Signed Sqrt Scale, Billions)", title = "Revenue vs. Net Income") +
   theme_minimal()
 ```
 
 # Initial Findings
 
 - The dataset contains **40 companies** across **8 sectors**.
-- Some financial metrics are missing for certain companies (e.g., long-term debt may be zero or not reported separately).
+- Missing values were imputed using sector medians, so all financial variables are now complete.
 - ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.
 - There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.
 - These initial observations set the stage for integrating additional data sources and building predictive models in later modules.
