@@ -161,22 +161,13 @@ print(f"\nRaw data saved to {raw_file}")
 
 
 
-# 6. CLEAN AND COMPUTE DERIVED METRICS
+# ----------------------------------------------------------------------
+# 6. CLEAN, IMPUTE, AND COMPUTE DERIVED METRICS
+# ----------------------------------------------------------------------
 
 clean_df = raw_df.copy()
 
-# Convert numeric columns to float
-numeric_cols = list(concept_tags.keys())
-for col in numeric_cols:
-    clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
-
-# Compute ratios
-clean_df["ROA"] = clean_df["NetIncome"] / clean_df["TotalAssets"]
-clean_df["ROE"] = clean_df["NetIncome"] / clean_df["TotalEquity"]
-clean_df["Debt_to_Equity"] = clean_df["LongTermDebt"] / clean_df["TotalEquity"]
-clean_df["Profit_Margin"] = clean_df["NetIncome"] / clean_df["Revenue"]
-
-# Add a sector column
+# Add sector column (move this earlier so we can group by sector for imputation)
 sector_map = {
     "AAPL": "Technology", "MSFT": "Technology", "GOOGL": "Technology", "NVDA": "Technology", "CRM": "Technology",
     "JPM": "Financials", "BAC": "Financials", "WFC": "Financials", "GS": "Financials", "MS": "Financials",
@@ -193,6 +184,27 @@ sector_map = {
 }
 clean_df["sector"] = clean_df["ticker"].map(sector_map)
 
+# Convert numeric columns to float (some may be None/NaN)
+numeric_cols = list(concept_tags.keys())
+for col in numeric_cols:
+    clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
+
+# Impute missing values in the raw financial columns using sector median,
+# falling back to global median if an entire sector is missing.
+for col in numeric_cols:
+    clean_df[col] = clean_df.groupby("sector")[col].transform(
+        lambda x: x.fillna(x.median())
+    )
+    # If still missing (e.g., whole sector had no data), use global median
+    if clean_df[col].isna().any():
+        clean_df[col] = clean_df[col].fillna(clean_df[col].median())
+
+# Compute derived ratios using the imputed values
+clean_df["ROA"] = clean_df["NetIncome"] / clean_df["TotalAssets"]
+clean_df["ROE"] = clean_df["NetIncome"] / clean_df["TotalEquity"]
+clean_df["Debt_to_Equity"] = clean_df["LongTermDebt"] / clean_df["TotalEquity"]
+clean_df["Profit_Margin"] = clean_df["NetIncome"] / clean_df["Revenue"]
+
 # Reorder columns for clarity
 final_cols = [
     "ticker", "company", "sector", "fiscal_year", "fiscal_year_end",
@@ -202,7 +214,7 @@ final_cols = [
 ]
 clean_df = clean_df[final_cols]
 
-# Save clean dataset
+# Save clean dataset (now with imputed values)
 clean_file = "data/clean/company_financials_clean.csv"
 clean_df.to_csv(clean_file, index=False)
 print(f"Clean data saved to {clean_file}")

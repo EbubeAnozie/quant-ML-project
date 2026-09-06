@@ -17,17 +17,12 @@ Learning for Data Science** at the University of Colorado
 Boulder.
 
 
-## Research Question
-
-> **What factors are associated with differences in the financial performance
-> of publicly traded companies?**
-
 ## About Me
 
 I am a PhD student in Applied Mathematics at the University of
 Colorado Boulder. My research interests are in the mathematics of machine learning,
 and quantitative finance. I study the mathematical mechanisms underlying generative models.
-Learn more about me here (cv)
+[My CV]: (https://github.com/ebubeanozie/quant-ML-project)
 
 
 ## Explore the Project

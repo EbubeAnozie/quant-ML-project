@@ -19,8 +19,8 @@ website:
       - href: clustering.qmd
         text: Clustering
 
-      - href: arm.qmd
-        text: ARM
+      - href: pca(pca).qmd
+        text: PCA(PCA)
 
       - href: naivebayes.qmd
         text: NB

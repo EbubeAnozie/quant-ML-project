@@ -1,42 +1,22 @@
 ---
-title: "Introduction"
+title: "What factors are associated with differences in the financial performance of publicly traded companies?"
 ---
-
-# Project Overview
-
-## Question
-
-**What factors are associated with differences in the financial performance of publicly traded companies?**
-
-## Motivation
-
-Financial performance and risk are influenced by a combination of company-specific, industry, market, and macroeconomic characteristics.
-This project uses machine learning and data science methods to investigate relationships among these factors.
-
-## Project Objectives
-
-This project will:
-
-1. Collect financial, economic, market, and other relevant data.
-2. Clean and prepare the data for analysis.
-3. Explore patterns and relationships using data visualization.
-4. Apply multiple machine learning methods.
-5. Compare the results across methods.
-6. Identify important factors associated with financial performance and risk.
-
-
-## Data Sources
-
-*To be completed after data collection.*
-
-## Machine Learning Methods
-
-The project will apply:
-
-- Clustering
-- Association Rule Mining (ARM)
-- Naive Bayes
-- Decision Trees
-- Support Vector Machines (SVMs)
-- Regression
-- Neural Networks
+Financial performance is an important measure of the economic stability of a company. It describes how effectively a company uses its resources to generate revenue, manage expenses, meet financial obligations, and create value. Publicly traded companies like Google, Amazon, report extensive financial information through documents such as annual reports and financial statements. These reports provide information about a company's revenues, expenses, assets, liabilities, equity, and profitability. Investors, financial analysts, managers, employees, and policymakers rely on this information to evaluate the condition and performance of businesses. Common measures of financial performance include revenue growth, profitability, return on assets, return on equity, earnings, and measures of financial leverage. A company's performance can also vary substantially across industries because businesses operate under different economic conditions, competitive environments, and financial structures. For example, OpenAI may have very different financial characteristics from a SpaceX or JP Morgan Chase. Understanding these differences is important because financial performance can influence investment decisions, access to capital, business growth, and the long-term survival of a company. Consequently, examining the factors associated with financial performance can provide a broader understanding of why some publicly traded companies perform differently from others.
+	 
+The financial performance of a publicly traded company is influenced by many factors, both within and outside the company. Company-specific characteristics such as size, debt, liquidity, and asset structure can provide information about its financial condition. At the same time, companies operate within broader economic environments that can affect their ability to manage financial risks. Interest rates can influence borrowing costs, while inflation can affect consumer demand. Market volatility can also create different conditions for companies operating in different sectors. In addition, investor sentiment can affect how companies are valued. These relationships are not necessarily the same across industries or company sizes. Examining company characteristics together with broader market can therefore provide a more complete picture of corporate financial performance. Understanding these relationships is particularly relevant to investors who must evaluate companies using large amounts of financial and economic information.\\
+	 
+The increasing availability of financial and economic data has made it possible to examine corporate financial performance from a much broader perspective. Publicly traded companies generate large amounts of information through financial statements, regulatory filings, market activity, and other forms of financial reporting. These data can also be combined with broader economic information, such as interest rates, inflation, employment, and economic growth. As a result, analyzing financial performance may involve many variables that differ in scale, structure, and economic meaning. Traditional financial analysis often relies on a relatively small number of indicators or relationships that can be examined directly. While these approaches remain valuable, analyzing large and multidimensional datasets can make it more difficult to identify relationships among many factors simultaneously. This creates an opportunity to use data-driven approaches that can examine complex patterns across company characteristics, market conditions, and economic environments. In this project, machine learning provides a framework for exploring these patterns and identifying factors that are associated with differences in financial performance.
+	 
+	 
+Questions to Explore
+	
+1. Which company characteristics are most strongly associated with financial performance?
+2. How does company size relate to financial performance?
+3. How is a company's level of debt associated with its financial performance?
+4. Is profitability associated with other measures of financial performance?
+5. How does financial performance differ across industries and sectors?
+6. How are interest rates associated with corporate financial performance?
+7. How does inflation relate to the financial performance of publicly traded companies?
+8. Do companies with similar financial characteristics exhibit similar levels of performance?
+9. Are there distinct groups of publicly traded companies with different financial profiles?
+10. Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?
