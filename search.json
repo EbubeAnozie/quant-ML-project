@@ -123,91 +123,63 @@
     "href": "dataprep_eda.html",
     "title": "Data Preparation and Exploratory Data Analysis",
     "section": "",
+    "text": "The primary dataset comes from the U.S. Securities and Exchange Commission (SEC) EDGAR system, using the CompanyFacts API. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.\nOther data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.\n\n\n\nThis dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API. The script performs the following steps:\n\nFetch the official company ticker → CIK mapping from company_tickers.json.\nSelect a list of tickers (40 companies).\nFor each company, call the CompanyFacts endpoint:\nhttps://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json\nExtract key US-GAAP financial metrics from the latest 10-K filing.\nCompute derived ratios (ROA, ROE, debt-to-equity, profit margin).\nSave raw and clean CSV files.\n\nAPI endpoint example:\nhttps://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json\n(where 0000320193 is the CIK for Apple Inc.)\nSee the full Python code: code/company_financials.py\n\n\n\nThe raw data, exactly as returned by the SEC API, is stored in:\n\ncompany_financials_raw.csv\n\nThis file contains one row per company (latest fiscal year) with some missing financial values and information as shown in the preview below.\n\n\n\n\n\nRaw data preview\n\n\n\n\n\n\nCleaning and transformation steps performed in Python:\n\nConverted numeric columns to float.\nImputed missing values in financial columns using the sector median (with global median as fallback).\nComputed derived metrics:\n\nROA = Net Income / Total Assets\nROE = Net Income / Total Equity\nDebt-to-Equity = Long-Term Debt / Total Equity\nProfit Margin = Net Income / Revenue\n\nAdded a sector column based on ticker (manual mapping).\n\nThe clean dataset is stored in:\n\ncompany_financials_clean.csv\n\nA preview is shown below\n\n\n\n\n\nClean data preview\n\n\n\n\n\n\n\n\n\n\n\nSummary statistics\n\n\n\n\n\n\n\nCode\nfin %&gt;%\n  ggplot(aes(x = reorder(sector, ROA, FUN = median), y = ROA, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Return on Assets\", title = \"ROA Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nReturn on Assets by Sector\n\n\n\n\n\n\n\n\n\nCode\nsigned_sqrt &lt;- trans_new(\"signed_sqrt\",\n  transform = function(x) sign(x) * sqrt(abs(x)),\n  inverse = function(x) sign(x) * x^2,\n  domain = c(-Inf, Inf)\n)\n\nfin %&gt;%\n  ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +\n  geom_point(size = 3, alpha = 0.7, position = position_jitter(width = 0.02, height = 0.02)) +\n  scale_x_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  scale_y_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  labs(x = \"Revenue (Signed Sqrt Scale, Billions)\", y = \"Net Income (Signed Sqrt Scale, Billions)\", title = \"Revenue vs. Net Income\") +\n  theme_minimal()\n\n\n\n\n\nRevenue vs Net Income (signed square root scale)\n\n\n\n\n\n\n\n\n\nThe dataset contains 40 companies across 8 sectors.\nMissing values were imputed using sector medians, so all financial variables are now complete.\nROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.\nThere is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.\nThese initial observations set the stage for integrating additional data sources and building predictive models in later modules."
+  },
+  {
+    "objectID": "dataprep_eda.html#data-sources",
+    "href": "dataprep_eda.html#data-sources",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "",
     "text": "The primary dataset comes from the U.S. Securities and Exchange Commission (SEC) EDGAR system, using the CompanyFacts API. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.\nOther data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps."
   },
   {
-    "objectID": "dataprep_eda.html#raw-data-preview",
-    "href": "dataprep_eda.html#raw-data-preview",
+    "objectID": "dataprep_eda.html#data-collection-api",
+    "href": "dataprep_eda.html#data-collection-api",
     "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Raw Data Preview",
-    "text": "Raw Data Preview\n\n\n\nRaw data preview"
+    "section": "",
+    "text": "This dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API. The script performs the following steps:\n\nFetch the official company ticker → CIK mapping from company_tickers.json.\nSelect a list of tickers (40 companies).\nFor each company, call the CompanyFacts endpoint:\nhttps://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json\nExtract key US-GAAP financial metrics from the latest 10-K filing.\nCompute derived ratios (ROA, ROE, debt-to-equity, profit margin).\nSave raw and clean CSV files.\n\nAPI endpoint example:\nhttps://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json\n(where 0000320193 is the CIK for Apple Inc.)\nSee the full Python code: code/company_financials.py"
   },
   {
-    "objectID": "dataprep_eda.html#clean-data-preview",
-    "href": "dataprep_eda.html#clean-data-preview",
+    "objectID": "dataprep_eda.html#raw-data",
+    "href": "dataprep_eda.html#raw-data",
     "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Clean Data Preview",
-    "text": "Clean Data Preview\n\n\n\nClean data preview"
+    "section": "",
+    "text": "The raw data, exactly as returned by the SEC API, is stored in:\n\ncompany_financials_raw.csv\n\nThis file contains one row per company (latest fiscal year) with some missing financial values and information as shown in the preview below.\n\n\n\n\n\nRaw data preview"
   },
   {
-    "objectID": "dataprep_eda.html#summary-statistics",
-    "href": "dataprep_eda.html#summary-statistics",
+    "objectID": "dataprep_eda.html#data-preparation",
+    "href": "dataprep_eda.html#data-preparation",
     "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Summary statistics",
-    "text": "Summary statistics\n\n\n\nSummary statistics"
+    "section": "",
+    "text": "Cleaning and transformation steps performed in Python:\n\nConverted numeric columns to float.\nImputed missing values in financial columns using the sector median (with global median as fallback).\nComputed derived metrics:\n\nROA = Net Income / Total Assets\nROE = Net Income / Total Equity\nDebt-to-Equity = Long-Term Debt / Total Equity\nProfit Margin = Net Income / Revenue\n\nAdded a sector column based on ticker (manual mapping).\n\nThe clean dataset is stored in:\n\ncompany_financials_clean.csv\n\nA preview is shown below\n\n\n\n\n\nClean data preview"
   },
   {
-    "objectID": "dataprep_eda.html#distribution-of-roa-by-sector",
-    "href": "dataprep_eda.html#distribution-of-roa-by-sector",
+    "objectID": "dataprep_eda.html#exploratory-data-analysis",
+    "href": "dataprep_eda.html#exploratory-data-analysis",
     "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Distribution of ROA by sector",
-    "text": "Distribution of ROA by sector\n\n\nCode\nfin %&gt;%\n  ggplot(aes(x = reorder(sector, ROA, FUN = median), y = ROA, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Return on Assets\", title = \"ROA Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nReturn on Assets by Sector"
+    "section": "",
+    "text": "Summary statistics\n\n\n\n\n\n\n\nCode\nfin %&gt;%\n  ggplot(aes(x = reorder(sector, ROA, FUN = median), y = ROA, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Return on Assets\", title = \"ROA Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nReturn on Assets by Sector\n\n\n\n\n\n\n\n\n\nCode\nsigned_sqrt &lt;- trans_new(\"signed_sqrt\",\n  transform = function(x) sign(x) * sqrt(abs(x)),\n  inverse = function(x) sign(x) * x^2,\n  domain = c(-Inf, Inf)\n)\n\nfin %&gt;%\n  ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +\n  geom_point(size = 3, alpha = 0.7, position = position_jitter(width = 0.02, height = 0.02)) +\n  scale_x_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  scale_y_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  labs(x = \"Revenue (Signed Sqrt Scale, Billions)\", y = \"Net Income (Signed Sqrt Scale, Billions)\", title = \"Revenue vs. Net Income\") +\n  theme_minimal()\n\n\n\n\n\nRevenue vs Net Income (signed square root scale)"
   },
   {
-    "objectID": "dataprep_eda.html#revenue-vs.-net-income",
-    "href": "dataprep_eda.html#revenue-vs.-net-income",
+    "objectID": "dataprep_eda.html#initial-findings",
+    "href": "dataprep_eda.html#initial-findings",
     "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Revenue vs. Net Income",
-    "text": "Revenue vs. Net Income\n\n\nCode\nsigned_sqrt &lt;- trans_new(\"signed_sqrt\",\n  transform = function(x) sign(x) * sqrt(abs(x)),\n  inverse = function(x) sign(x) * x^2,\n  domain = c(-Inf, Inf)\n)\n\nfin %&gt;%\n  ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +\n  geom_point(size = 3, alpha = 0.7, position = position_jitter(width = 0.02, height = 0.02)) +\n  scale_x_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  scale_y_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  labs(x = \"Revenue (Signed Sqrt Scale, Billions)\", y = \"Net Income (Signed Sqrt Scale, Billions)\", title = \"Revenue vs. Net Income\") +\n  theme_minimal()\n\n\n\n\n\nRevenue vs Net Income (signed square root scale)"
+    "section": "",
+    "text": "The dataset contains 40 companies across 8 sectors.\nMissing values were imputed using sector medians, so all financial variables are now complete.\nROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.\nThere is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.\nThese initial observations set the stage for integrating additional data sources and building predictive models in later modules."
   },
   {
     "objectID": "dataprep_eda.html#data-source-collection",
     "href": "dataprep_eda.html#data-source-collection",
     "title": "Data Preparation and Exploratory Data Analysis",
     "section": "Data Source & Collection",
-    "text": "Data Source & Collection\nMarket data was obtained from Yahoo Finance using the Python library yfinance. We collected daily OHLCV data for the same 40 companies from 2023-01-01 to present. For each company we computed:\n\nLatest closing price\nAverage daily trading volume\nTotal return over the period\nAnnualized volatility (std of daily returns × √252)\nBeta relative to the S&P 500 index\n\nThe full Python script is here: code/market_data.py\nRaw data: market_data_raw.csv\nClean data: market_data_clean.csv"
-  },
-  {
-    "objectID": "dataprep_eda.html#raw-market-data-preview",
-    "href": "dataprep_eda.html#raw-market-data-preview",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Raw Market Data Preview",
-    "text": "Raw Market Data Preview\n\n\n\nRaw market data preview"
-  },
-  {
-    "objectID": "dataprep_eda.html#clean-market-data-preview",
-    "href": "dataprep_eda.html#clean-market-data-preview",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "Clean Market Data Preview",
-    "text": "Clean Market Data Preview\n\n\n\nClean market data preview"
+    "text": "Data Source & Collection\nMarket data was obtained from Yahoo Finance using the Python library yfinance. The daily OHLCV data was collected for the same 40 companies from 2023-01-01 to present. For each company the following was computed:\n\nLatest closing price\nAverage daily trading volume\nTotal return over the period\nAnnualized volatility (std of daily returns × √252)\nBeta relative to the S&P 500 index\n\nThe full Python script is here: code/market_data.py\nRaw data: market_data_raw.csv Clean data: market_data_clean.csv\n\nRaw Market Data Preview\n\n\n\nRaw market data preview\n\n\n\n\nClean Market Data Preview\n\n\n\nClean market data preview"
   },
   {
     "objectID": "dataprep_eda.html#merging-with-financial-data",
     "href": "dataprep_eda.html#merging-with-financial-data",
     "title": "Data Preparation and Exploratory Data Analysis",
     "section": "Merging with Financial Data",
-    "text": "Merging with Financial Data\nWe combine the market metrics with the financial data for further analysis."
-  },
-  {
-    "objectID": "dataprep_eda.html#eda-volatility-vs.-roa",
-    "href": "dataprep_eda.html#eda-volatility-vs.-roa",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "EDA: Volatility vs. ROA",
-    "text": "EDA: Volatility vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = volatility, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Annualized Volatility\", y = \"Return on Assets\", title = \"Volatility vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nVolatility vs. Return on Assets"
-  },
-  {
-    "objectID": "dataprep_eda.html#eda-beta-vs.-roa",
-    "href": "dataprep_eda.html#eda-beta-vs.-roa",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "EDA: Beta vs. ROA",
-    "text": "EDA: Beta vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = beta, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Beta\", y = \"Return on Assets\", title = \"Beta vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nBeta vs. Return on Assets"
-  },
-  {
-    "objectID": "dataprep_eda.html#eda-total-return-by-sector",
-    "href": "dataprep_eda.html#eda-total-return-by-sector",
-    "title": "Data Preparation and Exploratory Data Analysis",
-    "section": "EDA: Total Return by Sector",
-    "text": "EDA: Total Return by Sector\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = reorder(sector, total_return, FUN = median), y = total_return, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Total Return\", title = \"Total Return Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nTotal Return by Sector"
+    "text": "Merging with Financial Data\nThe market metrics was combined with the financial data for further analysis.\n\nVolatility vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = volatility, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Annualized Volatility\", y = \"Return on Assets\", title = \"Volatility vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nVolatility vs. Return on Assets\n\n\n\n\n\n\nBeta vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = beta, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Beta\", y = \"Return on Assets\", title = \"Beta vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nBeta vs. Return on Assets\n\n\n\n\n\n\nTotal Return by Sector\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = reorder(sector, total_return, FUN = median), y = total_return, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Total Return\", title = \"Total Return Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nTotal Return by Sector"
   },
   {
     "objectID": "naivebayes.html",
