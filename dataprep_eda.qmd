@@ -126,3 +126,89 @@ fin %>%
 - ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.
 - There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.
 - These initial observations set the stage for integrating additional data sources and building predictive models in later modules.
+
+# Market Data
+
+## Data Source & Collection
+
+Market data was obtained from **Yahoo Finance** using the Python library `yfinance`. We collected daily OHLCV data for the same 40 companies from **2023-01-01 to present**. For each company we computed:
+
+- **Latest closing price**
+- **Average daily trading volume**
+- **Total return** over the period
+- **Annualized volatility** (std of daily returns × √252)
+- **Beta** relative to the S&P 500 index
+
+The full Python script is here: [`code/market_data.py`](code/market_data.py)  
+Raw data: [`market_data_raw.csv`](data/raw/market_data_raw.csv)  
+Clean data: [`market_data_clean.csv`](data/clean/market_data_clean.csv)
+
+## Raw Market Data Preview
+
+![Raw market data preview](market_raw_preview.png)
+
+## Clean Market Data Preview
+
+![Clean market data preview](market_clean_preview.png)
+
+## Merging with Financial Data
+
+We combine the market metrics with the financial data for further analysis.
+
+```{r}
+#| label: merge-market-fin
+#| echo: false
+#| message: false
+#| warning: false
+library(readr)
+library(dplyr)
+
+market <- read_csv("data/clean/market_data_clean.csv", show_col_types = FALSE)
+fin <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+
+merged <- inner_join(fin, market, by = c("ticker", "company", "sector"))
+```
+
+## EDA: Volatility vs. ROA
+
+```{r}
+#| label: vol-vs-roa
+#| fig-cap: "Volatility vs. Return on Assets"
+#| fig-width: 8
+#| fig-height: 5
+merged %>%
+  ggplot(aes(x = volatility, y = ROA, color = sector)) +
+  geom_point(size = 3, alpha = 0.7) +
+  labs(x = "Annualized Volatility", y = "Return on Assets", title = "Volatility vs. ROA") +
+  theme_minimal()
+```
+
+## EDA: Beta vs. ROA
+
+```{r}
+#| label: beta-vs-roa
+#| fig-cap: "Beta vs. Return on Assets"
+#| fig-width: 8
+#| fig-height: 5
+merged %>%
+  ggplot(aes(x = beta, y = ROA, color = sector)) +
+  geom_point(size = 3, alpha = 0.7) +
+  labs(x = "Beta", y = "Return on Assets", title = "Beta vs. ROA") +
+  theme_minimal()
+```
+
+## EDA: Total Return by Sector
+
+```{r}
+#| label: return-by-sector
+#| fig-cap: "Total Return by Sector"
+#| fig-width: 8
+#| fig-height: 5
+merged %>%
+  ggplot(aes(x = reorder(sector, total_return, FUN = median), y = total_return, fill = sector)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(x = "Sector", y = "Total Return", title = "Total Return Distribution by Sector") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
