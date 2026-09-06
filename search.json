@@ -161,6 +161,55 @@
     "text": "Revenue vs. Net Income\n\n\nCode\nsigned_sqrt &lt;- trans_new(\"signed_sqrt\",\n  transform = function(x) sign(x) * sqrt(abs(x)),\n  inverse = function(x) sign(x) * x^2,\n  domain = c(-Inf, Inf)\n)\n\nfin %&gt;%\n  ggplot(aes(x = Revenue, y = NetIncome, color = sector)) +\n  geom_point(size = 3, alpha = 0.7, position = position_jitter(width = 0.02, height = 0.02)) +\n  scale_x_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  scale_y_continuous(trans = signed_sqrt, labels = dollar_format(scale = 1e-9, suffix = \"B\")) +\n  labs(x = \"Revenue (Signed Sqrt Scale, Billions)\", y = \"Net Income (Signed Sqrt Scale, Billions)\", title = \"Revenue vs. Net Income\") +\n  theme_minimal()\n\n\n\n\n\nRevenue vs Net Income (signed square root scale)"
   },
   {
+    "objectID": "dataprep_eda.html#data-source-collection",
+    "href": "dataprep_eda.html#data-source-collection",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "Data Source & Collection",
+    "text": "Data Source & Collection\nMarket data was obtained from Yahoo Finance using the Python library yfinance. We collected daily OHLCV data for the same 40 companies from 2023-01-01 to present. For each company we computed:\n\nLatest closing price\nAverage daily trading volume\nTotal return over the period\nAnnualized volatility (std of daily returns × √252)\nBeta relative to the S&P 500 index\n\nThe full Python script is here: code/market_data.py\nRaw data: market_data_raw.csv\nClean data: market_data_clean.csv"
+  },
+  {
+    "objectID": "dataprep_eda.html#raw-market-data-preview",
+    "href": "dataprep_eda.html#raw-market-data-preview",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "Raw Market Data Preview",
+    "text": "Raw Market Data Preview\n\n\n\nRaw market data preview"
+  },
+  {
+    "objectID": "dataprep_eda.html#clean-market-data-preview",
+    "href": "dataprep_eda.html#clean-market-data-preview",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "Clean Market Data Preview",
+    "text": "Clean Market Data Preview\n\n\n\nClean market data preview"
+  },
+  {
+    "objectID": "dataprep_eda.html#merging-with-financial-data",
+    "href": "dataprep_eda.html#merging-with-financial-data",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "Merging with Financial Data",
+    "text": "Merging with Financial Data\nWe combine the market metrics with the financial data for further analysis."
+  },
+  {
+    "objectID": "dataprep_eda.html#eda-volatility-vs.-roa",
+    "href": "dataprep_eda.html#eda-volatility-vs.-roa",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "EDA: Volatility vs. ROA",
+    "text": "EDA: Volatility vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = volatility, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Annualized Volatility\", y = \"Return on Assets\", title = \"Volatility vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nVolatility vs. Return on Assets"
+  },
+  {
+    "objectID": "dataprep_eda.html#eda-beta-vs.-roa",
+    "href": "dataprep_eda.html#eda-beta-vs.-roa",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "EDA: Beta vs. ROA",
+    "text": "EDA: Beta vs. ROA\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = beta, y = ROA, color = sector)) +\n  geom_point(size = 3, alpha = 0.7) +\n  labs(x = \"Beta\", y = \"Return on Assets\", title = \"Beta vs. ROA\") +\n  theme_minimal()\n\n\n\n\n\nBeta vs. Return on Assets"
+  },
+  {
+    "objectID": "dataprep_eda.html#eda-total-return-by-sector",
+    "href": "dataprep_eda.html#eda-total-return-by-sector",
+    "title": "Data Preparation and Exploratory Data Analysis",
+    "section": "EDA: Total Return by Sector",
+    "text": "EDA: Total Return by Sector\n\n\nCode\nmerged %&gt;%\n  ggplot(aes(x = reorder(sector, total_return, FUN = median), y = total_return, fill = sector)) +\n  geom_boxplot() +\n  coord_flip() +\n  labs(x = \"Sector\", y = \"Total Return\", title = \"Total Return Distribution by Sector\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\n\nTotal Return by Sector"
+  },
+  {
     "objectID": "naivebayes.html",
     "href": "naivebayes.html",
     "title": "Naive Bayes",
