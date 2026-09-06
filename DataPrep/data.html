@@ -80,7 +80,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -142,8 +142,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Clustering</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../arm.html"> 
-<span class="menu-text">ARM</span></a>
+    <a class="nav-link" href="../pca(pca).html"> 
+<span class="menu-text">PCA(PCA)</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../naivebayes.html"> 
@@ -266,9 +266,9 @@ date  (1): fiscal_year_end
    fiscal_year_end            Revenue          NetIncome        TotalAssets 
                  0                  0                  0                  0 
   TotalLiabilities        TotalEquity       LongTermDebt    OperatingIncome 
-                14                  0                  9                 10 
+                 0                  0                  0                  0 
 CashFromOperations                ROA                ROE     Debt_to_Equity 
-                 2                  0                  0                  9 
+                 0                  0                  0                  0 
      Profit_Margin 
                  0 </code></pre>
 </div>
@@ -278,24 +278,12 @@ CashFromOperations                ROA                ROE     Debt_to_Equity
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fin[<span class="sc">!</span><span class="fu">complete.cases</span>(fin), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 27 × 17
-   ticker company           sector fiscal_year fiscal_year_end Revenue NetIncome
-   &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;        &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;     &lt;dbl&gt;
- 1 MSFT   MICROSOFT CORP    Techn…        2010 2010-06-30      1.38e10   4.29e 9
- 2 META   Meta Platforms, … Commu…        2017 2017-12-31      1.79e10   3.69e 9
- 3 JPM    JPMORGAN CHASE &amp;… Finan…        2025 2025-12-31      1.58e11   4.96e10
- 4 WMT    Walmart Inc.      Consu…        2026 2026-01-31      6.48e11   1.55e10
- 5 ABBV   AbbVie Inc.       Healt…        2025 2025-12-31      5.43e10   4.86e 9
- 6 BAC    BANK OF AMERICA … Finan…        2025 2025-12-31      1.03e11   2.63e10
- 7 CVX    CHEVRON CORP      Energy        2025 2025-12-31      2.01e11   2.14e10
- 8 KO     COCA COLA CO      Consu…        2025 2025-12-31      4.58e10   1.07e10
- 9 MRK    Merck &amp; Co., Inc. Healt…        2025 2025-12-31      6.01e10   3.65e 8
-10 GE     GENERAL ELECTRIC… Indus…        2025 2025-12-31      3.53e10   9.48e 9
-# ℹ 17 more rows
-# ℹ 10 more variables: TotalAssets &lt;dbl&gt;, TotalLiabilities &lt;dbl&gt;,
-#   TotalEquity &lt;dbl&gt;, LongTermDebt &lt;dbl&gt;, OperatingIncome &lt;dbl&gt;,
-#   CashFromOperations &lt;dbl&gt;, ROA &lt;dbl&gt;, ROE &lt;dbl&gt;, Debt_to_Equity &lt;dbl&gt;,
-#   Profit_Margin &lt;dbl&gt;</code></pre>
+<pre><code># A tibble: 0 × 17
+# ℹ 17 variables: ticker &lt;chr&gt;, company &lt;chr&gt;, sector &lt;chr&gt;, fiscal_year &lt;dbl&gt;,
+#   fiscal_year_end &lt;date&gt;, Revenue &lt;dbl&gt;, NetIncome &lt;dbl&gt;, TotalAssets &lt;dbl&gt;,
+#   TotalLiabilities &lt;dbl&gt;, TotalEquity &lt;dbl&gt;, LongTermDebt &lt;dbl&gt;,
+#   OperatingIncome &lt;dbl&gt;, CashFromOperations &lt;dbl&gt;, ROA &lt;dbl&gt;, ROE &lt;dbl&gt;,
+#   Debt_to_Equity &lt;dbl&gt;, Profit_Margin &lt;dbl&gt;</code></pre>
 </div>
 </div>
 

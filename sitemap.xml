@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/nn.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/DataPrep/data.html</loc>
-    <lastmod>2026-09-01T20:16:24.749Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/data.html</loc>
-    <lastmod>2026-09-01T20:16:24.756Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/index.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/dectrees.html</loc>
-    <lastmod>2026-09-01T20:16:24.757Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/conclusions.html</loc>
-    <lastmod>2026-09-01T20:16:24.756Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/ensembles.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/pca(pca).html</loc>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/svms.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
+    <lastmod>2026-09-06T22:54:12.993Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/DataPrep/data.html</loc>
+    <lastmod>2026-09-06T22:54:12.975Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/regression.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
+    <lastmod>2026-09-06T22:54:12.993Z</lastmod>
   </url>
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/arm.html</loc>
-    <lastmod>2026-09-01T20:16:24.756Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/ensembles.html</loc>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
   </url>
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/dataprep_eda.html</loc>
-    <lastmod>2026-09-01T20:16:24.757Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/dectrees.html</loc>
+    <lastmod>2026-09-06T22:54:12.984Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/dimensionality.html</loc>
-    <lastmod>2026-09-01T20:16:24.757Z</lastmod>
+    <lastmod>2026-09-06T22:54:12.984Z</lastmod>
   </url>
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/clustering.html</loc>
-    <lastmod>2026-09-01T20:16:24.756Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/arm.html</loc>
+    <lastmod>2026-09-06T22:54:12.983Z</lastmod>
   </url>
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/naivebayes.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/index.html</loc>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/nn.html</loc>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/introduction.html</loc>
-    <lastmod>2026-09-01T20:16:24.763Z</lastmod>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/data.html</loc>
+    <lastmod>2026-09-06T22:54:12.983Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/conclusions.html</loc>
+    <lastmod>2026-09-06T22:54:12.983Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/dataprep_eda.html</loc>
+    <lastmod>2026-09-06T22:54:12.984Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/naivebayes.html</loc>
+    <lastmod>2026-09-06T22:54:12.992Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/clustering.html</loc>
+    <lastmod>2026-09-06T22:54:12.983Z</lastmod>
   </url>
 </urlset>
