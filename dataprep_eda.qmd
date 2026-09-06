@@ -2,13 +2,15 @@
 title: "Data Preparation and Exploratory Data Analysis"
 ---
 
-# Data Sources
+# Company Finacial Data
+
+## Data Sources
 
 The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.
 
 Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.
 
-# Data Collection & API
+## Data Collection & API
 
 This dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API.  The script performs the following steps:
 
@@ -26,7 +28,7 @@ This dataset provides the fundamental measures of performance (e.g., profitabili
 
 **See the full Python code:** [`code/company_financials.py`](code/company_financials.py)
 
-# Raw Data
+## Raw Data
 
 The raw data, exactly as returned by the SEC API, is stored in:
 
@@ -34,11 +36,11 @@ The raw data, exactly as returned by the SEC API, is stored in:
 
 This file contains one row per company (latest fiscal year) with some missing financial values and information as shown in the preview below. 
 
-## Raw Data Preview
+### Raw Data Preview
 
 ![Raw data preview](raw_preview.png)
 
-# Data Preparation
+## Data Preparation
 
 Cleaning and transformation steps performed in Python:
 
@@ -57,11 +59,11 @@ The clean dataset is stored in:
 
 A preview is shown below
 
-## Clean Data Preview
+### Clean Data Preview
 
 ![Clean data preview](clean_preview.png)
 
-# Exploratory Data Analysis
+## Exploratory Data Analysis
 
 ```{r}
 #| label: setup-eda
@@ -76,11 +78,11 @@ library(scales)
 fin <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
 ```
 
-## Summary statistics
+### Summary statistics
 
 ![Summary statistics](summary_stats.png)
 
-## Distribution of ROA by sector
+### Distribution of ROA by sector
 
 ```{r}
 #| label: roa-by-sector
@@ -96,7 +98,7 @@ fin %>%
   theme(legend.position = "none")
 ```
 
-## Revenue vs. Net Income
+### Revenue vs. Net Income
 
 ```{r}
 #| label: rev-vs-netincome
@@ -119,7 +121,7 @@ fin %>%
   theme_minimal()
 ```
 
-# Initial Findings
+## Initial Findings
 
 - The dataset contains **40 companies** across **8 sectors**.
 - Missing values were imputed using sector medians, so all financial variables are now complete.
@@ -131,7 +133,7 @@ fin %>%
 
 ## Data Source & Collection
 
-Market data was obtained from **Yahoo Finance** using the Python library `yfinance`. We collected daily OHLCV data for the same 40 companies from **2023-01-01 to present**. For each company we computed:
+Market data was obtained from **Yahoo Finance** using the Python library `yfinance`. The daily OHLCV data was collected for the same 40 companies from **2023-01-01 to present**. For each company the following was computed:
 
 - **Latest closing price**
 - **Average daily trading volume**
@@ -140,20 +142,20 @@ Market data was obtained from **Yahoo Finance** using the Python library `yfinan
 - **Beta** relative to the S&P 500 index
 
 The full Python script is here: [`code/market_data.py`](code/market_data.py)  
-Raw data: [`market_data_raw.csv`](data/raw/market_data_raw.csv)  
+Raw data: [`market_data_raw.csv`](data/raw/market_data_raw.csv)
 Clean data: [`market_data_clean.csv`](data/clean/market_data_clean.csv)
 
-## Raw Market Data Preview
+### Raw Market Data Preview
 
 ![Raw market data preview](market_raw_preview.png)
 
-## Clean Market Data Preview
+### Clean Market Data Preview
 
 ![Clean market data preview](market_clean_preview.png)
 
 ## Merging with Financial Data
 
-We combine the market metrics with the financial data for further analysis.
+The market metrics was combined with the financial data for further analysis.
 
 ```{r}
 #| label: merge-market-fin
@@ -169,7 +171,7 @@ fin <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALS
 merged <- inner_join(fin, market, by = c("ticker", "company", "sector"))
 ```
 
-## EDA: Volatility vs. ROA
+### Volatility vs. ROA
 
 ```{r}
 #| label: vol-vs-roa
@@ -183,7 +185,7 @@ merged %>%
   theme_minimal()
 ```
 
-## EDA: Beta vs. ROA
+### Beta vs. ROA
 
 ```{r}
 #| label: beta-vs-roa
@@ -197,7 +199,7 @@ merged %>%
   theme_minimal()
 ```
 
-## EDA: Total Return by Sector
+### Total Return by Sector
 
 ```{r}
 #| label: return-by-sector
