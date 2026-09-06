@@ -68,6 +68,7 @@ A preview is shown below
 #| echo: false
 #| message: false
 #| warning: false
+library(readr)
 library(dplyr)
 library(ggplot2)
 library(scales)
