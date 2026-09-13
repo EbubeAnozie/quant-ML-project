@@ -4,15 +4,14 @@ import numpy as np
 from pathlib import Path
 
 tickers = [
-    "AAPL", "MSFT", "GOOGL", "NVDA", "CRM",
-    "JPM", "BAC", "WFC", "GS", "MS",
-    "JNJ", "PFE", "UNH", "ABBV", "MRK",
-    "XOM", "CVX", "COP", "SLB", "EOG",
-    "AMZN", "TSLA", "HD", "MCD", "NKE",
-    "BA", "CAT", "GE", "HON", "UPS",
-    "META", "NFLX", "DIS", "VZ", "T",
-    "NEE", "DUK", "SO", "D", "AEP",
-    "PG", "KO", "PEP", "WMT", "COST"
+    "NVDA", "AAPL", "GOOGL", "MSFT", "META",
+    "TSLA", "JPM", "WMT", "ABBV", "BAC",
+    "COST", "CVX", "KO", "MRK", "CAT",
+    "UNH", "GE", "PG", "NFLX", "MS", "HD",
+    "WFC", "CRM", "VS", "PEP",  
+    "MCD",  "DIS", "T", "NEE", "COP",
+    "BA", "PFE", "SO", "DUK", "UPS", "SLB",
+    "EOG", "AEP", "HON", "D"
 ]
 
 # Add S&P 500 for beta calculation

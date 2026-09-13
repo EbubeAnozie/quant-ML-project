@@ -28,7 +28,7 @@ selected_tickers = [
     # Technology
     "AAPL", "MSFT", "GOOGL", "NVDA", "CRM",
     # Financials
-    "JPM", "BAC", "WFC", "GS", "MS",
+    "JPM", "BAC", "WFC", "MS",
     # Healthcare
     "JNJ", "PFE", "UNH", "ABBV", "MRK",
     # Energy
@@ -170,7 +170,7 @@ clean_df = raw_df.copy()
 # Add sector column (move this earlier so we can group by sector for imputation)
 sector_map = {
     "AAPL": "Technology", "MSFT": "Technology", "GOOGL": "Technology", "NVDA": "Technology", "CRM": "Technology",
-    "JPM": "Financials", "BAC": "Financials", "WFC": "Financials", "GS": "Financials", "MS": "Financials",
+    "JPM": "Financials", "BAC": "Financials", "WFC": "Financials", "MS": "Financials",
     "JNJ": "Healthcare", "PFE": "Healthcare", "UNH": "Healthcare", "ABBV": "Healthcare", "MRK": "Healthcare",
     "XOM": "Energy", "CVX": "Energy", "COP": "Energy", "SLB": "Energy", "EOG": "Energy",
     "AMZN": "Consumer Discretionary", "TSLA": "Consumer Discretionary", "HD": "Consumer Discretionary",
@@ -186,8 +186,8 @@ clean_df["sector"] = clean_df["ticker"].map(sector_map)
 
 # Convert numeric columns to float (some may be None/NaN)
 numeric_cols = list(concept_tags.keys())
-for col in numeric_cols:
-    clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
+#for col in numeric_cols:
+#    clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
 
 # Impute missing values in the raw financial columns using sector median,
 # falling back to global median if an entire sector is missing.
