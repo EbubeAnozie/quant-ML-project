@@ -142,8 +142,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Clustering</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./arm.html"> 
-<span class="menu-text">ARM</span></a>
+    <a class="nav-link" href="./pca(pca).html"> 
+<span class="menu-text">PCA(PCA)</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./naivebayes.html"> 
@@ -185,13 +185,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#where-data-sources" id="toc-where-data-sources" class="nav-link active" data-scroll-target="#where-data-sources">Where: Data Sources</a></li>
-  <li><a href="#how-data-collection-api-application-programming-interface" id="toc-how-data-collection-api-application-programming-interface" class="nav-link" data-scroll-target="#how-data-collection-api-application-programming-interface">How: Data Collection $ API (Application Programming Interface)</a></li>
-  <li><a href="#why" id="toc-why" class="nav-link" data-scroll-target="#why">Why</a></li>
-  <li><a href="#raw-data" id="toc-raw-data" class="nav-link" data-scroll-target="#raw-data">Raw Data</a></li>
-  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
-  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
-  <li><a href="#initial-findings" id="toc-initial-findings" class="nav-link" data-scroll-target="#initial-findings">Initial Findings</a></li>
+  <li><a href="#company-finacial-data" id="toc-company-finacial-data" class="nav-link active" data-scroll-target="#company-finacial-data">Company Finacial Data</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#data-collection-api" id="toc-data-collection-api" class="nav-link" data-scroll-target="#data-collection-api">Data Collection &amp; API</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#raw-data-preview" id="toc-raw-data-preview" class="nav-link" data-scroll-target="#raw-data-preview">Raw Data Preview</a></li>
+  <li><a href="#clean-data-preview" id="toc-clean-data-preview" class="nav-link" data-scroll-target="#clean-data-preview">Clean Data Preview</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#market-data" id="toc-market-data" class="nav-link" data-scroll-target="#market-data">Market Data</a>
+  <ul class="collapse">
+  <li><a href="#data-source-collection" id="toc-data-source-collection" class="nav-link" data-scroll-target="#data-source-collection">Data Source &amp; Collection</a>
+  <ul class="collapse">
+  <li><a href="#raw-market-data-preview" id="toc-raw-market-data-preview" class="nav-link" data-scroll-target="#raw-market-data-preview">Raw Market Data Preview</a></li>
+  <li><a href="#clean-market-data-preview" id="toc-clean-market-data-preview" class="nav-link" data-scroll-target="#clean-market-data-preview">Clean Market Data Preview</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics">Summary statistics</a></li>
+  <li><a href="#distribution-of-roa-by-sector" id="toc-distribution-of-roa-by-sector" class="nav-link" data-scroll-target="#distribution-of-roa-by-sector">Distribution of ROA by sector</a></li>
+  <li><a href="#revenue-vs.-net-income" id="toc-revenue-vs.-net-income" class="nav-link" data-scroll-target="#revenue-vs.-net-income">Revenue vs.&nbsp;Net Income</a></li>
+  <li><a href="#merging-with-financial-data" id="toc-merging-with-financial-data" class="nav-link" data-scroll-target="#merging-with-financial-data">Merging with Financial Data</a>
+  <ul class="collapse">
+  <li><a href="#volatility-vs.-roa" id="toc-volatility-vs.-roa" class="nav-link" data-scroll-target="#volatility-vs.-roa">Volatility vs.&nbsp;ROA</a></li>
+  <li><a href="#beta-vs.-roa" id="toc-beta-vs.-roa" class="nav-link" data-scroll-target="#beta-vs.-roa">Beta vs.&nbsp;ROA</a></li>
+  <li><a href="#total-return-by-sector" id="toc-total-return-by-sector" class="nav-link" data-scroll-target="#total-return-by-sector">Total Return by Sector</a></li>
+  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">Correlation Matrix</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#insights-for-models" id="toc-insights-for-models" class="nav-link" data-scroll-target="#insights-for-models">Insights for Models</a></li>
   </ul>
 </nav>
     </div>
@@ -200,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Data Preparation and Exploratory Data Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Data Preparation and Exploratory Data Analysis</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -217,34 +242,377 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="where-data-sources" class="level1">
-<h1>Where: Data Sources</h1>
-<p><em>To be completed.</em></p>
+<section id="company-finacial-data" class="level1">
+<h1>Company Finacial Data</h1>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<p>The primary dataset comes from the <strong>U.S. Securities and Exchange Commission (SEC) EDGAR</strong> system, using the <strong>CompanyFacts API</strong>. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.</p>
+<p>Other data sources (macroeconomic indicators, market data, news sentiment) are added in later section section of this page.</p>
 </section>
-<section id="how-data-collection-api-application-programming-interface" class="level1">
-<h1>How: Data Collection $ API (Application Programming Interface)</h1>
-<p>(You will include your code as part of your submission)</p>
-<p><em>To be completed.</em></p>
+<section id="data-collection-api" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection-api">Data Collection &amp; API</h2>
+<p>This dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API. The script performs the following steps:</p>
+<ol type="1">
+<li>Fetch the official company ticker → CIK mapping from <code>company_tickers.json</code>.</li>
+<li>Select a list of tickers (40 companies).</li>
+<li>For each company, call the CompanyFacts endpoint:<br>
+<code>https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json</code></li>
+<li>Extract key US-GAAP financial metrics from the latest 10-K filing.</li>
+<li>Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).</li>
+<li>Save raw and clean CSV files.</li>
+</ol>
+<p><strong>API endpoint example:</strong><br>
+<code>https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json</code><br>
+(where <code>0000320193</code> is the CIK for Apple Inc.)</p>
+<p><strong>See the full Python code:</strong> <a href="code/company_financials.py"><code>code/company_financials.py</code></a></p>
 </section>
-<section id="why" class="level1">
-<h1>Why</h1>
-<p><em>To be completed.</em></p>
+<section id="data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation">Data Preparation</h2>
+<p>The raw data is stored in <a href="data/raw/company_financials_raw.csv"><code>company_financials_raw.csv</code></a> exactly as returned by the SEC API. It provides the foundational financial metrics for the most recent fiscal year (10-K filing) for the 40 selected companies. Notice the presence of NA values (e.g., Microsoft’s Total Liabilities, Meta’s Long-Term Debt). This is common in raw financial data, as companies may not report every standardized US-GAAP tag, or they may structure their debt differently. Information like sector classification or derived financial ratios is also missing.</p>
+<p>The following cleaning and transformation steps were performed in Python:</p>
+<ul>
+<li>All NA values were resolved using sector-median imputation. This ensures the dataset is complete for machine learning modeling without discarding valuable rows.</li>
+<li>Numeric columns to float.</li>
+<li>Calculated three key ratios crucial for our analysis:
+<ul>
+<li>ROA (Return on Assets) = Net Income / Total Assets</li>
+<li>ROE (Return on Equity) = Net Income / Total Equity</li>
+<li>Debt-to-Equity = Long-Term Debt / Total Equity</li>
+</ul></li>
+<li>Added a sector column based on ticker (manual mapping).</li>
+</ul>
+<p>The clean dataset stored in <a href="data/clean/company_financials_clean.csv"><code>company_financials_clean.csv</code></a> is structured and complete.</p>
+<p>The previews of the first 10 rows of raw and clean data are shown below.</p>
+<section id="raw-data-preview" class="level3">
+<h3 class="anchored" data-anchor-id="raw-data-preview">Raw Data Preview</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="raw_preview.png" class="img-fluid figure-img"></p>
+<figcaption>Raw data preview</figcaption>
+</figure>
+</div>
 </section>
-<section id="raw-data" class="level1">
-<h1>Raw Data</h1>
-<p><em>Links to raw datasets will be provided here.</em></p>
+<section id="clean-data-preview" class="level3">
+<h3 class="anchored" data-anchor-id="clean-data-preview">Clean Data Preview</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="clean_preview.png" class="img-fluid figure-img"></p>
+<figcaption>Clean data preview</figcaption>
+</figure>
+</div>
 </section>
-<section id="data-preparation" class="level1">
-<h1>Data Preparation</h1>
-<p><em>Data cleaning and transformation procedures will be documented here.</em></p>
+</section>
+</section>
+<section id="market-data" class="level1">
+<h1>Market Data</h1>
+<section id="data-source-collection" class="level2">
+<h2 class="anchored" data-anchor-id="data-source-collection">Data Source &amp; Collection</h2>
+<p>Market data was obtained from Yahoo Finance using the Python library <code>yfinance</code>. The daily OHLCV data was collected for the same 40 companies from 2023-01-01 to present. For each company the following was computed:</p>
+<ul>
+<li>Latest Price: most recent closing price in the sample period.</li>
+<li>Avg Volume: mean daily trading volume over the period (a liquidity proxy).</li>
+<li>Total Return: cumulative percentage change in price from the first to the last day in the sample.</li>
+<li>Volatility: annualized standard deviation of daily returns (std × √252). Higher means riskier.</li>
+<li>Beta: sensitivity of the stock’s returns to the S&amp;P 500 (a market-risk measure). Beta &gt; 1 means the stock moves more than the market; Beta &lt; 1 means less.</li>
+</ul>
+<p>The full Python script is here: <a href="code/market_data.py"><code>code/market_data.py</code></a></p>
+<p>The raw market data is stored in <a href="data/raw/market_data_raw.csv"><code>market_data_raw.csv</code></a>. Each row represents one trading day, with the standard OHLCV fields: Open, High, Low, Close, and Volume. Though the sample shows a clean series (no missing values), the raw data is too granular for cross-company analysis. It is therefore summarized into company-level risk metrics (in the clean market data). Each row in the clean market data represents one publicly traded company, with five market-derived features that will be merged with the financial dataset.</p>
+<p>The previews are shown below:</p>
+<p>Clean data: <a href="data/clean/market_data_clean.csv"><code>market_data_clean.csv</code></a></p>
+<section id="raw-market-data-preview" class="level3">
+<h3 class="anchored" data-anchor-id="raw-market-data-preview">Raw Market Data Preview</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="market_raw_preview.png" class="img-fluid figure-img"></p>
+<figcaption>Raw market data preview</figcaption>
+</figure>
+</div>
+</section>
+<section id="clean-market-data-preview" class="level3">
+<h3 class="anchored" data-anchor-id="clean-market-data-preview">Clean Market Data Preview</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="market_clean_preview.png" class="img-fluid figure-img"></p>
+<figcaption>Clean market data preview</figcaption>
+</figure>
+</div>
+<p>These metrics will be merged with the financial dataset to explore the relationship between market risk and financial performance.</p>
+</section>
+</section>
 </section>
 <section id="exploratory-data-analysis" class="level1">
 <h1>Exploratory Data Analysis</h1>
-<p><em>Visualizations and findings will be added here.</em></p>
+<p>Before modeling, EDA are used to answer the following questions:</p>
+<ul>
+<li>How are the key financial and market variables distributed?</li>
+<li>Which sectors show the highest (and lowest) financial performance?</li>
+<li>Is market risk (volatility, beta) associated with accounting performance (ROA, ROE)?</li>
+<li>Which variables are strongly correlated with each other? Are there redundant features?</li>
+<li>Are there outliers or extreme values that could distort ML models?</li>
+</ul>
+<p>The plots and tables below address each of these questions in turn.</p>
+<section id="summary-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="summary-statistics">Summary statistics</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="summary_stats.png" class="img-fluid figure-img"></p>
+<figcaption>Summary statistics</figcaption>
+</figure>
+</div>
+<p>Revenue spans a wide range, from $1.5 billion (min) to $648 billion (max), with a mean of $97.6 billion and a median of $59.8 billion. This indicates a right-skewed distribution, driven by a few very large companies such as Walmart ($648B) and Apple ($215B).</p>
+<p>Net Income has a minimum of −$2.2 billion, meaning at least one company reported a net loss in its most recent fiscal year. The maximum is $73.8 billion (Alphabet). The mean ($12.0B) is again higher than the median ($6.9B), confirming skewness.</p>
+<p>Total Assets range from $12.8 billion to nearly $3.9 trillion (JPMorgan Chase), with a standard deviation of $808 billion — the largest dispersion of any variable. This reflects the huge differences in balance-sheet size across sectors (banks vs.&nbsp;technology vs.&nbsp;consumer staples).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ROA) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> ROA)) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(fin<span class="sc">$</span>ROA, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Return on Assets (ROA)"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"ROA by Company (Ordered)"</span>) <span class="sc">+</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/roa-tickers-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>ROA by Company (40 Tickers)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ROA (Return on Assets) averages 0.068 (6.8%) with a median of 0.056, and ranges from −0.021 to 0.267. The negative minimum again signals that at least one company was unprofitable during the period. Nvidia’s ROA of 0.267 is the strongest in the sample.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ROE) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> ROE, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Return on Equity (ROE)"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"ROE by Company (Ordered)"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/roe-tickers-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>ROE by Company (Ordered, 40 Tickers)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ROE (Return on Equity) has the widest relative spread (SD = 1.901), with values from −1.411 to 11.960. UPS exhibits the maximum ROE (≈ 11.96) in the dataset. This is not a sign of exceptional profitability but a consequence of its extremely small equity base. This illustrates why ROE must be interpreted jointly with leverage and equity size, and why ROA is a more reliable measure of operating performance.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Debt_to_Equity) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> Debt_to_Equity, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Debt-to-Equity"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Debt-to-Equity by Company (Ordered)"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/de-tickers-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Debt-to-Equity by Company (Ordered, 40 Tickers)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Debt-to-Equity shows a striking outlier: a maximum of 30.602 and a minimum of −13.722. AbbVie’s ratio of 19.399 (seen in the clean data preview) reflects a highly leveraged capital structure, likely the result of major acquisitions and share buybacks that reduced shareholders’ equity. Negative values occur when total equity is negative, which happens when accumulated losses or buybacks exceed contributed capital.</p>
 </section>
-<section id="initial-findings" class="level1">
-<h1>Initial Findings</h1>
-<p><em>To be completed.</em></p>
+<section id="distribution-of-roa-by-sector" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-roa-by-sector">Distribution of ROA by sector</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, ROA, <span class="at">FUN =</span> median), <span class="at">y =</span> ROA, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"ROA Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/roa-by-sector-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Return on Assets by Sector</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The boxplot shows the distribution of Return on Assets (ROA) across the eight sectors in the dataset. ROA measures how efficiently a company uses its assets to generate profit.</p>
+<p>Median ROA varies substantially by sector. Technology and Healthcare tend to have the highest median ROA, while Utilities and Energy show the lowest. This reflects differences in asset intensity. Tech and healthcare firms often rely more on intellectual property and less on heavy physical assets, whereas utilities and energy require massive capital investments in infrastructure.</p>
+<p>Even within a sector, there is considerable variation. For example, the Technology sector has a wide interquartile range, driven by companies like Nvidia (ROA ≈ 0.267) and Apple (ROA ≈ 0.122) versus others with lower profitability. This suggests that sector alone does not fully explain performance.</p>
+<p>Banks and financial firms (e.g., JPMorgan, Bank of America) have relatively low ROA (median around 0.013–0.015). This is typical because banks operate with very large asset bases relative to their profits; ROA is not the primary performance metric for them.</p>
+<p>In summary, ROA is strongly associated with sector, but within-sector variation suggests other factors also play a role.</p>
+</section>
+<section id="revenue-vs.-net-income" class="level2">
+<h2 class="anchored" data-anchor-id="revenue-vs.-net-income">Revenue vs.&nbsp;Net Income</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>signed_sqrt <span class="ot">&lt;-</span> <span class="fu">trans_new</span>(<span class="st">"signed_sqrt"</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="cf">function</span>(x) <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fu">abs</span>(x)),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">inverse =</span> <span class="cf">function</span>(x) <span class="fu">sign</span>(x) <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Revenue, <span class="at">y =</span> NetIncome, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.02</span>, <span class="at">height =</span> <span class="fl">0.02</span>)) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans =</span> signed_sqrt, <span class="at">labels =</span> <span class="fu">dollar_format</span>(<span class="at">scale =</span> <span class="fl">1e-9</span>, <span class="at">suffix =</span> <span class="st">"B"</span>)) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> signed_sqrt, <span class="at">labels =</span> <span class="fu">dollar_format</span>(<span class="at">scale =</span> <span class="fl">1e-9</span>, <span class="at">suffix =</span> <span class="st">"B"</span>)) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Revenue (Signed Sqrt Scale, Billions)"</span>, <span class="at">y =</span> <span class="st">"Net Income (Signed Sqrt Scale, Billions)"</span>, <span class="at">title =</span> <span class="st">"Revenue vs. Net Income"</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/rev-vs-netincome-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Revenue vs Net Income (signed square root scale)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatterplot shows the relationship between Revenue and Net Income for all 40 companies, colored by sector. Because both variables are highly skewed and include negative values, a signed square root transformation was used on both axes to compress large values while preserving the sign.</p>
+<p>As expected, higher revenue generally corresponds to higher net income. However, the relationship is not perfectly linear. There is considerable scatter. For example, Walmart has a revenue of $648B, but Net Income of only $15.5B (Profit Margin ≈ 2.4%), while Nvidia has a revenue of $60.9B, but Net Income of $29.8B (Profit Margin ≈ 48.9%). This means that revenue size alone does not determine profitability. Sector/business model strongly influences the revenue-to-profit conversion. Technology and Healthcare companies tend to cluster in the upper-middle region (high net income relative to revenue). Energy and Utilities tend to cluster lower (lower net income relative to revenue).</p>
+<p>In summary, while revenue is positively associated with net income, the wide dispersion shows the importance of profitability ratios (like ROA, ROE, and profit margin) as complementary measures of financial performance.</p>
+</section>
+<section id="merging-with-financial-data" class="level2">
+<h2 class="anchored" data-anchor-id="merging-with-financial-data">Merging with Financial Data</h2>
+<p>The market metrics was combined with the financial data for further analysis.</p>
+<section id="volatility-vs.-roa" class="level3">
+<h3 class="anchored" data-anchor-id="volatility-vs.-roa">Volatility vs.&nbsp;ROA</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> volatility, <span class="at">y =</span> ROA, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Annualized Volatility"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"Volatility vs. ROA"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/vol-vs-roa-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Volatility vs.&nbsp;Return on Assets</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This scatterplot shows the relationship between annualized market volatility and Return on Assets, with points colored by sector.</p>
+<p>The points are widely scattered, and there is no obvious upward or downward slope. This suggests that volatility alone is not a reliable predictor of accounting profitability.</p>
+<p>Sector clustering is evident. Technology firms (e.g., Nvidia, Apple, Alphabet) tend to occupy the lower-volatility, higher-ROA region. Utilities and Financials sit in the lower-volatility, lower-ROA region.</p>
+<p>Nvidia and Tesla stand out with volatility &gt; 0.48 and betas &gt; 2.0. Nvidia also has a high ROA (≈0.267), while Tesla’s ROA (≈0.123) is more modest. High market risk can accompany strong profitability.</p>
+<p>At the bivariate level, market volatility does not show a strong linear association with ROA.</p>
+</section>
+<section id="beta-vs.-roa" class="level3">
+<h3 class="anchored" data-anchor-id="beta-vs.-roa">Beta vs.&nbsp;ROA</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> ROA, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Beta"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"Beta vs. ROA"</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/beta-vs-roa-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Beta vs.&nbsp;Return on Assets</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This plot replaces volatility on the x-axis with Beta. Beta captures systematic (market-wide) risk rather than total price variability. As with volatility, the scatter does not show a strong monotonic relationship.</p>
+</section>
+<section id="total-return-by-sector" class="level3">
+<h3 class="anchored" data-anchor-id="total-return-by-sector">Total Return by Sector</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, total_return, <span class="at">FUN =</span> median), <span class="at">y =</span> total_return, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Total Return"</span>, <span class="at">title =</span> <span class="st">"Total Return Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/return-by-sector-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Total Return by Sector</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This boxplot shows the distribution of total return (cumulative percentage price change over the sample period, 2023‑01‑01 to present) for each sector, sorted by median return.</p>
+<p>Total return is strongly associated with sector. Technology and Communication Services dominate, while Consumer Staples and Healthcare lag. This reveals the need to treat sector as a grouping variable in later ML models, rather than pooling all companies together.</p>
+</section>
+<section id="correlation-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix">Correlation Matrix</h3>
+<p>Pairwise correlations among the numeric variables shown to see features that are strongly related and which may be redundant.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>corr_vars <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Revenue, NetIncome, TotalAssets, ROA, ROE,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         Debt_to_Equity, Profit_Margin, volatility, beta, total_return)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>corr_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(corr_vars, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>melted <span class="ot">&lt;-</span> <span class="fu">melt</span>(corr_mat)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(melted, <span class="fu">aes</span>(<span class="at">x =</span> Var1, <span class="at">y =</span> Var2, <span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(value, <span class="dv">2</span>)), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"firebrick"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlation Matrix"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dataprep_eda_files/figure-html/corr-matrix-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Correlation Matrix of Financial and Market Variables</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The correlation matrix shows that Revenue, Net Income, and Total Assets are strongly positively correlated with each other. This suggests possible multicollinearity. ROA, ROE, and Profit Margin are moderately positively correlated with each other but not perfectly since they capture related but distinct aspects of profitability. Debt-to-Equity has a weak or negative relationship with profitability measures. Volatility and Beta are strongly positively correlated with each other (as expected since both measure market risk). So they may be partially redundant in modeling. Total Return is positively correlated with volatility and beta, consistent with the idea that higher-risk stocks delivered higher returns during this period.</p>
+</section>
+</section>
+</section>
+<section id="insights-for-models" class="level1">
+<h1>Insights for Models</h1>
+<p>Several variables (Revenue, Total Assets, Net Income) are heavily skewed and will likely need transformation before use in linear models. ROE and Debt-to-Equity contain extreme values that may dominate distance-based methods (like KNN or SVM) unless standardized.</p>
 
 
 <!-- -->
@@ -703,38 +1071,409 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Preparation and Exploratory Data Analysis"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Where: Data Sources</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># How: Data Collection $ API (Application Programming Interface)</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>(You will include your code as part of your submission)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu"># Why</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu"># Raw Data</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>*Links to raw datasets will be provided here.*</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Preparation</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>*Data cleaning and transformation procedures will be documented here.*</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploratory Data Analysis</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>*Visualizations and findings will be added here.*</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Initial Findings</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>*To be completed.*</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Preparation and Exploratory Data Analysis"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Company Finacial Data</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Sources</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>Other data sources (macroeconomic indicators, market data, news sentiment) are added in later section section of this page.</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Collection &amp; API</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>This dataset provides the fundamental measures of performance (e.g., profitability, leverage, liquidity). Python was used to connect with the SEC API.  The script performs the following steps:</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Fetch the official company ticker → CIK mapping from <span class="in">`company_tickers.json`</span>.</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Select a list of tickers (40 companies).</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>For each company, call the CompanyFacts endpoint:  </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>   <span class="in">`https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json`</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Extract key US-GAAP financial metrics from the latest 10-K filing.</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Compute derived ratios (ROA, ROE, debt-to-equity, profit margin).</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Save raw and clean CSV files.</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>**API endpoint example:**  </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="in">`https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json`</span>  </span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>(where <span class="in">`0000320193`</span> is the CIK for Apple Inc.)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>**See the full Python code:** <span class="co">[</span><span class="ot">`code/company_financials.py`</span><span class="co">](code/company_financials.py)</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Preparation</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>The raw data is stored in <span class="co">[</span><span class="ot">`company_financials_raw.csv`</span><span class="co">](data/raw/company_financials_raw.csv)</span> exactly as returned by the SEC API.</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>It provides the foundational financial metrics for the most recent fiscal year (10-K filing) for the 40 selected companies. Notice the presence of NA values (e.g., Microsoft's Total Liabilities, Meta's Long-Term Debt).</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>This is common in raw financial data, as companies may not report every standardized US-GAAP tag, or they may structure their debt differently.</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>Information like sector classification or derived financial ratios is also missing.</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>The following cleaning and transformation steps were performed in Python:</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>All NA values were resolved using sector-median imputation. This ensures the dataset is complete for machine learning modeling without discarding valuable rows.</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Numeric columns to float.</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Calculated three key ratios crucial for our analysis:</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>ROA (Return on Assets) = Net Income / Total Assets</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>ROE (Return on Equity) = Net Income / Total Equity</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Debt-to-Equity = Long-Term Debt / Total Equity</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Added a sector column based on ticker (manual mapping).</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>The clean dataset stored in <span class="co">[</span><span class="ot">`company_financials_clean.csv`</span><span class="co">](data/clean/company_financials_clean.csv)</span> is structured and complete.</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>The previews of the first 10 rows of raw and clean data are shown below.</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Raw Data Preview</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="al">![Raw data preview](raw_preview.png)</span></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Clean Data Preview</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="al">![Clean data preview](clean_preview.png)</span></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="fu"># Market Data</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Source &amp; Collection</span></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>Market data was obtained from Yahoo Finance using the Python library <span class="in">`yfinance`</span>. The daily OHLCV data was collected for the same 40 companies from 2023-01-01 to present. For each company the following was computed:</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Latest Price: most recent closing price in the sample period.</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Avg Volume: mean daily trading volume over the period (a liquidity proxy).</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Total Return: cumulative percentage change in price from the first to the last day in the sample.</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Volatility: annualized standard deviation of daily returns (std × √252). Higher means riskier.</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Beta: sensitivity of the stock's returns to the S&amp;P 500 (a market-risk measure). Beta &gt; 1 means the stock moves more than the market; Beta &lt; 1 means less.</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>The full Python script is here: <span class="co">[</span><span class="ot">`code/market_data.py`</span><span class="co">](code/market_data.py)</span> </span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>The raw market data is stored in <span class="co">[</span><span class="ot">`market_data_raw.csv`</span><span class="co">](data/raw/market_data_raw.csv)</span>.</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>Each row represents one trading day, with the standard OHLCV fields: Open, High, Low, Close, and Volume.</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>Though the sample shows a clean series (no missing values), the raw data is too granular for cross-company analysis.</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>It is therefore summarized into company-level risk metrics (in the clean market data).</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>Each row in the clean market data represents one publicly traded company, with five market-derived features</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>that will be merged with the financial dataset.</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>The previews are shown below:</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>Clean data: <span class="co">[</span><span class="ot">`market_data_clean.csv`</span><span class="co">](data/clean/market_data_clean.csv)</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### Raw Market Data Preview</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a><span class="al">![Raw market data preview](market_raw_preview.png)</span></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="fu">### Clean Market Data Preview</span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="al">![Clean market data preview](market_clean_preview.png)</span></span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>These metrics will be merged with the financial dataset to explore the relationship between market risk</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>and financial performance.</span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploratory Data Analysis</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>Before modeling, EDA are used to answer the following questions:</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>How are the key financial and market variables distributed?</span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Which sectors show the highest (and lowest) financial performance?</span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Is market risk (volatility, beta) associated with accounting performance (ROA, ROE)?</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Which variables are strongly correlated with each other? Are there redundant features?</span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Are there outliers or extreme values that could distort ML models?</span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>The plots and tables below address each of these questions in turn.</span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>fin    <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/market_data_clean.csv"</span>,          <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a>merged <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(fin, market, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ticker"</span>, <span class="st">"company"</span>, <span class="st">"sector"</span>))</span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary statistics</span></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="al">![Summary statistics](summary_stats.png)</span></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a>Revenue spans a wide range, from $1.5 billion (min) to $648 billion (max), with a mean of $97.6 billion and a median of $59.8 billion.</span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>This indicates a right-skewed distribution, driven by a few very large companies such as Walmart ($648B) and Apple ($215B).</span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a>Net Income has a minimum of −$2.2 billion, meaning at least one company reported a net loss in its most recent fiscal year.</span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>The maximum is $73.8 billion (Alphabet). The mean ($12.0B) is again higher than the median ($6.9B), confirming skewness.</span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>Total Assets range from $12.8 billion to nearly $3.9 trillion (JPMorgan Chase), with a standard deviation of $808 billion — the largest dispersion of any variable.</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>This reflects the huge differences in balance-sheet size across sectors (banks vs. technology vs. consumer staples).</span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: roa-tickers</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "ROA by Company (40 Tickers)"</span></span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ROA) <span class="sc">%&gt;%</span></span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> ROA)) <span class="sc">+</span></span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(fin<span class="sc">$</span>ROA, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Return on Assets (ROA)"</span>,</span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"ROA by Company (Ordered)"</span>) <span class="sc">+</span></span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>ROA (Return on Assets) averages 0.068 (6.8%) with a median of 0.056, and ranges from −0.021 to 0.267. The negative minimum again signals that at least one company was unprofitable during the period. Nvidia's ROA of 0.267 is the strongest in the sample.</span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: roe-tickers</span></span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "ROE by Company (Ordered, 40 Tickers)"</span></span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ROE) <span class="sc">%&gt;%</span></span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> ROE, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Return on Equity (ROE)"</span>,</span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"ROE by Company (Ordered)"</span>,</span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a>ROE (Return on Equity) has the widest relative spread (SD = 1.901), with values from −1.411 to 11.960.</span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a>UPS exhibits the maximum ROE (≈ 11.96) in the dataset.</span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a>This is not a sign of exceptional profitability but a consequence of its extremely small equity base.</span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a>This illustrates why ROE must be interpreted jointly with leverage and equity size,</span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a>and why ROA is a more reliable measure of operating performance.</span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: de-tickers</span></span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Debt-to-Equity by Company (Ordered, 40 Tickers)"</span></span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Debt_to_Equity) <span class="sc">%&gt;%</span></span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ticker =</span> <span class="fu">factor</span>(ticker, <span class="at">levels =</span> ticker)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ticker, <span class="at">y =</span> Debt_to_Equity, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Debt-to-Equity"</span>,</span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Debt-to-Equity by Company (Ordered)"</span>,</span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">7</span>))</span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a>Debt-to-Equity shows a striking outlier: a maximum of 30.602 and a minimum of −13.722. AbbVie's ratio of 19.399 (seen in the clean data preview) reflects a highly leveraged capital structure, likely the result of major acquisitions and share buybacks that reduced shareholders' equity.</span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a>Negative values occur when total equity is negative, which happens when accumulated losses or buybacks exceed contributed capital.</span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distribution of ROA by sector</span></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: roa-by-sector</span></span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Return on Assets by Sector"</span></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, ROA, <span class="at">FUN =</span> median), <span class="at">y =</span> ROA, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"ROA Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a>The boxplot shows the distribution of Return on Assets (ROA) across the eight sectors in the dataset. ROA measures how efficiently a company uses its assets to generate profit.</span>
+<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a>Median ROA varies substantially by sector. Technology and Healthcare tend to have the highest median ROA,</span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a>while Utilities and Energy show the lowest. This reflects differences in asset intensity.</span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a>Tech and healthcare firms often rely more on intellectual property and less on heavy physical assets,</span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a>whereas utilities and energy require massive capital investments in infrastructure.</span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a>Even within a sector, there is considerable variation.</span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a>For example, the Technology sector has a wide interquartile range, driven by companies like Nvidia (ROA ≈ 0.267)</span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a>and Apple (ROA ≈ 0.122) versus others with lower profitability.</span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a>This suggests that sector alone does not fully explain performance.</span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>Banks and financial firms (e.g., JPMorgan, Bank of America) have relatively low ROA (median around 0.013–0.015).</span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a>This is typical because banks operate with very large asset bases relative to their profits;</span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a>ROA is not the primary performance metric for them.</span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a>In summary, ROA is strongly associated with sector, but within-sector variation suggests other factors also play a role.</span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## Revenue vs. Net Income</span></span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rev-vs-netincome</span></span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Revenue vs Net Income (signed square root scale)"</span></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a>signed_sqrt <span class="ot">&lt;-</span> <span class="fu">trans_new</span>(<span class="st">"signed_sqrt"</span>,</span>
+<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="cf">function</span>(x) <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fu">abs</span>(x)),</span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a>  <span class="at">inverse =</span> <span class="cf">function</span>(x) <span class="fu">sign</span>(x) <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>)</span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a>fin <span class="sc">%&gt;%</span></span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Revenue, <span class="at">y =</span> NetIncome, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.02</span>, <span class="at">height =</span> <span class="fl">0.02</span>)) <span class="sc">+</span></span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans =</span> signed_sqrt, <span class="at">labels =</span> <span class="fu">dollar_format</span>(<span class="at">scale =</span> <span class="fl">1e-9</span>, <span class="at">suffix =</span> <span class="st">"B"</span>)) <span class="sc">+</span></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> signed_sqrt, <span class="at">labels =</span> <span class="fu">dollar_format</span>(<span class="at">scale =</span> <span class="fl">1e-9</span>, <span class="at">suffix =</span> <span class="st">"B"</span>)) <span class="sc">+</span></span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Revenue (Signed Sqrt Scale, Billions)"</span>, <span class="at">y =</span> <span class="st">"Net Income (Signed Sqrt Scale, Billions)"</span>, <span class="at">title =</span> <span class="st">"Revenue vs. Net Income"</span>) <span class="sc">+</span></span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a>The scatterplot shows the relationship between Revenue and Net Income for all 40 companies, colored by sector.</span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a>Because both variables are highly skewed and include negative values, a signed square root transformation was used on both axes to compress large values while preserving the sign.</span>
+<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a>As expected, higher revenue generally corresponds to higher net income. However, the relationship is not perfectly linear.</span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a>There is considerable scatter. For example, Walmart has a revenue of $648B, but Net Income of only $15.5B (Profit Margin ≈ 2.4%),</span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a>while Nvidia has a revenue of $60.9B, but Net Income of $29.8B (Profit Margin ≈ 48.9%).</span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a>This means that revenue size alone does not determine profitability.</span>
+<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a>Sector/business model strongly influences the revenue-to-profit conversion.</span>
+<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a>Technology and Healthcare companies tend to cluster in the upper-middle region (high net income relative to revenue).</span>
+<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a>Energy and Utilities tend to cluster lower (lower net income relative to revenue).</span>
+<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a>In summary, while revenue is positively associated with net income,</span>
+<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a>the wide dispersion shows the importance of profitability ratios</span>
+<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a>(like ROA, ROE, and profit margin) as complementary measures of financial performance.</span>
+<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a><span class="fu">## Merging with Financial Data</span></span>
+<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a>The market metrics was combined with the financial data for further analysis.</span>
+<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: merge-market-fin</span></span>
+<span id="cb10-297"><a href="#cb10-297" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-298"><a href="#cb10-298" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb10-299"><a href="#cb10-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb10-300"><a href="#cb10-300" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/market_data_clean.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a>fin <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a>merged <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(fin, market, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ticker"</span>, <span class="st">"company"</span>, <span class="st">"sector"</span>))</span>
+<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a><span class="fu">### Volatility vs. ROA</span></span>
+<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: vol-vs-roa</span></span>
+<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Volatility vs. Return on Assets"</span></span>
+<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> volatility, <span class="at">y =</span> ROA, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Annualized Volatility"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"Volatility vs. ROA"</span>) <span class="sc">+</span></span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a>This scatterplot shows the relationship between annualized market volatility and Return on Assets,</span>
+<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a>with points colored by sector.</span>
+<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a>The points are widely scattered, and there is no obvious upward or downward slope.</span>
+<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a>This suggests that volatility alone is not a reliable predictor of accounting profitability.</span>
+<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-330"><a href="#cb10-330" aria-hidden="true" tabindex="-1"></a>Sector clustering is evident. Technology firms (e.g., Nvidia, Apple, Alphabet) tend to occupy the lower-volatility,</span>
+<span id="cb10-331"><a href="#cb10-331" aria-hidden="true" tabindex="-1"></a>higher-ROA region. Utilities and Financials sit in the lower-volatility, lower-ROA region.</span>
+<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a>Nvidia and Tesla stand out with volatility &gt; 0.48 and betas &gt; 2.0. Nvidia also has a high ROA (≈0.267),</span>
+<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a>while Tesla's ROA (≈0.123) is more modest. High market risk can accompany strong profitability.</span>
+<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a>At the bivariate level, market volatility does not show a strong linear association with ROA.</span>
+<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a><span class="fu">### Beta vs. ROA</span></span>
+<span id="cb10-339"><a href="#cb10-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-343"><a href="#cb10-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: beta-vs-roa</span></span>
+<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Beta vs. Return on Assets"</span></span>
+<span id="cb10-345"><a href="#cb10-345" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb10-346"><a href="#cb10-346" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb10-347"><a href="#cb10-347" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb10-348"><a href="#cb10-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> ROA, <span class="at">color =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-349"><a href="#cb10-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb10-350"><a href="#cb10-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Beta"</span>, <span class="at">y =</span> <span class="st">"Return on Assets"</span>, <span class="at">title =</span> <span class="st">"Beta vs. ROA"</span>) <span class="sc">+</span></span>
+<span id="cb10-351"><a href="#cb10-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb10-352"><a href="#cb10-352" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-353"><a href="#cb10-353" aria-hidden="true" tabindex="-1"></a>This plot replaces volatility on the x-axis with Beta. Beta captures systematic (market-wide) risk rather than total price variability.</span>
+<span id="cb10-354"><a href="#cb10-354" aria-hidden="true" tabindex="-1"></a>As with volatility, the scatter does not show a strong monotonic relationship.</span>
+<span id="cb10-355"><a href="#cb10-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-356"><a href="#cb10-356" aria-hidden="true" tabindex="-1"></a><span class="fu">### Total Return by Sector</span></span>
+<span id="cb10-357"><a href="#cb10-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-360"><a href="#cb10-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-361"><a href="#cb10-361" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: return-by-sector</span></span>
+<span id="cb10-362"><a href="#cb10-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Total Return by Sector"</span></span>
+<span id="cb10-363"><a href="#cb10-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb10-364"><a href="#cb10-364" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb10-365"><a href="#cb10-365" aria-hidden="true" tabindex="-1"></a>merged <span class="sc">%&gt;%</span></span>
+<span id="cb10-366"><a href="#cb10-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, total_return, <span class="at">FUN =</span> median), <span class="at">y =</span> total_return, <span class="at">fill =</span> sector)) <span class="sc">+</span></span>
+<span id="cb10-367"><a href="#cb10-367" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb10-368"><a href="#cb10-368" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb10-369"><a href="#cb10-369" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sector"</span>, <span class="at">y =</span> <span class="st">"Total Return"</span>, <span class="at">title =</span> <span class="st">"Total Return Distribution by Sector"</span>) <span class="sc">+</span></span>
+<span id="cb10-370"><a href="#cb10-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-371"><a href="#cb10-371" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb10-372"><a href="#cb10-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-373"><a href="#cb10-373" aria-hidden="true" tabindex="-1"></a>This boxplot shows the distribution of total return (cumulative percentage price change over the sample period,</span>
+<span id="cb10-374"><a href="#cb10-374" aria-hidden="true" tabindex="-1"></a>2023‑01‑01 to present) for each sector, sorted by median return.</span>
+<span id="cb10-375"><a href="#cb10-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-376"><a href="#cb10-376" aria-hidden="true" tabindex="-1"></a>Total return is strongly associated with sector.</span>
+<span id="cb10-377"><a href="#cb10-377" aria-hidden="true" tabindex="-1"></a>Technology and Communication Services dominate, while Consumer Staples and Healthcare lag.</span>
+<span id="cb10-378"><a href="#cb10-378" aria-hidden="true" tabindex="-1"></a>This reveals the need to treat sector as a grouping variable in later ML models,</span>
+<span id="cb10-379"><a href="#cb10-379" aria-hidden="true" tabindex="-1"></a>rather than pooling all companies together.</span>
+<span id="cb10-380"><a href="#cb10-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-381"><a href="#cb10-381" aria-hidden="true" tabindex="-1"></a><span class="fu">### Correlation Matrix</span></span>
+<span id="cb10-382"><a href="#cb10-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-383"><a href="#cb10-383" aria-hidden="true" tabindex="-1"></a>Pairwise correlations among the numeric variables shown to see features that are strongly related and which may be redundant.</span>
+<span id="cb10-384"><a href="#cb10-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-387"><a href="#cb10-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-388"><a href="#cb10-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: corr-matrix</span></span>
+<span id="cb10-389"><a href="#cb10-389" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Correlation Matrix of Financial and Market Variables"</span></span>
+<span id="cb10-390"><a href="#cb10-390" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb10-391"><a href="#cb10-391" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb10-392"><a href="#cb10-392" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb10-393"><a href="#cb10-393" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-394"><a href="#cb10-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-395"><a href="#cb10-395" aria-hidden="true" tabindex="-1"></a>corr_vars <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span></span>
+<span id="cb10-396"><a href="#cb10-396" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Revenue, NetIncome, TotalAssets, ROA, ROE,</span>
+<span id="cb10-397"><a href="#cb10-397" aria-hidden="true" tabindex="-1"></a>         Debt_to_Equity, Profit_Margin, volatility, beta, total_return)</span>
+<span id="cb10-398"><a href="#cb10-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-399"><a href="#cb10-399" aria-hidden="true" tabindex="-1"></a>corr_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(corr_vars, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
+<span id="cb10-400"><a href="#cb10-400" aria-hidden="true" tabindex="-1"></a>melted <span class="ot">&lt;-</span> <span class="fu">melt</span>(corr_mat)</span>
+<span id="cb10-401"><a href="#cb10-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-402"><a href="#cb10-402" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(melted, <span class="fu">aes</span>(<span class="at">x =</span> Var1, <span class="at">y =</span> Var2, <span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb10-403"><a href="#cb10-403" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb10-404"><a href="#cb10-404" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(value, <span class="dv">2</span>)), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb10-405"><a href="#cb10-405" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"firebrick"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb10-406"><a href="#cb10-406" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb10-407"><a href="#cb10-407" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlation Matrix"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-408"><a href="#cb10-408" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-409"><a href="#cb10-409" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span>
+<span id="cb10-410"><a href="#cb10-410" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-411"><a href="#cb10-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-412"><a href="#cb10-412" aria-hidden="true" tabindex="-1"></a>The correlation matrix shows that Revenue, Net Income, and Total Assets are strongly positively correlated with each other.</span>
+<span id="cb10-413"><a href="#cb10-413" aria-hidden="true" tabindex="-1"></a>This suggests possible multicollinearity. ROA, ROE, and Profit Margin are moderately positively correlated with each other</span>
+<span id="cb10-414"><a href="#cb10-414" aria-hidden="true" tabindex="-1"></a>but not perfectly since they capture related but distinct aspects of profitability.</span>
+<span id="cb10-415"><a href="#cb10-415" aria-hidden="true" tabindex="-1"></a>Debt-to-Equity has a weak or negative relationship with profitability measures. Volatility and Beta are strongly positively</span>
+<span id="cb10-416"><a href="#cb10-416" aria-hidden="true" tabindex="-1"></a>correlated with each other (as expected since both measure market risk). So they may be partially redundant in modeling.</span>
+<span id="cb10-417"><a href="#cb10-417" aria-hidden="true" tabindex="-1"></a>Total Return is positively correlated with volatility and beta,</span>
+<span id="cb10-418"><a href="#cb10-418" aria-hidden="true" tabindex="-1"></a>consistent with the idea that higher-risk stocks delivered higher returns during this period.</span>
+<span id="cb10-419"><a href="#cb10-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-420"><a href="#cb10-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-421"><a href="#cb10-421" aria-hidden="true" tabindex="-1"></a><span class="fu"># Insights for Models</span></span>
+<span id="cb10-422"><a href="#cb10-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-423"><a href="#cb10-423" aria-hidden="true" tabindex="-1"></a>Several variables (Revenue, Total Assets, Net Income) are heavily skewed and will likely need transformation before use in linear models.</span>
+<span id="cb10-424"><a href="#cb10-424" aria-hidden="true" tabindex="-1"></a>ROE and Debt-to-Equity contain extreme values that may dominate distance-based methods (like KNN or SVM) unless standardized.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -8,7 +8,7 @@ title: "Data Preparation and Exploratory Data Analysis"
 
 The primary dataset comes from the **U.S. Securities and Exchange Commission (SEC) EDGAR** system, using the **CompanyFacts API**. This API provides standardized XBRL financial statement data for publicly traded companies without requiring an API key. 40 large companies were selected across eight sectors to ensure diversity.
 
-Other data sources (macroeconomic indicators, market data, news sentiment) will be added in subsequent steps.
+Other data sources (macroeconomic indicators, market data, news sentiment) are added in later section section of this page.
 
 ## Data Collection & API
 
@@ -28,61 +28,181 @@ This dataset provides the fundamental measures of performance (e.g., profitabili
 
 **See the full Python code:** [`code/company_financials.py`](code/company_financials.py)
 
-## Raw Data
+## Data Preparation
+The raw data is stored in [`company_financials_raw.csv`](data/raw/company_financials_raw.csv) exactly as returned by the SEC API.
+It provides the foundational financial metrics for the most recent fiscal year (10-K filing) for the 40 selected companies. Notice the presence of NA values (e.g., Microsoft's Total Liabilities, Meta's Long-Term Debt).
+This is common in raw financial data, as companies may not report every standardized US-GAAP tag, or they may structure their debt differently.
+Information like sector classification or derived financial ratios is also missing.
 
-The raw data, exactly as returned by the SEC API, is stored in:
+The following cleaning and transformation steps were performed in Python:
 
-- [`company_financials_raw.csv`](data/raw/company_financials_raw.csv)
+- All NA values were resolved using sector-median imputation. This ensures the dataset is complete for machine learning modeling without discarding valuable rows.
+- Numeric columns to float.
+- Calculated three key ratios crucial for our analysis:
+  - ROA (Return on Assets) = Net Income / Total Assets
+  - ROE (Return on Equity) = Net Income / Total Equity
+  - Debt-to-Equity = Long-Term Debt / Total Equity
+- Added a sector column based on ticker (manual mapping).
 
-This file contains one row per company (latest fiscal year) with some missing financial values and information as shown in the preview below. 
+The clean dataset stored in [`company_financials_clean.csv`](data/clean/company_financials_clean.csv) is structured and complete.
+
+
+The previews of the first 10 rows of raw and clean data are shown below.
 
 ### Raw Data Preview
 
 ![Raw data preview](raw_preview.png)
 
-## Data Preparation
-
-Cleaning and transformation steps performed in Python:
-
-- Converted numeric columns to float.
-- **Imputed missing values** in financial columns using the **sector median** (with global median as fallback).
-- Computed derived metrics:
-  - **ROA** = Net Income / Total Assets
-  - **ROE** = Net Income / Total Equity
-  - **Debt-to-Equity** = Long-Term Debt / Total Equity
-  - **Profit Margin** = Net Income / Revenue
-- Added a sector column based on ticker (manual mapping).
-
-The clean dataset is stored in:
-
-- [`company_financials_clean.csv`](data/clean/company_financials_clean.csv)
-
-A preview is shown below
-
 ### Clean Data Preview
 
 ![Clean data preview](clean_preview.png)
 
-## Exploratory Data Analysis
+# Market Data
+
+## Data Source & Collection
+
+Market data was obtained from Yahoo Finance using the Python library `yfinance`. The daily OHLCV data was collected for the same 40 companies from 2023-01-01 to present. For each company the following was computed:
+
+- Latest Price: most recent closing price in the sample period.
+- Avg Volume: mean daily trading volume over the period (a liquidity proxy).
+- Total Return: cumulative percentage change in price from the first to the last day in the sample.
+- Volatility: annualized standard deviation of daily returns (std × √252). Higher means riskier.
+- Beta: sensitivity of the stock's returns to the S&P 500 (a market-risk measure). Beta > 1 means the stock moves more than the market; Beta < 1 means less.
+
+The full Python script is here: [`code/market_data.py`](code/market_data.py) 
+
+The raw market data is stored in [`market_data_raw.csv`](data/raw/market_data_raw.csv).
+Each row represents one trading day, with the standard OHLCV fields: Open, High, Low, Close, and Volume.
+Though the sample shows a clean series (no missing values), the raw data is too granular for cross-company analysis.
+It is therefore summarized into company-level risk metrics (in the clean market data).
+Each row in the clean market data represents one publicly traded company, with five market-derived features
+that will be merged with the financial dataset.
+
+The previews are shown below:
+
+Clean data: [`market_data_clean.csv`](data/clean/market_data_clean.csv)
+
+### Raw Market Data Preview
+
+![Raw market data preview](market_raw_preview.png)
+
+### Clean Market Data Preview
+
+![Clean market data preview](market_clean_preview.png)
+
+These metrics will be merged with the financial dataset to explore the relationship between market risk
+and financial performance.
+
+# Exploratory Data Analysis
+
+Before modeling, EDA are used to answer the following questions:
+
+- How are the key financial and market variables distributed?
+- Which sectors show the highest (and lowest) financial performance?
+- Is market risk (volatility, beta) associated with accounting performance (ROA, ROE)?
+- Which variables are strongly correlated with each other? Are there redundant features?
+- Are there outliers or extreme values that could distort ML models?
+
+The plots and tables below address each of these questions in turn.
 
 ```{r}
-#| label: setup-eda
+#| label: setup
 #| echo: false
 #| message: false
 #| warning: false
 library(readr)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(scales)
+library(reshape2)
+library(GGally)
 
-fin <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+fin    <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+market <- read_csv("data/clean/market_data_clean.csv",          show_col_types = FALSE)
+merged <- inner_join(fin, market, by = c("ticker", "company", "sector"))
 ```
 
-### Summary statistics
+
+## Summary statistics
 
 ![Summary statistics](summary_stats.png)
 
-### Distribution of ROA by sector
+Revenue spans a wide range, from $1.5 billion (min) to $648 billion (max), with a mean of $97.6 billion and a median of $59.8 billion.
+This indicates a right-skewed distribution, driven by a few very large companies such as Walmart ($648B) and Apple ($215B).
+
+Net Income has a minimum of −$2.2 billion, meaning at least one company reported a net loss in its most recent fiscal year.
+The maximum is $73.8 billion (Alphabet). The mean ($12.0B) is again higher than the median ($6.9B), confirming skewness.
+
+Total Assets range from $12.8 billion to nearly $3.9 trillion (JPMorgan Chase), with a standard deviation of $808 billion — the largest dispersion of any variable.
+This reflects the huge differences in balance-sheet size across sectors (banks vs. technology vs. consumer staples).
+
+```{r}
+#| label: roa-tickers
+#| fig-cap: "ROA by Company (40 Tickers)"
+#| fig-width: 10
+#| fig-height: 6
+fin %>%
+  arrange(ROA) %>%
+  mutate(ticker = factor(ticker, levels = ticker)) %>%
+  ggplot(aes(x = ticker, y = ROA)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = mean(fin$ROA, na.rm = TRUE),
+             color = "firebrick", linetype = "dashed") +
+  labs(x = NULL, y = "Return on Assets (ROA)",
+       title = "ROA by Company (Ordered)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
+```
+
+ROA (Return on Assets) averages 0.068 (6.8%) with a median of 0.056, and ranges from −0.021 to 0.267. The negative minimum again signals that at least one company was unprofitable during the period. Nvidia's ROA of 0.267 is the strongest in the sample.
+
+```{r}
+#| label: roe-tickers
+#| fig-cap: "ROE by Company (Ordered, 40 Tickers)"
+#| fig-width: 10
+#| fig-height: 6
+fin %>%
+  arrange(ROE) %>%
+  mutate(ticker = factor(ticker, levels = ticker)) %>%
+  ggplot(aes(x = ticker, y = ROE, fill = sector)) +
+  geom_col() +
+  labs(x = NULL, y = "Return on Equity (ROE)",
+       title = "ROE by Company (Ordered)",
+       fill = "Sector") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
+```
+
+ROE (Return on Equity) has the widest relative spread (SD = 1.901), with values from −1.411 to 11.960.
+UPS exhibits the maximum ROE (≈ 11.96) in the dataset.
+This is not a sign of exceptional profitability but a consequence of its extremely small equity base.
+This illustrates why ROE must be interpreted jointly with leverage and equity size,
+and why ROA is a more reliable measure of operating performance.
+
+```{r}
+#| label: de-tickers
+#| fig-cap: "Debt-to-Equity by Company (Ordered, 40 Tickers)"
+#| fig-width: 10
+#| fig-height: 6
+fin %>%
+  arrange(Debt_to_Equity) %>%
+  mutate(ticker = factor(ticker, levels = ticker)) %>%
+  ggplot(aes(x = ticker, y = Debt_to_Equity, fill = sector)) +
+  geom_col() +
+  labs(x = NULL, y = "Debt-to-Equity",
+       title = "Debt-to-Equity by Company (Ordered)",
+       fill = "Sector") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
+```
+
+Debt-to-Equity shows a striking outlier: a maximum of 30.602 and a minimum of −13.722. AbbVie's ratio of 19.399 (seen in the clean data preview) reflects a highly leveraged capital structure, likely the result of major acquisitions and share buybacks that reduced shareholders' equity.
+Negative values occur when total equity is negative, which happens when accumulated losses or buybacks exceed contributed capital.
+
+
+
+## Distribution of ROA by sector
 
 ```{r}
 #| label: roa-by-sector
@@ -98,7 +218,25 @@ fin %>%
   theme(legend.position = "none")
 ```
 
-### Revenue vs. Net Income
+The boxplot shows the distribution of Return on Assets (ROA) across the eight sectors in the dataset. ROA measures how efficiently a company uses its assets to generate profit.
+
+Median ROA varies substantially by sector. Technology and Healthcare tend to have the highest median ROA,
+while Utilities and Energy show the lowest. This reflects differences in asset intensity.
+Tech and healthcare firms often rely more on intellectual property and less on heavy physical assets,
+whereas utilities and energy require massive capital investments in infrastructure.
+
+Even within a sector, there is considerable variation.
+For example, the Technology sector has a wide interquartile range, driven by companies like Nvidia (ROA ≈ 0.267)
+and Apple (ROA ≈ 0.122) versus others with lower profitability.
+This suggests that sector alone does not fully explain performance.
+
+Banks and financial firms (e.g., JPMorgan, Bank of America) have relatively low ROA (median around 0.013–0.015).
+This is typical because banks operate with very large asset bases relative to their profits;
+ROA is not the primary performance metric for them.
+
+In summary, ROA is strongly associated with sector, but within-sector variation suggests other factors also play a role.
+
+## Revenue vs. Net Income
 
 ```{r}
 #| label: rev-vs-netincome
@@ -121,37 +259,20 @@ fin %>%
   theme_minimal()
 ```
 
-## Initial Findings
+The scatterplot shows the relationship between Revenue and Net Income for all 40 companies, colored by sector.
+Because both variables are highly skewed and include negative values, a signed square root transformation was used on both axes to compress large values while preserving the sign.
 
-- The dataset contains **40 companies** across **8 sectors**.
-- Missing values were imputed using sector medians, so all financial variables are now complete.
-- ROA varies widely by sector; technology and healthcare often show higher ROA, while utilities and energy have lower ROA.
-- There is a positive relationship between revenue and net income, as expected, but the spread suggests other factors (e.g., margins, industry) also matter.
-- These initial observations set the stage for integrating additional data sources and building predictive models in later modules.
+As expected, higher revenue generally corresponds to higher net income. However, the relationship is not perfectly linear.
+There is considerable scatter. For example, Walmart has a revenue of $648B, but Net Income of only $15.5B (Profit Margin ≈ 2.4%),
+while Nvidia has a revenue of $60.9B, but Net Income of $29.8B (Profit Margin ≈ 48.9%).
+This means that revenue size alone does not determine profitability.
+Sector/business model strongly influences the revenue-to-profit conversion.
+Technology and Healthcare companies tend to cluster in the upper-middle region (high net income relative to revenue).
+Energy and Utilities tend to cluster lower (lower net income relative to revenue).
 
-# Market Data
-
-## Data Source & Collection
-
-Market data was obtained from **Yahoo Finance** using the Python library `yfinance`. The daily OHLCV data was collected for the same 40 companies from **2023-01-01 to present**. For each company the following was computed:
-
-- **Latest closing price**
-- **Average daily trading volume**
-- **Total return** over the period
-- **Annualized volatility** (std of daily returns × √252)
-- **Beta** relative to the S&P 500 index
-
-The full Python script is here: [`code/market_data.py`](code/market_data.py)  
-Raw data: [`market_data_raw.csv`](data/raw/market_data_raw.csv)
-Clean data: [`market_data_clean.csv`](data/clean/market_data_clean.csv)
-
-### Raw Market Data Preview
-
-![Raw market data preview](market_raw_preview.png)
-
-### Clean Market Data Preview
-
-![Clean market data preview](market_clean_preview.png)
+In summary, while revenue is positively associated with net income,
+the wide dispersion shows the importance of profitability ratios
+(like ROA, ROE, and profit margin) as complementary measures of financial performance.
 
 ## Merging with Financial Data
 
@@ -184,6 +305,19 @@ merged %>%
   labs(x = "Annualized Volatility", y = "Return on Assets", title = "Volatility vs. ROA") +
   theme_minimal()
 ```
+This scatterplot shows the relationship between annualized market volatility and Return on Assets,
+with points colored by sector.
+
+The points are widely scattered, and there is no obvious upward or downward slope.
+This suggests that volatility alone is not a reliable predictor of accounting profitability.
+
+Sector clustering is evident. Technology firms (e.g., Nvidia, Apple, Alphabet) tend to occupy the lower-volatility,
+higher-ROA region. Utilities and Financials sit in the lower-volatility, lower-ROA region.
+
+Nvidia and Tesla stand out with volatility > 0.48 and betas > 2.0. Nvidia also has a high ROA (≈0.267),
+while Tesla's ROA (≈0.123) is more modest. High market risk can accompany strong profitability.
+
+At the bivariate level, market volatility does not show a strong linear association with ROA.
 
 ### Beta vs. ROA
 
@@ -198,6 +332,8 @@ merged %>%
   labs(x = "Beta", y = "Return on Assets", title = "Beta vs. ROA") +
   theme_minimal()
 ```
+This plot replaces volatility on the x-axis with Beta. Beta captures systematic (market-wide) risk rather than total price variability.
+As with volatility, the scatter does not show a strong monotonic relationship.
 
 ### Total Return by Sector
 
@@ -214,3 +350,53 @@ merged %>%
   theme_minimal() +
   theme(legend.position = "none")
 ```
+This boxplot shows the distribution of total return (cumulative percentage price change over the sample period,
+2023‑01‑01 to present) for each sector, sorted by median return.
+
+Total return is strongly associated with sector.
+Technology and Communication Services dominate, while Consumer Staples and Healthcare lag.
+This reveals the need to treat sector as a grouping variable in later ML models,
+rather than pooling all companies together.
+
+### Correlation Matrix
+
+Pairwise correlations among the numeric variables shown to see features that are strongly related and which may be redundant.
+
+```{r}
+#| label: corr-matrix
+#| fig-cap: "Correlation Matrix of Financial and Market Variables"
+#| fig-width: 9
+#| fig-height: 7
+library(reshape2)
+library(ggplot2)
+
+corr_vars <- merged %>%
+  select(Revenue, NetIncome, TotalAssets, ROA, ROE,
+         Debt_to_Equity, Profit_Margin, volatility, beta, total_return)
+
+corr_mat <- cor(corr_vars, use = "complete.obs")
+melted <- melt(corr_mat)
+
+ggplot(melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient2(low = "firebrick", mid = "white", high = "steelblue",
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(title = "Correlation Matrix", x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The correlation matrix shows that Revenue, Net Income, and Total Assets are strongly positively correlated with each other.
+This suggests possible multicollinearity. ROA, ROE, and Profit Margin are moderately positively correlated with each other
+but not perfectly since they capture related but distinct aspects of profitability.
+Debt-to-Equity has a weak or negative relationship with profitability measures. Volatility and Beta are strongly positively
+correlated with each other (as expected since both measure market risk). So they may be partially redundant in modeling.
+Total Return is positively correlated with volatility and beta,
+consistent with the idea that higher-risk stocks delivered higher returns during this period.
+
+
+# Insights for Models
+
+Several variables (Revenue, Total Assets, Net Income) are heavily skewed and will likely need transformation before use in linear models.
+ROE and Debt-to-Equity contain extreme values that may dominate distance-based methods (like KNN or SVM) unless standardized.
