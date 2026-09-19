@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>What factors are associated with differences in the financial performance of publicly traded companies?</title>
+<title>Understanding Financial Performance Through Machine Learning</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -180,15 +180,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
+  <li><a href="#what-prior-research-tells-us" id="toc-what-prior-research-tells-us" class="nav-link" data-scroll-target="#what-prior-research-tells-us">What Prior Research Tells Us</a></li>
+  <li><a href="#the-gap-this-project-addresses" id="toc-the-gap-this-project-addresses" class="nav-link" data-scroll-target="#the-gap-this-project-addresses">The Gap This Project Addresses</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">What factors are associated with differences in the financial performance of publicly traded companies?</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Understanding Financial Performance Through Machine Learning</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">An Exploratory Analysis of Publicly Traded Companies</p>
 </div>
 
 
@@ -205,18 +218,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Financial performance is an important measure of the economic stability of a company. It describes how effectively a company uses its resources to generate revenue, manage expenses, meet financial obligations, and create value. Publicly traded companies like Google, Amazon, report extensive financial information through documents such as annual reports and financial statements. These reports provide information about a company’s revenues, expenses, assets, liabilities, equity, and profitability. Investors, financial analysts, managers, employees, and policymakers rely on this information to evaluate the condition and performance of businesses. Common measures of financial performance include revenue growth, profitability, return on assets, return on equity, earnings, and measures of financial leverage. A company’s performance can also vary substantially across industries because businesses operate under different economic conditions, competitive environments, and financial structures. For example, OpenAI may have very different financial characteristics from a SpaceX or JP Morgan Chase. Understanding these differences is important because financial performance can influence investment decisions, access to capital, business growth, and the long-term survival of a company. Consequently, examining the factors associated with financial performance can provide a broader understanding of why some publicly traded companies perform differently from others.</p>
-<p>The financial performance of a publicly traded company is influenced by many factors, both within and outside the company. Company-specific characteristics such as size, debt, liquidity, and asset structure can provide information about its financial condition. At the same time, companies operate within broader economic environments that can affect their ability to manage financial risks. Interest rates can influence borrowing costs, while inflation can affect consumer demand. Market volatility can also create different conditions for companies operating in different sectors. In addition, investor sentiment can affect how companies are valued. These relationships are not necessarily the same across industries or company sizes. Examining company characteristics together with broader market can therefore provide a more complete picture of corporate financial performance. Understanding these relationships is particularly relevant to investors who must evaluate companies using large amounts of financial and economic information.\</p>
-<p>The increasing availability of financial and economic data has made it possible to examine corporate financial performance from a much broader perspective. Publicly traded companies generate large amounts of information through financial statements, regulatory filings, market activity, and other forms of financial reporting. These data can also be combined with broader economic information, such as interest rates, inflation, employment, and economic growth. As a result, analyzing financial performance may involve many variables that differ in scale, structure, and economic meaning. Traditional financial analysis often relies on a relatively small number of indicators or relationships that can be examined directly. While these approaches remain valuable, analyzing large and multidimensional datasets can make it more difficult to identify relationships among many factors simultaneously. This creates an opportunity to use data-driven approaches that can examine complex patterns across company characteristics, market conditions, and economic environments. In this project, machine learning provides a framework for exploring these patterns and identifying factors that are associated with differences in financial performance.</p>
-<p>Questions to Explore</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>In May 2026, two of the world’s most recognizable companies reported results that could not have been more different. Nike announced major declines in its financial performance, while Microsoft reported a significant increase in net income.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Both firms are large, well-managed, and globally recognized—yet their outcomes diverged sharply. This contrast is not unusual. It reflects a deeper truth about corporate finance: financial performance can varies greatly across companies, and understanding <em>why</em> remains one of the most important questions for investors, analysts, and policymakers.</p>
+<p><img src="background.avif" class="img-fluid"></p>
+<section id="why-this-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h2>
+<p>A company’s performance does not exist in isolation. It is shaped by its industry, its size, its capital structure, and the broader economic environment in which it operates. A technology firm like Microsoft and a consumer-facing company like Nike face fundamentally different cost structures, growth trajectories, and risk profiles. Understanding the factors associated with financial performance can therefore provide a broader understanding of why some publicly traded companies outperform others, and what that means for the economy as a whole.</p>
+</section>
+<section id="what-prior-research-tells-us" class="level2">
+<h2 class="anchored" data-anchor-id="what-prior-research-tells-us">What Prior Research Tells Us</h2>
+<p>The increasing availability of financial and economic data has made it possible to examine corporate performance from a much wider perspective than before. Publicly traded companies now generate vast amounts of information through financial statements, regulatory filings, market activity, and other reporting channels. Combined with macroeconomic indicators such as interest rates, inflation, and GDP growth, this data creates new opportunities for systematic analysis.</p>
+<p>Prior research has already begun to identify key drivers. <a href="https://doi.org/10.1155/2022/6382839">Sujith et al.&nbsp;(2022)</a> show that core financial inputs such as revenue and EBITDA have a direct effect on net profit, and they argue that a structured evaluation framework provides deeper insights than conventional, single-metric analysis. <a href="https://doi.org/10.1108/IJOEM-06-2021-0886">Ahmad et al.&nbsp;(2023)</a> found that industry variation, firm size, technology use, and environmental uncertainty are significantly related to how well firms perform.</p>
+</section>
+<section id="the-gap-this-project-addresses" class="level2">
+<h2 class="anchored" data-anchor-id="the-gap-this-project-addresses">The Gap This Project Addresses</h2>
+<p>Traditional financial analysis often relies on a relatively small number of indicators examined directly. While these approaches remain valuable, they struggle to capture the complex, multidimensional relationships that emerge when many factors interact simultaneously. This creates an opportunity to use data-driven and machine learning approaches that can examine patterns across company characteristics, market conditions, and economic environments at once. These findings motivate this project’s broader investigation of the drivers of financial performance across publicly traded companies.</p>
+</section>
+<section id="research-questions" class="level2">
+<h2 class="anchored" data-anchor-id="research-questions">Research Questions</h2>
+<p>This project explores the following questions, organized around four themes:</p>
+<p><strong>Company Characteristics and Performance</strong></p>
 <ol type="1">
 <li>Which company characteristics are most strongly associated with financial performance?</li>
 <li>How does company size relate to financial performance?</li>
 <li>How is a company’s level of debt associated with its financial performance?</li>
 <li>Is profitability associated with other measures of financial performance?</li>
+</ol>
+<p><strong>Industry and Sector Differences</strong></p>
+<ol start="5" type="1">
 <li>How does financial performance differ across industries and sectors?</li>
+</ol>
+<p><strong>Macroeconomic Conditions</strong></p>
+<ol start="6" type="1">
 <li>How are interest rates associated with corporate financial performance?</li>
 <li>How does inflation relate to the financial performance of publicly traded companies?</li>
+</ol>
+<p><strong>Data-Driven Exploration</strong></p>
+<ol start="8" type="1">
 <li>Do companies with similar financial characteristics exhibit similar levels of performance?</li>
 <li>Are there distinct groups of publicly traded companies with different financial profiles?</li>
 <li>Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?</li>
@@ -225,8 +264,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <!-- -->
 
+</section>
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Nike, Inc.&nbsp;(2026). <em>NIKE, Inc.&nbsp;Reports Fiscal 2026 Fourth Quarter and Full Year Results</em>. <a href="https://about.nike.com/en/newsroom/releases/nike-inc-reports-fiscal-2026-fourth-quarter-and-full-year-results">Link</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Microsoft Corporation (2026). <em>FY2026 Q4 Earnings Release</em>. <a href="https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast">Link</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -679,27 +727,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "What factors are associated with differences in the financial performance of publicly traded companies?"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>Financial performance is an important measure of the economic stability of a company. It describes how effectively a company uses its resources to generate revenue, manage expenses, meet financial obligations, and create value. Publicly traded companies like Google, Amazon, report extensive financial information through documents such as annual reports and financial statements. These reports provide information about a company's revenues, expenses, assets, liabilities, equity, and profitability. Investors, financial analysts, managers, employees, and policymakers rely on this information to evaluate the condition and performance of businesses. Common measures of financial performance include revenue growth, profitability, return on assets, return on equity, earnings, and measures of financial leverage. A company's performance can also vary substantially across industries because businesses operate under different economic conditions, competitive environments, and financial structures. For example, OpenAI may have very different financial characteristics from a SpaceX or JP Morgan Chase. Understanding these differences is important because financial performance can influence investment decisions, access to capital, business growth, and the long-term survival of a company. Consequently, examining the factors associated with financial performance can provide a broader understanding of why some publicly traded companies perform differently from others.</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>     </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>The financial performance of a publicly traded company is influenced by many factors, both within and outside the company. Company-specific characteristics such as size, debt, liquidity, and asset structure can provide information about its financial condition. At the same time, companies operate within broader economic environments that can affect their ability to manage financial risks. Interest rates can influence borrowing costs, while inflation can affect consumer demand. Market volatility can also create different conditions for companies operating in different sectors. In addition, investor sentiment can affect how companies are valued. These relationships are not necessarily the same across industries or company sizes. Examining company characteristics together with broader market can therefore provide a more complete picture of corporate financial performance. Understanding these relationships is particularly relevant to investors who must evaluate companies using large amounts of financial and economic information.<span class="sc">\\</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>     </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>The increasing availability of financial and economic data has made it possible to examine corporate financial performance from a much broader perspective. Publicly traded companies generate large amounts of information through financial statements, regulatory filings, market activity, and other forms of financial reporting. These data can also be combined with broader economic information, such as interest rates, inflation, employment, and economic growth. As a result, analyzing financial performance may involve many variables that differ in scale, structure, and economic meaning. Traditional financial analysis often relies on a relatively small number of indicators or relationships that can be examined directly. While these approaches remain valuable, analyzing large and multidimensional datasets can make it more difficult to identify relationships among many factors simultaneously. This creates an opportunity to use data-driven approaches that can examine complex patterns across company characteristics, market conditions, and economic environments. In this project, machine learning provides a framework for exploring these patterns and identifying factors that are associated with differences in financial performance.</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>     </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="in">     </span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Questions to Explore</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Which company characteristics are most strongly associated with financial performance?</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>How does company size relate to financial performance?</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>How is a company's level of debt associated with its financial performance?</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is profitability associated with other measures of financial performance?</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>How does financial performance differ across industries and sectors?</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>How are interest rates associated with corporate financial performance?</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>How does inflation relate to the financial performance of publicly traded companies?</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Do companies with similar financial characteristics exhibit similar levels of performance?</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Are there distinct groups of publicly traded companies with different financial profiles?</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Understanding Financial Performance Through Machine Learning"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "An Exploratory Analysis of Publicly Traded Companies"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>In May 2026, two of the world's most recognizable companies reported results that could not have been more different.</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Nike announced major declines in its financial performance, while Microsoft reported a significant</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>increase in net income.<span class="ot">[^nike]</span> <span class="ot">[^microsoft]</span> Both firms are large, well-managed, and globally recognized—yet</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>their outcomes diverged sharply. This contrast is not unusual. It reflects a deeper truth about corporate finance:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>financial performance can varies greatly across companies, and understanding *why*</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>remains one of the most important questions for investors, analysts, and policymakers.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ot">[^nike]: </span>Nike, Inc. (2026). *NIKE, Inc. Reports Fiscal 2026 Fourth Quarter and Full Year Results*. <span class="co">[</span><span class="ot">Link</span><span class="co">](https://about.nike.com/en/newsroom/releases/nike-inc-reports-fiscal-2026-fourth-quarter-and-full-year-results)</span>.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ot">[^microsoft]: </span>Microsoft Corporation (2026). *FY2026 Q4 Earnings Release*. <span class="co">[</span><span class="ot">Link</span><span class="co">](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast)</span>.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="al">![](background.avif)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why This Matters</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>A company's performance does not exist in isolation. It is shaped by its industry, its size, its capital structure,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>and the broader economic environment in which it operates. A technology firm like Microsoft and a consumer-facing company</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>like Nike face fundamentally different cost structures, growth trajectories, and risk profiles.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Understanding the factors associated with financial performance can therefore provide a broader understanding of</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>why some publicly traded companies outperform others, and what that means for the economy as a whole.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## What Prior Research Tells Us</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>The increasing availability of financial and economic data has made it possible to examine corporate performance from</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>a much wider perspective than before. Publicly traded companies now generate vast amounts of information through financial</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>statements, regulatory filings, market activity, and other reporting channels. Combined with macroeconomic indicators such</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>as interest rates, inflation, and GDP growth, this data creates new opportunities for systematic analysis.</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>Prior research has already begun to identify key drivers. <span class="co">[</span><span class="ot">Sujith et al. (2022)</span><span class="co">](https://doi.org/10.1155/2022/6382839)</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>show that core financial inputs such as revenue and EBITDA have a direct effect on net profit, and they argue that a</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>structured evaluation framework provides deeper insights than conventional, single-metric analysis.</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Ahmad et al. (2023)</span><span class="co">](https://doi.org/10.1108/IJOEM-06-2021-0886)</span> found that industry variation, firm size, technology use,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>and environmental uncertainty are significantly related to how well firms perform.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Gap This Project Addresses</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Traditional financial analysis often relies on a relatively small number of indicators examined directly.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>While these approaches remain valuable, they struggle to capture the complex, multidimensional relationships that</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>emerge when many factors interact simultaneously. This creates an opportunity to use data-driven and machine learning</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>approaches that can examine patterns across company characteristics, market conditions, and economic environments at once.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>These findings motivate this project's broader investigation of the drivers of financial performance across publicly traded</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>companies.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Research Questions</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>This project explores the following questions, organized around four themes:</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>**Company Characteristics and Performance**</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Which company characteristics are most strongly associated with financial performance?</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>How does company size relate to financial performance?</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>How is a company's level of debt associated with its financial performance?</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is profitability associated with other measures of financial performance?</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>**Industry and Sector Differences**</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>How does financial performance differ across industries and sectors?</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>**Macroeconomic Conditions**</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>How are interest rates associated with corporate financial performance?</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>How does inflation relate to the financial performance of publicly traded companies?</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>**Data-Driven Exploration**</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Do companies with similar financial characteristics exhibit similar levels of performance?</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Are there distinct groups of publicly traded companies with different financial profiles?</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
