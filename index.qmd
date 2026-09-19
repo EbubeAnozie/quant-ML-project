@@ -1,34 +1,30 @@
 ---
-title: "Understanding Corporate Financial Performance Through Machine Learning"
+title: "Ebube Anozie"
+subtitle: "CSCI 5612 · Machine Learning for Data Science"
 ---
-
-**Ebube Anozie**  
-PhD Student in Applied Mathematics  
-University of Colorado Boulder
-
-[View the code on GitHub](https://github.com/ebubeanozie/quant-ML-project)
-
-
-
-## About the Project
-
-The project is developed as part of **CSCI 5612: Machine
-Learning for Data Science** at the University of Colorado
-Boulder.
-
 
 ## About Me
 
-I am a PhD student in Applied Mathematics at the University of
-Colorado Boulder. My research interests are in the mathematics of machine learning,
-and quantitative finance. I study the mathematical mechanisms underlying generative models.
-[My CV]: (https://github.com/ebubeanozie/quant-ML-project)
+I am a PhD student in **Applied Mathematics** at the University of Colorado Boulder.
+My research interests are in the mathematics of machine learning. I study the mathematical mechanisms underlying
+generative models.
 
+[View my CV](Ebube_Anozie_CV.pdf){.btn .btn-outline-primary}
 
-## Explore the Project
+---
 
-Use the navigation bar above to explore the different stages of
-the project.
+## About the Course
 
+This website is developed as part of **CSCI 5612: Machine Learning for Data Science** at the University of Colorado Boulder.
+
+[View the project souce code on GitHub](https://github.com/ebubeanozie/quant-ML-project){.btn .btn-primary}
+
+---
+
+## Explore
+
+Use the navigation bar above to browse the different stages of the course project.
+
+---
 
 **Ebube Anozie · University of Colorado Boulder · 2026**
