@@ -27,6 +27,10 @@ $$
 
 where $\Sigma$ is the covariance matrix, $v_i$ is the $i$-th eigenvector, and $\lambda_i$ is its eigenvalue. The **loading** of each original variable on a component is given by the corresponding entry of the eigenvector.
 
+![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)
+
+![PCA finds the directions of maximum variance.](img_pca_concept_2.png)
+
 **Dimensionality reduction** means replacing a large set of features with a smaller set that retains most of the information.
 In PCA, we keep the first $k$ principal components, which together explain most of the total variance.
 This reduces the number of dimensions without discarding the underlying signal.
@@ -40,11 +44,7 @@ we can actually plot.
 Reducing dimensions can improve generalization.
 - **Collinearity is common.** In our dataset, Revenue, Net Income, and Total Assets are strongly correlated.
 PCA collapses these into a single component that captures "size," removing redundancy.
-- **Noise accumulates.** With many features, noise can dominate the signal..
-
-![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)
-
-![PCA finds the directions of maximum variance.](img_pca_concept_2.png)
+- **Noise accumulates.** With many features, noise can dominate the signal.
 
 In this section, we do the following:
 

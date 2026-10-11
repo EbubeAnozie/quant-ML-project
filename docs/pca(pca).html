@@ -259,15 +259,6 @@ window.Quarto = {
 \Sigma v_i = \lambda_i v_i
 \]</span></p>
 <p>where <span class="math inline">\(\Sigma\)</span> is the covariance matrix, <span class="math inline">\(v_i\)</span> is the <span class="math inline">\(i\)</span>-th eigenvector, and <span class="math inline">\(\lambda_i\)</span> is its eigenvalue. The <strong>loading</strong> of each original variable on a component is given by the corresponding entry of the eigenvector.</p>
-<p><strong>Dimensionality reduction</strong> means replacing a large set of features with a smaller set that retains most of the information. In PCA, we keep the first <span class="math inline">\(k\)</span> principal components, which together explain most of the total variance. This reduces the number of dimensions without discarding the underlying signal.</p>
-<p>High-dimensional data is difficult to work with for several reasons:</p>
-<ul>
-<li><strong>Visualization is impossible</strong> beyond three dimensions. PCA lets us project data onto two or three axes we can actually plot.</li>
-<li><strong>Distance calculations become unreliable.</strong> In high dimensions, all points tend to be roughly equidistant.</li>
-<li><strong>Models overfit more easily.</strong> More features than observations lead to unstable estimates. Reducing dimensions can improve generalization.</li>
-<li><strong>Collinearity is common.</strong> In our dataset, Revenue, Net Income, and Total Assets are strongly correlated. PCA collapses these into a single component that captures “size,” removing redundancy.</li>
-<li><strong>Noise accumulates.</strong> With many features, noise can dominate the signal..</li>
-</ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img_pca_concept_1.png" class="img-fluid figure-img"></p>
@@ -280,6 +271,15 @@ window.Quarto = {
 <figcaption>PCA finds the directions of maximum variance.</figcaption>
 </figure>
 </div>
+<p><strong>Dimensionality reduction</strong> means replacing a large set of features with a smaller set that retains most of the information. In PCA, we keep the first <span class="math inline">\(k\)</span> principal components, which together explain most of the total variance. This reduces the number of dimensions without discarding the underlying signal.</p>
+<p>High-dimensional data is difficult to work with for several reasons:</p>
+<ul>
+<li><strong>Visualization is impossible</strong> beyond three dimensions. PCA lets us project data onto two or three axes we can actually plot.</li>
+<li><strong>Distance calculations become unreliable.</strong> In high dimensions, all points tend to be roughly equidistant.</li>
+<li><strong>Models overfit more easily.</strong> More features than observations lead to unstable estimates. Reducing dimensions can improve generalization.</li>
+<li><strong>Collinearity is common.</strong> In our dataset, Revenue, Net Income, and Total Assets are strongly correlated. PCA collapses these into a single component that captures “size,” removing redundancy.</li>
+<li><strong>Noise accumulates.</strong> With many features, noise can dominate the signal.</li>
+</ul>
 <p>In this section, we do the following:</p>
 <ol type="1">
 <li><strong>Reduce</strong> our 17 financial and market features into a small number of components that retain most of the variance.</li>
@@ -978,24 +978,24 @@ window.Quarto = {
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>where $\Sigma$ is the covariance matrix, $v_i$ is the $i$-th eigenvector, and $\lambda_i$ is its eigenvalue. The **loading** of each original variable on a component is given by the corresponding entry of the eigenvector.</span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>**Dimensionality reduction** means replacing a large set of features with a smaller set that retains most of the information.</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>In PCA, we keep the first $k$ principal components, which together explain most of the total variance.</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>This reduces the number of dimensions without discarding the underlying signal.</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="al">![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="al">![PCA finds the directions of maximum variance.](img_pca_concept_2.png)</span></span>
 <span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>High-dimensional data is difficult to work with for several reasons:</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Visualization is impossible** beyond three dimensions. PCA lets us project data onto two or three axes</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>we can actually plot.</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Distance calculations become unreliable.** In high dimensions, all points tend to be roughly equidistant.</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Models overfit more easily.** More features than observations lead to unstable estimates.</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>Reducing dimensions can improve generalization.</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Collinearity is common.** In our dataset, Revenue, Net Income, and Total Assets are strongly correlated.</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>PCA collapses these into a single component that captures "size," removing redundancy.</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Noise accumulates.** With many features, noise can dominate the signal..</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="al">![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="al">![PCA finds the directions of maximum variance.](img_pca_concept_2.png)</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>**Dimensionality reduction** means replacing a large set of features with a smaller set that retains most of the information.</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>In PCA, we keep the first $k$ principal components, which together explain most of the total variance.</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>This reduces the number of dimensions without discarding the underlying signal.</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>High-dimensional data is difficult to work with for several reasons:</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Visualization is impossible** beyond three dimensions. PCA lets us project data onto two or three axes</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>we can actually plot.</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Distance calculations become unreliable.** In high dimensions, all points tend to be roughly equidistant.</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Models overfit more easily.** More features than observations lead to unstable estimates.</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>Reducing dimensions can improve generalization.</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Collinearity is common.** In our dataset, Revenue, Net Income, and Total Assets are strongly correlated.</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>PCA collapses these into a single component that captures "size," removing redundancy.</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Noise accumulates.** With many features, noise can dominate the signal.</span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>In this section, we do the following:</span>
 <span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
