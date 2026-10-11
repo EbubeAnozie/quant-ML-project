@@ -127,6 +127,18 @@ The summary statistics reveal two consistent patterns: **extreme skew** and **wi
 - **Total Assets** range from **$12.8 billion** to nearly **$3.9 trillion** (JPMorgan Chase), with a standard deviation of **$808 billion**—the widest spread in the dataset. This reflects the enormous differences in balance-sheet size across sectors, from banks to technology to consumer staples.
 
 ```{r}
+#| label: hist-revenue
+#| fig-cap: "Distribution of Revenue Across 40 Companies"
+#| fig-width: 8
+#| fig-height: 5
+ggplot(fin, aes(x = Revenue / 1e9)) +
+  geom_histogram(bins = 12, fill = "steelblue", color = "white") +
+  labs(x = "Revenue (Billions USD)", y = "Number of Companies",
+       title = "Distribution of Revenue Across 40 Companies") +
+  theme_minimal()
+```
+
+```{r}
 #| label: roa-tickers
 #| fig-cap: "ROA by Company (40 Tickers)"
 #| fig-width: 10
@@ -213,6 +225,7 @@ to firms with much lower profitability. This shows sector alone does not fully e
 
 In short, **ROA is strongly associated with sector**, but the within-sector spread suggests other factors
 like leverage, efficiency, market conditions are at play.
+
 
 ## Revenue vs. Net Income
 

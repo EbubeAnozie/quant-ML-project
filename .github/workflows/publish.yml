@@ -23,7 +23,7 @@ jobs:
 
       - name: Install R packages
         run: |
-                Rscript -e "install.packages(c('knitr', 'rmarkdown', 'readr', 'dplyr', 'tidyr', 'ggplot2', 'scales', 'reshape2', 'GGally', 'ggrepel'))"
+                Rscript -e "install.packages(c('knitr', 'rmarkdown', 'readr', 'dplyr', 'tidyr', 'ggplot2', 'scales', 'reshape2', 'GGally', cluster','factoextra', 'ggrepel'))"
       - name: Render Quarto
         uses: quarto-dev/quarto-actions/render@v2
 
