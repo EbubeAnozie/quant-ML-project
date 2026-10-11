@@ -50,11 +50,11 @@ companies.
 
 ## Unsupervised Learning
 
-![](clutering.png)
+![](clustering.png)
 
 This project first explores whether the 40 companies in the dataset fall into groups based on their financial
-and market characteristics. Imagine sorting a collection of photographs without knowing what any of them show.
-As one looks through them, one might notice that some feature landscapes, others show people, and others show cities.
+and market characteristics. Imagine sorting a collection of towels without knowing what any of them show.
+As one looks through them, one might notice they fit in different color categories, textures, material, and designs.
 **Clustering** works in a similar way by allowing patterns to emerge from the data without deciding on the groups beforehand.
 Another method the project uses is **Principal Component Analysis (PCA)**.
 Imagine trying to describe a company using dozens of different financial measurements.
