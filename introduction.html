@@ -190,6 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
   <li><a href="#what-prior-research-tells-us" id="toc-what-prior-research-tells-us" class="nav-link" data-scroll-target="#what-prior-research-tells-us">What Prior Research Tells Us</a></li>
   <li><a href="#the-gap-this-project-addresses" id="toc-the-gap-this-project-addresses" class="nav-link" data-scroll-target="#the-gap-this-project-addresses">The Gap This Project Addresses</a></li>
+  <li><a href="#unsupervised-learning" id="toc-unsupervised-learning" class="nav-link" data-scroll-target="#unsupervised-learning">Unsupervised Learning</a></li>
   <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
   </ul></li>
   </ul>
@@ -234,6 +235,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-gap-this-project-addresses" class="level2">
 <h2 class="anchored" data-anchor-id="the-gap-this-project-addresses">The Gap This Project Addresses</h2>
 <p>Traditional financial analysis often relies on a relatively small number of indicators examined directly. While these approaches remain valuable, they struggle to capture the complex, multidimensional relationships that emerge when many factors interact simultaneously. This creates an opportunity to use data-driven and machine learning approaches that can examine patterns across company characteristics, market conditions, and economic environments at once. These findings motivate this project’s broader investigation of the drivers of financial performance across publicly traded companies.</p>
+</section>
+<section id="unsupervised-learning" class="level2">
+<h2 class="anchored" data-anchor-id="unsupervised-learning">Unsupervised Learning</h2>
+<p><img src="clutering.png" class="img-fluid"></p>
+<p>This project first explores whether the 40 companies in the dataset fall into groups based on their financial and market characteristics. Imagine sorting a collection of photographs without knowing what any of them show. As one looks through them, one might notice that some feature landscapes, others show people, and others show cities. <strong>Clustering</strong> works in a similar way by allowing patterns to emerge from the data without deciding on the groups beforehand. Another method the project uses is <strong>Principal Component Analysis (PCA)</strong>. Imagine trying to describe a company using dozens of different financial measurements. Looking at every measurement individually can make it difficult to see the bigger picture, especially when several measurements tell us similar things. For example, a company with high revenue may also have substantial total assets, meaning that some of the information overlaps. PCA helps address this problem by combining related information into a smaller number of summary measures while preserving as much of the important variation in the data as possible.</p>
 </section>
 <section id="research-questions" class="level2">
 <h2 class="anchored" data-anchor-id="research-questions">Research Questions</h2>
@@ -776,31 +782,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>These findings motivate this project's broader investigation of the drivers of financial performance across publicly traded</span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>companies.</span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Research Questions</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unsupervised Learning</span></span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>This project explores the following questions, organized around four themes:</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="al">![](clutering.png)</span></span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>**Company Characteristics and Performance**</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Which company characteristics are most strongly associated with financial performance?</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>How does company size relate to financial performance?</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>How is a company's level of debt associated with its financial performance?</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is profitability associated with other measures of financial performance?</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>**Industry and Sector Differences**</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>How does financial performance differ across industries and sectors?</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>**Macroeconomic Conditions**</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>How are interest rates associated with corporate financial performance?</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>How does inflation relate to the financial performance of publicly traded companies?</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>This project first explores whether the 40 companies in the dataset fall into groups based on their financial</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>and market characteristics. Imagine sorting a collection of photographs without knowing what any of them show.</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>As one looks through them, one might notice that some feature landscapes, others show people, and others show cities.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>**Clustering** works in a similar way by allowing patterns to emerge from the data without deciding on the groups beforehand.</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>Another method the project uses is **Principal Component Analysis (PCA)**.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>Imagine trying to describe a company using dozens of different financial measurements.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>Looking at every measurement individually can make it difficult to see the bigger picture,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>especially when several measurements tell us similar things.</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>For example, a company with high revenue may also have substantial total assets,</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>meaning that some of the information overlaps. PCA helps address this problem by combining related information into a smaller</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>number of summary measures while preserving as much of the important variation in the data as possible.</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## Research Questions</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>This project explores the following questions, organized around four themes:</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>**Data-Driven Exploration**</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>**Company Characteristics and Performance**</span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Do companies with similar financial characteristics exhibit similar levels of performance?</span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Are there distinct groups of publicly traded companies with different financial profiles?</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Which company characteristics are most strongly associated with financial performance?</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>How does company size relate to financial performance?</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>How is a company's level of debt associated with its financial performance?</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is profitability associated with other measures of financial performance?</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>**Industry and Sector Differences**</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>How does financial performance differ across industries and sectors?</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>**Macroeconomic Conditions**</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>How are interest rates associated with corporate financial performance?</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>How does inflation relate to the financial performance of publicly traded companies?</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>**Data-Driven Exploration**</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Do companies with similar financial characteristics exhibit similar levels of performance?</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Are there distinct groups of publicly traded companies with different financial profiles?</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Which combination of company, market, and economic characteristics provides the strongest explanation of differences</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>in financial performance?</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
