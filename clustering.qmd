@@ -4,21 +4,23 @@ title: "Clustering"
 
 # Overview
 
-**Clustering** is an **unsupervised** machine learning method: instead of predicting a labeled outcome, we ask whether the 40 companies in our dataset naturally fall into groups based on their financial and market characteristics. Companies within a cluster should be more similar to each other than to companies in other clusters. Unlike supervised models, there is no "right answer" to compare against—the clusters emerge from the structure of the data itself. This makes clustering a discovery tool: it helps us see whether our intuition about "types of companies" is reflected in the numbers.
+**Clustering** is an **unsupervised** machine learning method. Here, instead of predicting a labeled outcome,
+clustering allows one to check whether the 40 companies in the dataset fall into groups based on their financial and market
+characteristics. Companies within a cluster should be more similar to each other than to companies in other clusters.
 
-## Partitional vs. Hierarchical Clustering
-
-There are two broad families of clustering methods.
-
-**Partitional clustering** divides the data into a fixed number of non-overlapping groups, **k**. The classic example is **k-means**: the algorithm iteratively assigns each observation to the nearest cluster centroid and updates the centroids until they stabilize. K-means is fast and interpretable, but it requires you to specify **k** in advance, and it assumes roughly spherical, similarly sized clusters.
-
-**Hierarchical clustering** does not require you to specify **k** upfront. It builds a **tree** (dendrogram) by repeatedly merging the two closest clusters (agglomerative) or splitting the largest cluster (divisive). You then choose **k** by "cutting" the tree at a chosen height. Hierarchical clustering is more computationally expensive but reveals the full nested structure of the data.
+**Partitional clustering** divides the data into a fixed number of non-overlapping groups, **k**.
+The **k-means** clustering, for example, iteratively assigns each observation to the nearest cluster centroid and
+updates the centroids until they stabilize. K-means requires users to specify **k** in advance, and
+it assumes roughly spherical, similarly sized clusters.
 
 ![Illustration of partitional clustering: points are assigned to a fixed number of clusters.](img_partitional.png)
 
-![Illustration of hierarchical clustering: a dendrogram shows nested merges of observations.](img_hierarchical.png)
+One the other hand, **hierarchical clustering** does not require one to specify **k** in advance.
+It builds a **tree** (dendrogram) by repeatedly merging the two closest clusters (agglomerative).
+One then chooses **k** by "cutting" the tree at a chosen height.
+Hierarchical clustering is more computationally expensive but reveals the full nested structure of the data.
 
-## Distance Metrics
+![Illustration of hierarchical clustering: a dendrogram shows nested merges of observations.](img_hierarchical.png)
 
 Clustering is a distance-based method, so the choice of distance metric matters. Common choices include:
 
@@ -27,71 +29,25 @@ Clustering is a distance-based method, so the choice of distance metric matters.
 - **Cosine similarity/distance** — measures the *angle* between two vectors rather than their magnitude. Useful when the *shape* of the feature profile matters more than its scale.
 - **Correlation distance** — like cosine but centered; captures similarity in relative patterns.
 
-For **k-means**, we use Euclidean distance on standardized data. For **hierarchical clustering**, the instructor requires **Cosine similarity**, so we will use `1 − cosine_similarity` as the distance.
-
-## How We Will Use Clustering for Discovery
-
-Our goal is not to predict anything but to **discover structure**. Specifically:
-
-1. Do the 40 companies form natural groups based on financial ratios and market risk?
-2. Are those groups aligned with sectors (e.g., banks vs. technology vs. utilities), or do they cut across sectors?
-3. What does the "best k" from the silhouette method tell us about how many distinct profiles exist?
-
----
-
-```{r}
-#| label: overview-images
-#| echo: false
-#| message: false
-#| warning: false
-library(ggplot2)
-
-# --- Image 1: partitional concept ---
-set.seed(1)
-demo <- data.frame(
-  x = c(rnorm(30, -1), rnorm(30, 2), rnorm(30, 0.5)),
-  y = c(rnorm(30,  1), rnorm(30, -1), rnorm(30, 2.5)),
-  cluster = factor(rep(c("A","B","C"), each = 30))
-)
-
-p1 <- ggplot(demo, aes(x, y, color = cluster)) +
-  geom_point(size = 2, alpha = 0.8) +
-  stat_ellipse(level = 0.9, linewidth = 0.6) +
-  labs(title = "Partitional Clustering (Concept)",
-       subtitle = "Fixed number of clusters, spherical boundaries",
-       x = NULL, y = NULL) +
-  theme_minimal() +
-  theme(legend.position = "none")
-ggsave("img_partitional.png", p1, width = 6, height = 4, dpi = 150)
-
-# --- Image 2: hierarchical concept ---
-hc_demo <- hclust(dist(demo[, 1:2]), method = "average")
-png("img_hierarchical.png", width = 900, height = 500, res = 120)
-plot(hc_demo, labels = FALSE, main = "Hierarchical Clustering (Concept)",
-     sub = "Dendrogram: nested merges of observations", xlab = "")
-rect.hclust(hc_demo, k = 3, border = 2:4)
-dev.off()
-```
+For **k-means**, Euclidean distance on standardized data was used, while `1 − cosine_similarity` was used as the distance
+for **hierarchical clustering**.
 
 # Data Prep
 
-Clustering requires **only unlabeled numeric data**. This means:
+Since clustering requires **only unlabeled numeric data**, the following were done:
 
-- **No labels** — variables like `ticker`, `company`, and `sector` are removed, since clustering is unsupervised.
-- **No categorical variables** — `sector` cannot be used directly; it could be one-hot encoded, but we keep the analysis purely numeric.
-- **No dates or strings** — `fiscal_year`, `fiscal_year_end`, etc. are dropped.
-- **Standardization is essential** — Revenue is in the hundreds of billions while ROA is a ratio near 0.07. Without standardization, Revenue would dominate the distance calculation entirely. We therefore **z-score** every feature (subtract the mean, divide by the standard deviation).
+- **No labels**: variables like `ticker`, `company`, and `sector` are removed.
+- **No categorical variables**: the analysis is kept purely numeric.
+- **No dates or strings**: `fiscal_year`, `fiscal_year_end`, etc. are dropped.
+- **Standardization**: Revenue is in the hundreds of billions while ROA is a ratio near 0.07.
+Without standardization, Revenue would dominate the distance calculation entirely.
 
-## Features Used
-
-We use the following 17 numeric features (financial + market):
+The following 17 numeric features are used:
 
 - Revenue, NetIncome, TotalAssets, TotalLiabilities, TotalEquity
 - LongTermDebt, OperatingIncome, CashFromOperations
 - ROA, ROE, Debt_to_Equity, Profit_Margin
 - latest_price, avg_volume, total_return, volatility, beta
-
-## Sample of the Clustering Dataset
 
 The standardized dataset used as input to clustering is saved at:
 
@@ -133,13 +89,12 @@ write_csv(as.data.frame(X) %>% mutate(ticker = clust_ids, .before = 1),
 
 ![Sample of the standardized clustering dataset.](img_clustering_sample.png)
 
-![Sample of the standardized clustering dataset.](img_clustering_sample.png)
-
 ---
 
 # Code
 
-We run **k-means** (with Euclidean distance on standardized data) and **hierarchical clustering** (with Cosine distance).
+Below is the code for the **k-means** (with Euclidean distance on standardized data) 
+and the **hierarchical clustering** (with Cosine distance).
 
 ```{r}
 #| label: clustering-run
@@ -176,7 +131,8 @@ hc <- hclust(cos_dist, method = "average")   # average linkage works with cosine
 
 ## K-Means: How Many Clusters?
 
-We try **k = 2, 3, 4, 5, 6** and evaluate each using the **Average Silhouette Width** (ASW). ASW ranges from −1 to 1; higher is better.
+Different values of the cluster number (**k = 2, 3, 4, 5, 6**) are analyzed, and each was evaluated 
+using the **Average Silhouette Width** (ASW). ASW ranges from −1 to 1; higher is better.
 
 ```{r}
 #| label: silhouette
@@ -198,20 +154,16 @@ ggplot(sil_df, aes(x = factor(k), y = asw)) +
   theme_minimal()
 ```
 
-```{r}
-#| label: silhouette-detail
-#| fig-cap: "Silhouette Plot for k = 4"
-#| fig-width: 8
-#| fig-height: 5
-fviz_silhouette(silhouette(km_results$k4$cluster, dist(X)),
-                palette = "jco", ggtheme = theme_minimal())
-```
 
-**Interpretation:** The ASW values are modest (typically 0.2–0.35 in financial data), which is expected—companies do not form extremely tight, well-separated clusters. The peak usually occurs around **k = 3 or k = 4**. Silhouette values below 0.5 indicate weak but real structure, so we should treat the clusters as **descriptive groupings**, not hard categories.
 
-## Cluster Visualization (Non-Dendrogram)
+**Interpretation:** The ASW values are modest, which is expected since companies do not form extremely tight,
+well-separated clusters. The peak usually occurs around **k = 3 or k = 4**. Silhouette values below 0.5 indicate weak
+but real structure, so we treat the clusters as **descriptive groupings**, not hard categories.
 
-We project the standardized data onto the first two principal components and color points by k-means cluster (k = 4).
+## Cluster Visualization
+
+The standardized data is projected onto the first two principal components
+and color points by k-means cluster (k = 4).
 
 ```{r}
 #| label: pca-clusters
@@ -246,11 +198,12 @@ plot(hc, labels = clust_ids, cex = 0.6, hang = -1,
 rect.hclust(hc, k = 4, border = 2:5)
 ```
 
-**Interpretation:** The dendrogram shows the full nested structure. Cutting the tree at height ~0.5–0.7 (where the largest gaps between merges occur) suggests **k = 3 or k = 4**, consistent with the silhouette result. Companies in the same branch share similar standardized profiles.
+**Interpretation:** The dendrogram shows the full nested structure. Cutting the tree at height ~0.8–0.9 (where the largest gaps between merges occur) suggests **k = 3 or k = 4**, consistent with the silhouette result.
+Companies in the same branch share similar standardized profiles.
 
 ## K-Means vs. Hierarchical Clustering
 
-We compare the assignments from both methods.
+The assignments from both methods are displayed below.
 
 ```{r}
 #| label: compare-methods
@@ -267,28 +220,55 @@ comparison <- data.frame(ticker = clust_ids, kmeans = km4, hclust = hc4)
 comparison %>% arrange(kmeans)
 ```
 
-**Interpretation:** A high agreement (e.g., > 80%) means the two methods discover the same structure—reassuring. A lower agreement (e.g., 50–70%) suggests the data has a more complex geometry (e.g., one method finds elongated clusters the other splits differently). Both scenarios are informative.
+**Interpretation:** There is a higher agreement where the two methods discover the same structure.
+The observations where there's a lower agreement suggest the data has a more complex geometry.
 
 ---
 
 # Conclusions
 
-**What we learned about the topic.**
+- Clustering reveals that publicly traded companies in the sample form a small number of recurring financial profiles (about 3–4).
+These profiles are not random; they align strongly with sector and business model.
+- Banks and financial firms cluster together because their balance sheets are structurally different
+(very large assets, low ROA, high total liabilities).
+- High-growth technology firms form their own cluster, characterized by high margins, low leverage, and high volatility.
+- Defensive, capital-intensive firms (Utilities, Consumer Staples) form a third cluster with low volatility, low beta, and moderate leverage.
+- Companies with very high Debt-to-Equity (AbbVie, UPS) separate quickly in both k-means and hierarchical clustering. Thus, leverage is a strong discriminator. 
 
-- Clustering reveals that publicly traded companies in our sample form **a small number of recurring financial profiles** (typically 3–4). These profiles are not random—they align strongly with **sector** and **business model**.
-- **Banks and financial firms** cluster together because their balance sheets are structurally different (very large assets, low ROA, high total liabilities).
-- **High-growth technology firms** form their own cluster, characterized by high margins, low leverage, and high volatility.
-- **Defensive, capital-intensive firms** (Utilities, Consumer Staples) form a third cluster with low volatility, low beta, and moderate leverage.
-- **Leverage is a strong discriminator.** Companies with very high Debt-to-Equity (AbbVie, UPS) separate quickly in both k-means and hierarchical clustering.
+The clustering results justify including sector as a grouping variable in supervised models.
+We see that sector is not just a label, it captures real structure in the data.
+Because clusters overlap somewhat in PCA space, cluster IDs should not be treated as targets,
+but as an additional input feature in other models. The consistent k = 3–4 finding across two very different methods
+increases our confidence that the structure is real.
 
-**What this means for the rest of the project.**
 
-- The clustering results **justify including sector as a grouping variable** in supervised models—sector is not just a label, it captures real structure in the data.
-- Because clusters overlap somewhat in PCA space, we should not treat cluster IDs as hard labels for a classification task. Instead, cluster membership can be added as a **derived feature** for downstream models.
-- The consistent k = 3–4 finding across two very different methods (partitional and hierarchical) increases our confidence that the structure is real, not an artifact of any single algorithm.
+```{r}
+#| label: overview-images
+#| echo: false
+#| message: false
+#| warning: false
+library(ggplot2)
 
-**Limitations.**
+# --- Image 1: partitional concept ---
+set.seed(1)
+demo <- data.frame(
+  x = c(rnorm(30, -4, 0.8), rnorm(30, 0, 0.8), rnorm(30, 4, 0.8)),
+  y = c(rnorm(30,  2, 0.8), rnorm(30, -2, 0.8), rnorm(30, 2, 0.8)),
+  cluster = factor(rep(c("A","B","C"), each = 30))
+)
 
-- With only 40 companies, clusters are small and sensitive to outliers (e.g., AbbVie, UPS, Nvidia). A larger sample would allow more stable cluster definitions.
-- We used standardized features but did not attempt feature weighting or selection; some features may be more relevant than others for defining "types" of companies.
-- Cosine distance on standardized data is close to correlation distance, which emphasizes the *shape* of the feature profile rather than its magnitude. This is a reasonable choice for financial profiles, but it is only one of several defensible options.
+p1 <- ggplot(demo, aes(x, y, color = cluster)) +
+  geom_point(size = 2, alpha = 0.8) +
+  stat_ellipse(level = 0.9, linewidth = 0.6) +
+  labs(title = "Partitional Clustering",
+       subtitle = "Fixed number of clusters, spherical boundaries",
+       x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggsave("img_partitional.png", p1, width = 6, height = 4, dpi = 150)
+
+# --- Image 2: hierarchical concept ---
+hc_demo <- hclust(dist(demo[, 1:2]), method = "average")
+png("img_hierarchical.png", width = 900, height = 500, res = 120)
+```
