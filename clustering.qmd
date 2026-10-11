@@ -131,22 +131,7 @@ write_csv(as.data.frame(X) %>% mutate(ticker = clust_ids, .before = 1),
           "data/clean/clustering_data.csv")
 ```
 
-```{r}
-#| label: clustering-data-image
-#| echo: false
-#| message: false
-#| warning: false
-library(gt)
-
-preview_df <- as.data.frame(round(X[1:10, 1:6], 3)) %>%
-  mutate(ticker = clust_ids[1:10], .before = 1)
-
-preview_df %>%
-  gt() %>%
-  tab_header(title = "Clustering Input (First 10 Companies, First 6 Standardized Features)") %>%
-  tab_options(table.font.size = "small", data_row.padding = px(3)) %>%
-  gtsave("img_clustering_sample.png", expand = 10)
-```
+![Sample of the standardized clustering dataset.](img_clustering_sample.png)
 
 ![Sample of the standardized clustering dataset.](img_clustering_sample.png)
 
