@@ -48,6 +48,22 @@ approaches that can examine patterns across company characteristics, market cond
 These findings motivate this project's broader investigation of the drivers of financial performance across publicly traded
 companies.
 
+## Unsupervised Learning
+
+![](clutering.png)
+
+This project first explores whether the 40 companies in the dataset fall into groups based on their financial
+and market characteristics. Imagine sorting a collection of photographs without knowing what any of them show.
+As one looks through them, one might notice that some feature landscapes, others show people, and others show cities.
+**Clustering** works in a similar way by allowing patterns to emerge from the data without deciding on the groups beforehand.
+Another method the project uses is **Principal Component Analysis (PCA)**.
+Imagine trying to describe a company using dozens of different financial measurements.
+Looking at every measurement individually can make it difficult to see the bigger picture,
+especially when several measurements tell us similar things.
+For example, a company with high revenue may also have substantial total assets,
+meaning that some of the information overlaps. PCA helps address this problem by combining related information into a smaller
+number of summary measures while preserving as much of the important variation in the data as possible.
+
 ## Research Questions
 
 This project explores the following questions, organized around four themes:
@@ -72,4 +88,5 @@ This project explores the following questions, organized around four themes:
 
 8. Do companies with similar financial characteristics exhibit similar levels of performance?
 9. Are there distinct groups of publicly traded companies with different financial profiles?
-10. Which combination of company, market, and economic characteristics provides the strongest explanation of differences in financial performance?
+10. Which combination of company, market, and economic characteristics provides the strongest explanation of differences
+in financial performance?
