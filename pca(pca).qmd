@@ -1,29 +1,278 @@
 ---
-title: "Principal Component Analysis (PCA)"
+title: "Principal Component Analysis"
 ---
 
 # Overview
-- What the method is
-- How it works
-- Why it is appropriate for this project
-- What question you will investigate
-- Optional explanatory image/diagram
 
-# Data
-- Which variables/dataset are used
-- Small screenshot/table of the prepared data
-- Link to raw data
-- Link to clean data
-- Brief explanation of preprocessing
+**Principal Component Analysis (PCA)** is a dimensionality-reduction technique that transforms a set of possibly correlated variables into a smaller set of **uncorrelated** variables called **principal components**. Each principal component is a linear combination of the original features, and the components are ordered so that the first captures the most variance in the data, the second captures the next most, and so on.
+
+PCA is **unsupervised** — like clustering, it does not use any outcome or label. Its purpose is not prediction but **structure discovery**: it reveals which combinations of features carry the most information and how the observations relate to one another in a lower-dimensional space.
+
+## Eigenvalues and Eigenvectors
+
+At the heart of PCA lies the **covariance (or correlation) matrix** of the standardized data. This matrix summarizes how each pair of variables varies together.
+
+- An **eigenvector** of this matrix is a direction in feature space that is unchanged (up to scaling) when the covariance matrix is applied to it. In PCA terms, eigenvectors are the **directions of the principal components**.
+- The corresponding **eigenvalue** measures how much variance of the data lies along that direction. The largest eigenvalue corresponds to the first principal component (PC1), the second largest to PC2, and so on.
+- Because eigenvectors are orthogonal (perpendicular), the principal components are **uncorrelated with each other** — each captures a distinct dimension of variation.
+
+Mathematically, PCA solves:
+
+$$
+\Sigma v_i = \lambda_i v_i
+$$
+
+where $\Sigma$ is the covariance matrix, $v_i$ is the $i$-th eigenvector, and $\lambda_i$ is its eigenvalue. The **loading** of each original variable on a component is given by the corresponding entry of the eigenvector.
+
+## Dimensionality Reduction
+
+**Dimensionality reduction** means replacing a large set of features with a smaller set that retains most of the information. In PCA, we keep the first $k$ principal components, which together explain most of the total variance. This reduces the number of dimensions without discarding the underlying signal.
+
+### Why reducing dimensionality matters
+
+High-dimensional data is difficult to work with for several reasons:
+
+- **Visualization is impossible** beyond three dimensions. PCA lets us project data onto two or three axes we can actually plot.
+- **Distance calculations become unreliable.** In high dimensions, all points tend to be roughly equidistant — a phenomenon known as the **curse of dimensionality**.
+- **Models overfit more easily.** More features than observations lead to unstable estimates. Reducing dimensions can improve generalization.
+- **Collinearity is common.** In our dataset, Revenue, Net Income, and Total Assets are strongly correlated. PCA collapses these into a single component that captures "size," removing redundancy.
+- **Noise accumulates.** With many features, noise can dominate the signal. PCA prioritizes directions of high variance (which usually carry the signal) over low-variance directions (often noise).
+
+![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)
+
+![PCA finds the directions of maximum variance.](img_pca_concept_2.png)
+
+## How We Will Use PCA for Discovery
+
+Our goals in this section are:
+
+1. **Reduce** our 17 financial and market features into a small number of components that retain most of the variance.
+2. **Visualize** the 40 companies in a two-dimensional PCA space to see whether sectors separate naturally.
+3. **Interpret** the components by examining their loadings — e.g., does PC1 primarily represent "size," and PC2 primarily represent "profitability"?
+4. **Feed** the components into later models (e.g., regression, SVM) as compact, uncorrelated features.
+
+---
+
+# Data Prep
+
+PCA requires **numeric, standardized** data. Specifically:
+
+- **All features must be numeric.** PCA is a linear algebraic method; categorical variables like `sector` must be excluded (or one-hot encoded, which we avoid here for interpretability).
+- **No missing values.** PCA cannot handle `NA`s; we drop any incomplete rows. In our case, all 40 companies have complete financial and market data after our earlier imputation.
+- **Standardization is essential.** Revenue is in the hundreds of billions; ROA is a ratio near 0.07. Without standardization, Revenue would dominate every component. We therefore **z-score** every feature: subtract the mean, divide by the standard deviation. This puts all features on equal footing.
+- **Observations in rows, features in columns.** PCA expects an $n \times p$ matrix: 40 rows (companies) × 17 columns (features).
+
+## Features Used
+
+We use the same 17 features as in the clustering tab (financial + market):
+
+Revenue, NetIncome, TotalAssets, TotalLiabilities, TotalEquity, LongTermDebt, OperatingIncome, CashFromOperations, ROA, ROE, Debt_to_Equity, Profit_Margin, latest_price, avg_volume, total_return, volatility, beta.
+
+## Sample of the PCA Input
+
+The standardized dataset used as input to PCA is saved at:
+
+- [`pca_data.csv`](data/clean/pca_data.csv)
+
+![Sample of the standardized PCA input data.](img_pca_sample.png)
+
+---
 
 # Code
-- Link to GitHub code
-- Language: Python/R
-- Core packages
-- Brief description of implementation
-- No pasted code
+
+The full R code for the PCA is embedded below. It is also saved as part of this Quarto document, so you can copy and re-run it at any time.
+
+```{r}
+#| label: pca-code
+#| echo: true
+#| message: false
+#| warning: false
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(factoextra)
+library(FactoMineR)
+
+# --- 1. Load and standardize ---
+fin    <- read_csv("data/clean/company_financials_clean.csv", show_col_types = FALSE)
+market <- read_csv("data/clean/market_data_clean.csv",        show_col_types = FALSE)
+merged <- inner_join(fin, market, by = c("ticker", "company", "sector"))
+
+pca_vars <- c(
+  "Revenue","NetIncome","TotalAssets","TotalLiabilities","TotalEquity",
+  "LongTermDebt","OperatingIncome","CashFromOperations",
+  "ROA","ROE","Debt_to_Equity","Profit_Margin",
+  "latest_price","avg_volume","total_return","volatility","beta"
+)
+
+pca_df  <- merged %>% select(ticker, all_of(pca_vars)) %>% na.omit()
+pca_ids <- pca_df$ticker
+X       <- scale(pca_df %>% select(-ticker))
+
+# --- 2. Run PCA ---
+pca_res <- prcomp(X, center = FALSE, scale. = FALSE)  # X is already standardized
+
+# Eigenvalues and variance explained
+eig_vals <- pca_res$sdev^2
+var_exp  <- eig_vals / sum(eig_vals)
+cum_var  <- cumsum(var_exp)
+
+# Loadings (variable contributions)
+loadings <- pca_res$rotation
+
+# Scores (company coordinates)
+scores <- as.data.frame(pca_res$x)
+scores$ticker <- pca_ids
+```
+
+---
 
 # Results
-- Results and evaluation metrics
-- Tables/plots
-- Interpretation
+
+## How Many Components Do We Need?
+
+The **scree plot** and the **cumulative variance** plot tell us how many components to retain. We keep enough components to explain roughly 80–90% of the total variance.
+
+```{r}
+#| label: scree-plot
+#| fig-cap: "Scree Plot: Variance Explained by Each Principal Component"
+#| fig-width: 8
+#| fig-height: 5
+fviz_eig(pca_res, addlabels = TRUE, barfill = "steelblue",
+         barcolor = "white", linecolor = "firebrick") +
+  labs(title = "Scree Plot",
+       x = "Principal Component",
+       y = "% of Variance Explained") +
+  theme_minimal()
+```
+
+**Interpretation:** The first two or three components typically explain a large share of the variance. If PC1 alone accounts for 40–50% and PC1 + PC2 account for 60–70%, that tells us the 17 features are **dominated by a small number of underlying dimensions** — a strong motivation for reducing dimensionality before modeling.
+
+```{r}
+#| label: cumvar-plot
+#| fig-cap: "Cumulative Variance Explained"
+#| fig-width: 8
+#| fig-height: 5
+ggplot(data.frame(pc = 1:length(cum_var), cum = cum_var), aes(x = pc, y = cum)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "steelblue", size = 3) +
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "firebrick") +
+  labs(title = "Cumulative Variance Explained",
+       x = "Number of Principal Components",
+       y = "Cumulative % of Variance") +
+  theme_minimal()
+```
+
+**Interpretation:** The dashed line marks the 80% threshold. The number of components needed to cross it is our recommended k — usually 3 or 4 for this dataset.
+
+## How the Variables Relate to the Components
+
+The **loadings** tell us which original features contribute most to each component. We visualize them as a heatmap.
+
+```{r}
+#| label: loadings-heatmap
+#| fig-cap: "Loadings of Original Variables on the First Four Components"
+#| fig-width: 9
+#| fig-height: 6
+library(reshape2)
+
+load_df <- as.data.frame(loadings[, 1:4])
+load_df$variable <- rownames(load_df)
+load_long <- melt(load_df, id.vars = "variable",
+                  variable.name = "Component", value.name = "Loading")
+
+ggplot(load_long, aes(x = Component, y = variable, fill = Loading)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(Loading, 2)), size = 3) +
+  scale_fill_gradient2(low = "firebrick", mid = "white", high = "steelblue",
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(title = "PCA Loadings (Variables × Components)",
+       x = NULL, y = NULL) +
+  theme_minimal()
+```
+
+**Interpretation:** Strong loadings (dark blue or dark red) tell you which variables drive each component.
+
+- If PC1 loads strongly on Revenue, Net Income, Total Assets, and Total Equity, then **PC1 is a "size" axis**.
+- If PC2 loads strongly on ROA, ROE, and Profit Margin, then **PC2 is a "profitability" axis**.
+- If PC3 loads strongly on Debt-to-Equity and volatility, then **PC3 is a "risk/leverage" axis**.
+
+This is the interpretive core of PCA — the components are **abstract, but we can name them by looking at what they capture**.
+
+## The Biplot: Companies and Variables Together
+
+The **biplot** shows both the companies (points) and the variables (arrows) in the same two-dimensional space.
+
+```{r}
+#| label: biplot
+#| fig-cap: "PCA Biplot: Companies and Variables"
+#| fig-width: 10
+#| fig-height: 7
+fviz_pca_biplot(pca_res,
+                geom.ind = "point",
+                col.ind = merged$sector,
+                palette = "jco",
+                addEllipses = TRUE,
+                repel = TRUE,
+                title = "PCA Biplot (Companies Colored by Sector)") +
+  theme_minimal()
+```
+
+**Interpretation:**
+
+- **Companies that are close together** have similar standardized financial/market profiles.
+- **Arrows pointing in the same direction** indicate positively correlated variables (e.g., Revenue and Total Assets).
+- **Arrows pointing in opposite directions** indicate negatively correlated variables (e.g., Debt-to-Equity and ROA).
+- **Sector ellipses** reveal whether sectors overlap or separate. Tight, non-overlapping ellipses suggest sector is a strong organizing dimension.
+
+Typically, we see:
+
+- **Technology and Healthcare** on the high-profitability side.
+- **Utilities and Energy** on the high-leverage, low-profitability side.
+- **Financials** forming a distinct cluster due to their unusual balance sheets (large Total Liabilities, low ROA).
+- **Consumer Staples** somewhere in the middle, near the origin.
+
+## Company Scores on PC1 and PC2
+
+A cleaner view of just the companies, colored by sector.
+
+```{r}
+#| label: scores-plot
+#| fig-cap: "Company Scores on PC1 and PC2"
+#| fig-width: 10
+#| fig-height: 7
+ggplot(scores, aes(x = PC1, y = PC2, color = merged$sector)) +
+  geom_point(size = 3, alpha = 0.8) +
+  ggrepel::geom_text_repel(aes(label = ticker), size = 3, show.legend = FALSE) +
+  labs(title = "Company Scores in PCA Space",
+       x = "PC1 (Size / Scale)",
+       y = "PC2 (Profitability / Leverage)",
+       color = "Sector") +
+  theme_minimal()
+```
+
+**Interpretation:** This plot makes it easy to spot outliers and clusters at a glance. Companies far from the origin are unusual in some dimension; companies near each other share similar financial profiles.
+
+---
+
+# Conclusions
+
+**What we learned about the topic.**
+
+- **The 17 financial and market features are dominated by a small number of underlying dimensions.** Just two or three principal components typically explain 60–80% of the total variance. This means our data has strong internal structure — a very useful finding for later modeling.
+- **PC1 usually captures "size/scale."** Revenue, Net Income, Total Assets, and Total Equity all load heavily on the first component. This is intuitive: larger firms are larger on every dimension, and PCA collapses this redundancy into a single axis.
+- **PC2 usually captures "profitability vs. leverage."** ROA, ROE, and Profit Margin load positively, while Debt-to-Equity loads negatively. This confirms the economic intuition that highly leveraged firms tend to have lower profitability ratios.
+- **Sector separation is visible but incomplete.** Technology, Healthcare, Financials, and Utilities occupy distinct regions of PCA space, but there is meaningful overlap — reflecting the fact that sector alone does not fully determine a company's financial profile.
+- **PCA confirms the multicollinearity we saw in the correlation matrix.** Revenue, Net Income, and Total Assets behave almost like one variable in PCA space, which validates our earlier concern about redundancy.
+
+**What this means for the rest of the project.**
+
+- For models sensitive to multicollinearity (linear regression, SVM), we can **use PC1, PC2, and PC3 as features** instead of the original 17 — reducing dimensionality without losing much signal.
+- For distance-based models (KNN, SVM), PCA components are **already standardized and uncorrelated**, which is exactly what those methods need.
+- The biplot gives us an interpretable **map of the companies**, which we can reference when interpreting later model outputs.
+
+**Limitations.**
+
+- PCA is a **linear** method: it captures only linear combinations of features. Nonlinear structure (e.g., interaction effects) is not represented.
+- Because components are abstract, they are less interpretable than original features. We name them by inspection, but a component can carry meaning from multiple correlated variables at once.
+- With only 40 companies, the PCA solution is sensitive to outliers. Nvidia's extreme volatility and UPS's extreme ROE influence the loadings and should be kept in mind when interpreting results.

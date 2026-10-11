@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Principal Component Analysis (PCA)</title>
+<title>Principal Component Analysis</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -110,6 +110,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -185,10 +214,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a>
+  <ul class="collapse">
+  <li><a href="#eigenvalues-and-eigenvectors" id="toc-eigenvalues-and-eigenvectors" class="nav-link" data-scroll-target="#eigenvalues-and-eigenvectors">Eigenvalues and Eigenvectors</a></li>
+  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction">Dimensionality Reduction</a>
+  <ul class="collapse">
+  <li><a href="#why-reducing-dimensionality-matters" id="toc-why-reducing-dimensionality-matters" class="nav-link" data-scroll-target="#why-reducing-dimensionality-matters">Why reducing dimensionality matters</a></li>
+  </ul></li>
+  <li><a href="#how-we-will-use-pca-for-discovery" id="toc-how-we-will-use-pca-for-discovery" class="nav-link" data-scroll-target="#how-we-will-use-pca-for-discovery">How We Will Use PCA for Discovery</a></li>
+  </ul></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">Data Prep</a>
+  <ul class="collapse">
+  <li><a href="#features-used" id="toc-features-used" class="nav-link" data-scroll-target="#features-used">Features Used</a></li>
+  <li><a href="#sample-of-the-pca-input" id="toc-sample-of-the-pca-input" class="nav-link" data-scroll-target="#sample-of-the-pca-input">Sample of the PCA Input</a></li>
+  </ul></li>
   <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#how-many-components-do-we-need" id="toc-how-many-components-do-we-need" class="nav-link" data-scroll-target="#how-many-components-do-we-need">How Many Components Do We Need?</a></li>
+  <li><a href="#how-the-variables-relate-to-the-components" id="toc-how-the-variables-relate-to-the-components" class="nav-link" data-scroll-target="#how-the-variables-relate-to-the-components">How the Variables Relate to the Components</a></li>
+  <li><a href="#the-biplot-companies-and-variables-together" id="toc-the-biplot-companies-and-variables-together" class="nav-link" data-scroll-target="#the-biplot-companies-and-variables-together">The Biplot: Companies and Variables Together</a></li>
+  <li><a href="#company-scores-on-pc1-and-pc2" id="toc-company-scores-on-pc1-and-pc2" class="nav-link" data-scroll-target="#company-scores-on-pc1-and-pc2">Company Scores on PC1 and PC2</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
   </ul>
 </nav>
     </div>
@@ -197,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Principal Component Analysis (PCA)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Principal Component Analysis</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -216,40 +264,328 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level1">
 <h1>Overview</h1>
+<p><strong>Principal Component Analysis (PCA)</strong> is a dimensionality-reduction technique that transforms a set of possibly correlated variables into a smaller set of <strong>uncorrelated</strong> variables called <strong>principal components</strong>. Each principal component is a linear combination of the original features, and the components are ordered so that the first captures the most variance in the data, the second captures the next most, and so on.</p>
+<p>PCA is <strong>unsupervised</strong> — like clustering, it does not use any outcome or label. Its purpose is not prediction but <strong>structure discovery</strong>: it reveals which combinations of features carry the most information and how the observations relate to one another in a lower-dimensional space.</p>
+<section id="eigenvalues-and-eigenvectors" class="level2">
+<h2 class="anchored" data-anchor-id="eigenvalues-and-eigenvectors">Eigenvalues and Eigenvectors</h2>
+<p>At the heart of PCA lies the <strong>covariance (or correlation) matrix</strong> of the standardized data. This matrix summarizes how each pair of variables varies together.</p>
 <ul>
-<li>What the method is</li>
-<li>How it works</li>
-<li>Why it is appropriate for this project</li>
-<li>What question you will investigate</li>
-<li>Optional explanatory image/diagram</li>
+<li>An <strong>eigenvector</strong> of this matrix is a direction in feature space that is unchanged (up to scaling) when the covariance matrix is applied to it. In PCA terms, eigenvectors are the <strong>directions of the principal components</strong>.</li>
+<li>The corresponding <strong>eigenvalue</strong> measures how much variance of the data lies along that direction. The largest eigenvalue corresponds to the first principal component (PC1), the second largest to PC2, and so on.</li>
+<li>Because eigenvectors are orthogonal (perpendicular), the principal components are <strong>uncorrelated with each other</strong> — each captures a distinct dimension of variation.</li>
 </ul>
+<p>Mathematically, PCA solves:</p>
+<p><span class="math display">\[
+\Sigma v_i = \lambda_i v_i
+\]</span></p>
+<p>where <span class="math inline">\(\Sigma\)</span> is the covariance matrix, <span class="math inline">\(v_i\)</span> is the <span class="math inline">\(i\)</span>-th eigenvector, and <span class="math inline">\(\lambda_i\)</span> is its eigenvalue. The <strong>loading</strong> of each original variable on a component is given by the corresponding entry of the eigenvector.</p>
 </section>
-<section id="data" class="level1">
-<h1>Data</h1>
+<section id="dimensionality-reduction" class="level2">
+<h2 class="anchored" data-anchor-id="dimensionality-reduction">Dimensionality Reduction</h2>
+<p><strong>Dimensionality reduction</strong> means replacing a large set of features with a smaller set that retains most of the information. In PCA, we keep the first <span class="math inline">\(k\)</span> principal components, which together explain most of the total variance. This reduces the number of dimensions without discarding the underlying signal.</p>
+<section id="why-reducing-dimensionality-matters" class="level3">
+<h3 class="anchored" data-anchor-id="why-reducing-dimensionality-matters">Why reducing dimensionality matters</h3>
+<p>High-dimensional data is difficult to work with for several reasons:</p>
 <ul>
-<li>Which variables/dataset are used</li>
-<li>Small screenshot/table of the prepared data</li>
-<li>Link to raw data</li>
-<li>Link to clean data</li>
-<li>Brief explanation of preprocessing</li>
+<li><strong>Visualization is impossible</strong> beyond three dimensions. PCA lets us project data onto two or three axes we can actually plot.</li>
+<li><strong>Distance calculations become unreliable.</strong> In high dimensions, all points tend to be roughly equidistant — a phenomenon known as the <strong>curse of dimensionality</strong>.</li>
+<li><strong>Models overfit more easily.</strong> More features than observations lead to unstable estimates. Reducing dimensions can improve generalization.</li>
+<li><strong>Collinearity is common.</strong> In our dataset, Revenue, Net Income, and Total Assets are strongly correlated. PCA collapses these into a single component that captures “size,” removing redundancy.</li>
+<li><strong>Noise accumulates.</strong> With many features, noise can dominate the signal. PCA prioritizes directions of high variance (which usually carry the signal) over low-variance directions (often noise).</li>
 </ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img_pca_concept_1.png" class="img-fluid figure-img"></p>
+<figcaption>In high dimensions, structure is hidden. PCA reveals it.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img_pca_concept_2.png" class="img-fluid figure-img"></p>
+<figcaption>PCA finds the directions of maximum variance.</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="how-we-will-use-pca-for-discovery" class="level2">
+<h2 class="anchored" data-anchor-id="how-we-will-use-pca-for-discovery">How We Will Use PCA for Discovery</h2>
+<p>Our goals in this section are:</p>
+<ol type="1">
+<li><strong>Reduce</strong> our 17 financial and market features into a small number of components that retain most of the variance.</li>
+<li><strong>Visualize</strong> the 40 companies in a two-dimensional PCA space to see whether sectors separate naturally.</li>
+<li><strong>Interpret</strong> the components by examining their loadings — e.g., does PC1 primarily represent “size,” and PC2 primarily represent “profitability”?</li>
+<li><strong>Feed</strong> the components into later models (e.g., regression, SVM) as compact, uncorrelated features.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="data-prep" class="level1">
+<h1>Data Prep</h1>
+<p>PCA requires <strong>numeric, standardized</strong> data. Specifically:</p>
+<ul>
+<li><strong>All features must be numeric.</strong> PCA is a linear algebraic method; categorical variables like <code>sector</code> must be excluded (or one-hot encoded, which we avoid here for interpretability).</li>
+<li><strong>No missing values.</strong> PCA cannot handle <code>NA</code>s; we drop any incomplete rows. In our case, all 40 companies have complete financial and market data after our earlier imputation.</li>
+<li><strong>Standardization is essential.</strong> Revenue is in the hundreds of billions; ROA is a ratio near 0.07. Without standardization, Revenue would dominate every component. We therefore <strong>z-score</strong> every feature: subtract the mean, divide by the standard deviation. This puts all features on equal footing.</li>
+<li><strong>Observations in rows, features in columns.</strong> PCA expects an <span class="math inline">\(n \times p\)</span> matrix: 40 rows (companies) × 17 columns (features).</li>
+</ul>
+<section id="features-used" class="level2">
+<h2 class="anchored" data-anchor-id="features-used">Features Used</h2>
+<p>We use the same 17 features as in the clustering tab (financial + market):</p>
+<p>Revenue, NetIncome, TotalAssets, TotalLiabilities, TotalEquity, LongTermDebt, OperatingIncome, CashFromOperations, ROA, ROE, Debt_to_Equity, Profit_Margin, latest_price, avg_volume, total_return, volatility, beta.</p>
+</section>
+<section id="sample-of-the-pca-input" class="level2">
+<h2 class="anchored" data-anchor-id="sample-of-the-pca-input">Sample of the PCA Input</h2>
+<p>The standardized dataset used as input to PCA is saved at:</p>
+<ul>
+<li><a href="data/clean/pca_data.csv"><code>pca_data.csv</code></a></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img_pca_sample.png" class="img-fluid figure-img"></p>
+<figcaption>Sample of the standardized PCA input data.</figcaption>
+</figure>
+</div>
+<hr>
+</section>
 </section>
 <section id="code" class="level1">
 <h1>Code</h1>
-<ul>
-<li>Link to GitHub code</li>
-<li>Language: Python/R</li>
-<li>Core packages</li>
-<li>Brief description of implementation</li>
-<li>No pasted code</li>
-</ul>
+<p>The full R code for the PCA is embedded below. It is also saved as part of this Quarto document, so you can copy and re-run it at any time.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Load and standardize ---</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>fin    <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/market_data_clean.csv"</span>,        <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>merged <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(fin, market, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ticker"</span>, <span class="st">"company"</span>, <span class="st">"sector"</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>pca_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Revenue"</span>,<span class="st">"NetIncome"</span>,<span class="st">"TotalAssets"</span>,<span class="st">"TotalLiabilities"</span>,<span class="st">"TotalEquity"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LongTermDebt"</span>,<span class="st">"OperatingIncome"</span>,<span class="st">"CashFromOperations"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ROA"</span>,<span class="st">"ROE"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"latest_price"</span>,<span class="st">"avg_volume"</span>,<span class="st">"total_return"</span>,<span class="st">"volatility"</span>,<span class="st">"beta"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>pca_df  <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span> <span class="fu">select</span>(ticker, <span class="fu">all_of</span>(pca_vars)) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>pca_ids <span class="ot">&lt;-</span> pca_df<span class="sc">$</span>ticker</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>X       <span class="ot">&lt;-</span> <span class="fu">scale</span>(pca_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>ticker))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Run PCA ---</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>pca_res <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(X, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)  <span class="co"># X is already standardized</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Eigenvalues and variance explained</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>eig_vals <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>var_exp  <span class="ot">&lt;-</span> eig_vals <span class="sc">/</span> <span class="fu">sum</span>(eig_vals)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>cum_var  <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(var_exp)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Loadings (variable contributions)</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>loadings <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>rotation</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Scores (company coordinates)</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_res<span class="sc">$</span>x)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>scores<span class="sc">$</span>ticker <span class="ot">&lt;-</span> pca_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<hr>
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
+<section id="how-many-components-do-we-need" class="level2">
+<h2 class="anchored" data-anchor-id="how-many-components-do-we-need">How Many Components Do We Need?</h2>
+<p>The <strong>scree plot</strong> and the <strong>cumulative variance</strong> plot tell us how many components to retain. We keep enough components to explain roughly 80–90% of the total variance.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(pca_res, <span class="at">addlabels =</span> <span class="cn">TRUE</span>, <span class="at">barfill =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">barcolor =</span> <span class="st">"white"</span>, <span class="at">linecolor =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scree Plot"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Principal Component"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"% of Variance Explained"</span>) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca-pca-_files/figure-html/scree-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Scree Plot: Variance Explained by Each Principal Component</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The first two or three components typically explain a large share of the variance. If PC1 alone accounts for 40–50% and PC1 + PC2 account for 60–70%, that tells us the 17 features are <strong>dominated by a small number of underlying dimensions</strong> — a strong motivation for reducing dimensionality before modeling.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">pc =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cum_var), <span class="at">cum =</span> cum_var), <span class="fu">aes</span>(<span class="at">x =</span> pc, <span class="at">y =</span> cum)) <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.8</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cumulative Variance Explained"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Principal Components"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cumulative % of Variance"</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca-pca-_files/figure-html/cumvar-plot-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Cumulative Variance Explained</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The dashed line marks the 80% threshold. The number of components needed to cross it is our recommended k — usually 3 or 4 for this dataset.</p>
+</section>
+<section id="how-the-variables-relate-to-the-components" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-variables-relate-to-the-components">How the Variables Relate to the Components</h2>
+<p>The <strong>loadings</strong> tell us which original features contribute most to each component. We visualize them as a heatmap.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>load_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(loadings[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>load_df<span class="sc">$</span>variable <span class="ot">&lt;-</span> <span class="fu">rownames</span>(load_df)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>load_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(load_df, <span class="at">id.vars =</span> <span class="st">"variable"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">variable.name =</span> <span class="st">"Component"</span>, <span class="at">value.name =</span> <span class="st">"Loading"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(load_long, <span class="fu">aes</span>(<span class="at">x =</span> Component, <span class="at">y =</span> variable, <span class="at">fill =</span> Loading)) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Loading, <span class="dv">2</span>)), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"firebrick"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PCA Loadings (Variables × Components)"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca-pca-_files/figure-html/loadings-heatmap-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Loadings of Original Variables on the First Four Components</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> Strong loadings (dark blue or dark red) tell you which variables drive each component.</p>
 <ul>
-<li>Results and evaluation metrics</li>
-<li>Tables/plots</li>
-<li>Interpretation</li>
+<li>If PC1 loads strongly on Revenue, Net Income, Total Assets, and Total Equity, then <strong>PC1 is a “size” axis</strong>.</li>
+<li>If PC2 loads strongly on ROA, ROE, and Profit Margin, then <strong>PC2 is a “profitability” axis</strong>.</li>
+<li>If PC3 loads strongly on Debt-to-Equity and volatility, then <strong>PC3 is a “risk/leverage” axis</strong>.</li>
+</ul>
+<p>This is the interpretive core of PCA — the components are <strong>abstract, but we can name them by looking at what they capture</strong>.</p>
+</section>
+<section id="the-biplot-companies-and-variables-together" class="level2">
+<h2 class="anchored" data-anchor-id="the-biplot-companies-and-variables-together">The Biplot: Companies and Variables Together</h2>
+<p>The <strong>biplot</strong> shows both the companies (points) and the variables (arrows) in the same two-dimensional space.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(pca_res,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">col.ind =</span> merged<span class="sc">$</span>sector,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">palette =</span> <span class="st">"jco"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">addEllipses =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"PCA Biplot (Companies Colored by Sector)"</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Too few points to calculate an ellipse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The shape palette can deal with a maximum of 6 discrete values because more
+than 6 becomes difficult to discriminate
+ℹ you have requested 9 values. Consider specifying shapes manually if you need
+  that many of them.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 15 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca-pca-_files/figure-html/biplot-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>PCA Biplot: Companies and Variables</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li><strong>Companies that are close together</strong> have similar standardized financial/market profiles.</li>
+<li><strong>Arrows pointing in the same direction</strong> indicate positively correlated variables (e.g., Revenue and Total Assets).</li>
+<li><strong>Arrows pointing in opposite directions</strong> indicate negatively correlated variables (e.g., Debt-to-Equity and ROA).</li>
+<li><strong>Sector ellipses</strong> reveal whether sectors overlap or separate. Tight, non-overlapping ellipses suggest sector is a strong organizing dimension.</li>
+</ul>
+<p>Typically, we see:</p>
+<ul>
+<li><strong>Technology and Healthcare</strong> on the high-profitability side.</li>
+<li><strong>Utilities and Energy</strong> on the high-leverage, low-profitability side.</li>
+<li><strong>Financials</strong> forming a distinct cluster due to their unusual balance sheets (large Total Liabilities, low ROA).</li>
+<li><strong>Consumer Staples</strong> somewhere in the middle, near the origin.</li>
+</ul>
+</section>
+<section id="company-scores-on-pc1-and-pc2" class="level2">
+<h2 class="anchored" data-anchor-id="company-scores-on-pc1-and-pc2">Company Scores on PC1 and PC2</h2>
+<p>A cleaner view of just the companies, colored by sector.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scores, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> merged<span class="sc">$</span>sector)) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">label =</span> ticker), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Company Scores in PCA Space"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"PC1 (Size / Scale)"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"PC2 (Profitability / Leverage)"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca-pca-_files/figure-html/scores-plot-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Company Scores on PC1 and PC2</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> This plot makes it easy to spot outliers and clusters at a glance. Companies far from the origin are unusual in some dimension; companies near each other share similar financial profiles.</p>
+<hr>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p><strong>What we learned about the topic.</strong></p>
+<ul>
+<li><strong>The 17 financial and market features are dominated by a small number of underlying dimensions.</strong> Just two or three principal components typically explain 60–80% of the total variance. This means our data has strong internal structure — a very useful finding for later modeling.</li>
+<li><strong>PC1 usually captures “size/scale.”</strong> Revenue, Net Income, Total Assets, and Total Equity all load heavily on the first component. This is intuitive: larger firms are larger on every dimension, and PCA collapses this redundancy into a single axis.</li>
+<li><strong>PC2 usually captures “profitability vs.&nbsp;leverage.”</strong> ROA, ROE, and Profit Margin load positively, while Debt-to-Equity loads negatively. This confirms the economic intuition that highly leveraged firms tend to have lower profitability ratios.</li>
+<li><strong>Sector separation is visible but incomplete.</strong> Technology, Healthcare, Financials, and Utilities occupy distinct regions of PCA space, but there is meaningful overlap — reflecting the fact that sector alone does not fully determine a company’s financial profile.</li>
+<li><strong>PCA confirms the multicollinearity we saw in the correlation matrix.</strong> Revenue, Net Income, and Total Assets behave almost like one variable in PCA space, which validates our earlier concern about redundancy.</li>
+</ul>
+<p><strong>What this means for the rest of the project.</strong></p>
+<ul>
+<li>For models sensitive to multicollinearity (linear regression, SVM), we can <strong>use PC1, PC2, and PC3 as features</strong> instead of the original 17 — reducing dimensionality without losing much signal.</li>
+<li>For distance-based models (KNN, SVM), PCA components are <strong>already standardized and uncorrelated</strong>, which is exactly what those methods need.</li>
+<li>The biplot gives us an interpretable <strong>map of the companies</strong>, which we can reference when interpreting later model outputs.</li>
+</ul>
+<p><strong>Limitations.</strong></p>
+<ul>
+<li>PCA is a <strong>linear</strong> method: it captures only linear combinations of features. Nonlinear structure (e.g., interaction effects) is not represented.</li>
+<li>Because components are abstract, they are less interpretable than original features. We name them by inspection, but a component can carry meaning from multiple correlated variables at once.</li>
+<li>With only 40 companies, the PCA solution is sensitive to outliers. Nvidia’s extreme volatility and UPS’s extreme ROE influence the loadings and should be kept in mind when interpreting results.</li>
 </ul>
 
 
@@ -709,35 +1045,285 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Principal Component Analysis (PCA)"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Overview</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>What the method is</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>How it works</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Why it is appropriate for this project</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>What question you will investigate</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Optional explanatory image/diagram</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Which variables/dataset are used</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Small screenshot/table of the prepared data</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to raw data</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to clean data</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brief explanation of preprocessing</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to GitHub code</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Language: Python/R</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Core packages</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brief description of implementation</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No pasted code</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Results and evaluation metrics</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tables/plots</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Principal Component Analysis"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Overview</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>**Principal Component Analysis (PCA)** is a dimensionality-reduction technique that transforms a set of possibly correlated variables into a smaller set of **uncorrelated** variables called **principal components**. Each principal component is a linear combination of the original features, and the components are ordered so that the first captures the most variance in the data, the second captures the next most, and so on.</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>PCA is **unsupervised** — like clustering, it does not use any outcome or label. Its purpose is not prediction but **structure discovery**: it reveals which combinations of features carry the most information and how the observations relate to one another in a lower-dimensional space.</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Eigenvalues and Eigenvectors</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>At the heart of PCA lies the **covariance (or correlation) matrix** of the standardized data. This matrix summarizes how each pair of variables varies together.</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>An **eigenvector** of this matrix is a direction in feature space that is unchanged (up to scaling) when the covariance matrix is applied to it. In PCA terms, eigenvectors are the **directions of the principal components**.</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The corresponding **eigenvalue** measures how much variance of the data lies along that direction. The largest eigenvalue corresponds to the first principal component (PC1), the second largest to PC2, and so on.</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Because eigenvectors are orthogonal (perpendicular), the principal components are **uncorrelated with each other** — each captures a distinct dimension of variation.</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>Mathematically, PCA solves:</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>\Sigma v_i = \lambda_i v_i</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>where $\Sigma$ is the covariance matrix, $v_i$ is the $i$-th eigenvector, and $\lambda_i$ is its eigenvalue. The **loading** of each original variable on a component is given by the corresponding entry of the eigenvector.</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dimensionality Reduction</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>**Dimensionality reduction** means replacing a large set of features with a smaller set that retains most of the information. In PCA, we keep the first $k$ principal components, which together explain most of the total variance. This reduces the number of dimensions without discarding the underlying signal.</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why reducing dimensionality matters</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>High-dimensional data is difficult to work with for several reasons:</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Visualization is impossible** beyond three dimensions. PCA lets us project data onto two or three axes we can actually plot.</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Distance calculations become unreliable.** In high dimensions, all points tend to be roughly equidistant — a phenomenon known as the **curse of dimensionality**.</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Models overfit more easily.** More features than observations lead to unstable estimates. Reducing dimensions can improve generalization.</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Collinearity is common.** In our dataset, Revenue, Net Income, and Total Assets are strongly correlated. PCA collapses these into a single component that captures "size," removing redundancy.</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Noise accumulates.** With many features, noise can dominate the signal. PCA prioritizes directions of high variance (which usually carry the signal) over low-variance directions (often noise).</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="al">![In high dimensions, structure is hidden. PCA reveals it.](img_pca_concept_1.png)</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="al">![PCA finds the directions of maximum variance.](img_pca_concept_2.png)</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## How We Will Use PCA for Discovery</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>Our goals in this section are:</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Reduce** our 17 financial and market features into a small number of components that retain most of the variance.</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Visualize** the 40 companies in a two-dimensional PCA space to see whether sectors separate naturally.</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Interpret** the components by examining their loadings — e.g., does PC1 primarily represent "size," and PC2 primarily represent "profitability"?</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Feed** the components into later models (e.g., regression, SVM) as compact, uncorrelated features.</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Prep</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>PCA requires **numeric, standardized** data. Specifically:</span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**All features must be numeric.** PCA is a linear algebraic method; categorical variables like <span class="in">`sector`</span> must be excluded (or one-hot encoded, which we avoid here for interpretability).</span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No missing values.** PCA cannot handle <span class="in">`NA`</span>s; we drop any incomplete rows. In our case, all 40 companies have complete financial and market data after our earlier imputation.</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Standardization is essential.** Revenue is in the hundreds of billions; ROA is a ratio near 0.07. Without standardization, Revenue would dominate every component. We therefore **z-score** every feature: subtract the mean, divide by the standard deviation. This puts all features on equal footing.</span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Observations in rows, features in columns.** PCA expects an $n \times p$ matrix: 40 rows (companies) × 17 columns (features).</span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## Features Used</span></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>We use the same 17 features as in the clustering tab (financial + market):</span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>Revenue, NetIncome, TotalAssets, TotalLiabilities, TotalEquity, LongTermDebt, OperatingIncome, CashFromOperations, ROA, ROE, Debt_to_Equity, Profit_Margin, latest_price, avg_volume, total_return, volatility, beta.</span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sample of the PCA Input</span></span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>The standardized dataset used as input to PCA is saved at:</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">`pca_data.csv`</span><span class="co">](data/clean/pca_data.csv)</span></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="al">![Sample of the standardized PCA input data.](img_pca_sample.png)</span></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a>The full R code for the PCA is embedded below. It is also saved as part of this Quarto document, so you can copy and re-run it at any time.</span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pca-code</span></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Load and standardize ---</span></span>
+<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a>fin    <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/company_financials_clean.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a>market <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/market_data_clean.csv"</span>,        <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a>merged <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(fin, market, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ticker"</span>, <span class="st">"company"</span>, <span class="st">"sector"</span>))</span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a>pca_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Revenue"</span>,<span class="st">"NetIncome"</span>,<span class="st">"TotalAssets"</span>,<span class="st">"TotalLiabilities"</span>,<span class="st">"TotalEquity"</span>,</span>
+<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LongTermDebt"</span>,<span class="st">"OperatingIncome"</span>,<span class="st">"CashFromOperations"</span>,</span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ROA"</span>,<span class="st">"ROE"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,</span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a>  <span class="st">"latest_price"</span>,<span class="st">"avg_volume"</span>,<span class="st">"total_return"</span>,<span class="st">"volatility"</span>,<span class="st">"beta"</span></span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a>pca_df  <span class="ot">&lt;-</span> merged <span class="sc">%&gt;%</span> <span class="fu">select</span>(ticker, <span class="fu">all_of</span>(pca_vars)) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a>pca_ids <span class="ot">&lt;-</span> pca_df<span class="sc">$</span>ticker</span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a>X       <span class="ot">&lt;-</span> <span class="fu">scale</span>(pca_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>ticker))</span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Run PCA ---</span></span>
+<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a>pca_res <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(X, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)  <span class="co"># X is already standardized</span></span>
+<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a><span class="co"># Eigenvalues and variance explained</span></span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a>eig_vals <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a>var_exp  <span class="ot">&lt;-</span> eig_vals <span class="sc">/</span> <span class="fu">sum</span>(eig_vals)</span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a>cum_var  <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(var_exp)</span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Loadings (variable contributions)</span></span>
+<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a>loadings <span class="ot">&lt;-</span> pca_res<span class="sc">$</span>rotation</span>
+<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-125"><a href="#cb11-125" aria-hidden="true" tabindex="-1"></a><span class="co"># Scores (company coordinates)</span></span>
+<span id="cb11-126"><a href="#cb11-126" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_res<span class="sc">$</span>x)</span>
+<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a>scores<span class="sc">$</span>ticker <span class="ot">&lt;-</span> pca_ids</span>
+<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb11-133"><a href="#cb11-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-134"><a href="#cb11-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## How Many Components Do We Need?</span></span>
+<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a>The **scree plot** and the **cumulative variance** plot tell us how many components to retain. We keep enough components to explain roughly 80–90% of the total variance.</span>
+<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-141"><a href="#cb11-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: scree-plot</span></span>
+<span id="cb11-142"><a href="#cb11-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Scree Plot: Variance Explained by Each Principal Component"</span></span>
+<span id="cb11-143"><a href="#cb11-143" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-144"><a href="#cb11-144" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(pca_res, <span class="at">addlabels =</span> <span class="cn">TRUE</span>, <span class="at">barfill =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a>         <span class="at">barcolor =</span> <span class="st">"white"</span>, <span class="at">linecolor =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scree Plot"</span>,</span>
+<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Principal Component"</span>,</span>
+<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"% of Variance Explained"</span>) <span class="sc">+</span></span>
+<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-153"><a href="#cb11-153" aria-hidden="true" tabindex="-1"></a>**Interpretation:** The first two or three components typically explain a large share of the variance. If PC1 alone accounts for 40–50% and PC1 + PC2 account for 60–70%, that tells us the 17 features are **dominated by a small number of underlying dimensions** — a strong motivation for reducing dimensionality before modeling.</span>
+<span id="cb11-154"><a href="#cb11-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cumvar-plot</span></span>
+<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Cumulative Variance Explained"</span></span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">pc =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cum_var), <span class="at">cum =</span> cum_var), <span class="fu">aes</span>(<span class="at">x =</span> pc, <span class="at">y =</span> cum)) <span class="sc">+</span></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.8</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cumulative Variance Explained"</span>,</span>
+<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Principal Components"</span>,</span>
+<span id="cb11-168"><a href="#cb11-168" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cumulative % of Variance"</span>) <span class="sc">+</span></span>
+<span id="cb11-169"><a href="#cb11-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb11-170"><a href="#cb11-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a>**Interpretation:** The dashed line marks the 80% threshold. The number of components needed to cross it is our recommended k — usually 3 or 4 for this dataset.</span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## How the Variables Relate to the Components</span></span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a>The **loadings** tell us which original features contribute most to each component. We visualize them as a heatmap.</span>
+<span id="cb11-177"><a href="#cb11-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-181"><a href="#cb11-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: loadings-heatmap</span></span>
+<span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Loadings of Original Variables on the First Four Components"</span></span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a>load_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(loadings[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a>load_df<span class="sc">$</span>variable <span class="ot">&lt;-</span> <span class="fu">rownames</span>(load_df)</span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a>load_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(load_df, <span class="at">id.vars =</span> <span class="st">"variable"</span>,</span>
+<span id="cb11-190"><a href="#cb11-190" aria-hidden="true" tabindex="-1"></a>                  <span class="at">variable.name =</span> <span class="st">"Component"</span>, <span class="at">value.name =</span> <span class="st">"Loading"</span>)</span>
+<span id="cb11-191"><a href="#cb11-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-192"><a href="#cb11-192" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(load_long, <span class="fu">aes</span>(<span class="at">x =</span> Component, <span class="at">y =</span> variable, <span class="at">fill =</span> Loading)) <span class="sc">+</span></span>
+<span id="cb11-193"><a href="#cb11-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb11-194"><a href="#cb11-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Loading, <span class="dv">2</span>)), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb11-195"><a href="#cb11-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"firebrick"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb11-196"><a href="#cb11-196" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb11-197"><a href="#cb11-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PCA Loadings (Variables × Components)"</span>,</span>
+<span id="cb11-198"><a href="#cb11-198" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-199"><a href="#cb11-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a>**Interpretation:** Strong loadings (dark blue or dark red) tell you which variables drive each component.</span>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>If PC1 loads strongly on Revenue, Net Income, Total Assets, and Total Equity, then **PC1 is a "size" axis**.</span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>If PC2 loads strongly on ROA, ROE, and Profit Margin, then **PC2 is a "profitability" axis**.</span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>If PC3 loads strongly on Debt-to-Equity and volatility, then **PC3 is a "risk/leverage" axis**.</span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a>This is the interpretive core of PCA — the components are **abstract, but we can name them by looking at what they capture**.</span>
+<span id="cb11-209"><a href="#cb11-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-210"><a href="#cb11-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Biplot: Companies and Variables Together</span></span>
+<span id="cb11-211"><a href="#cb11-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-212"><a href="#cb11-212" aria-hidden="true" tabindex="-1"></a>The **biplot** shows both the companies (points) and the variables (arrows) in the same two-dimensional space.</span>
+<span id="cb11-213"><a href="#cb11-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-216"><a href="#cb11-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-217"><a href="#cb11-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: biplot</span></span>
+<span id="cb11-218"><a href="#cb11-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "PCA Biplot: Companies and Variables"</span></span>
+<span id="cb11-219"><a href="#cb11-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb11-220"><a href="#cb11-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb11-221"><a href="#cb11-221" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(pca_res,</span>
+<span id="cb11-222"><a href="#cb11-222" aria-hidden="true" tabindex="-1"></a>                <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
+<span id="cb11-223"><a href="#cb11-223" aria-hidden="true" tabindex="-1"></a>                <span class="at">col.ind =</span> merged<span class="sc">$</span>sector,</span>
+<span id="cb11-224"><a href="#cb11-224" aria-hidden="true" tabindex="-1"></a>                <span class="at">palette =</span> <span class="st">"jco"</span>,</span>
+<span id="cb11-225"><a href="#cb11-225" aria-hidden="true" tabindex="-1"></a>                <span class="at">addEllipses =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-226"><a href="#cb11-226" aria-hidden="true" tabindex="-1"></a>                <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-227"><a href="#cb11-227" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"PCA Biplot (Companies Colored by Sector)"</span>) <span class="sc">+</span></span>
+<span id="cb11-228"><a href="#cb11-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb11-229"><a href="#cb11-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-230"><a href="#cb11-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-231"><a href="#cb11-231" aria-hidden="true" tabindex="-1"></a>**Interpretation:**</span>
+<span id="cb11-232"><a href="#cb11-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-233"><a href="#cb11-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Companies that are close together** have similar standardized financial/market profiles.</span>
+<span id="cb11-234"><a href="#cb11-234" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Arrows pointing in the same direction** indicate positively correlated variables (e.g., Revenue and Total Assets).</span>
+<span id="cb11-235"><a href="#cb11-235" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Arrows pointing in opposite directions** indicate negatively correlated variables (e.g., Debt-to-Equity and ROA).</span>
+<span id="cb11-236"><a href="#cb11-236" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sector ellipses** reveal whether sectors overlap or separate. Tight, non-overlapping ellipses suggest sector is a strong organizing dimension.</span>
+<span id="cb11-237"><a href="#cb11-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-238"><a href="#cb11-238" aria-hidden="true" tabindex="-1"></a>Typically, we see:</span>
+<span id="cb11-239"><a href="#cb11-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-240"><a href="#cb11-240" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Technology and Healthcare** on the high-profitability side.</span>
+<span id="cb11-241"><a href="#cb11-241" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Utilities and Energy** on the high-leverage, low-profitability side.</span>
+<span id="cb11-242"><a href="#cb11-242" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Financials** forming a distinct cluster due to their unusual balance sheets (large Total Liabilities, low ROA).</span>
+<span id="cb11-243"><a href="#cb11-243" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Consumer Staples** somewhere in the middle, near the origin.</span>
+<span id="cb11-244"><a href="#cb11-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-245"><a href="#cb11-245" aria-hidden="true" tabindex="-1"></a><span class="fu">## Company Scores on PC1 and PC2</span></span>
+<span id="cb11-246"><a href="#cb11-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-247"><a href="#cb11-247" aria-hidden="true" tabindex="-1"></a>A cleaner view of just the companies, colored by sector.</span>
+<span id="cb11-248"><a href="#cb11-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-251"><a href="#cb11-251" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-252"><a href="#cb11-252" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: scores-plot</span></span>
+<span id="cb11-253"><a href="#cb11-253" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Company Scores on PC1 and PC2"</span></span>
+<span id="cb11-254"><a href="#cb11-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb11-255"><a href="#cb11-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb11-256"><a href="#cb11-256" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scores, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> merged<span class="sc">$</span>sector)) <span class="sc">+</span></span>
+<span id="cb11-257"><a href="#cb11-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-258"><a href="#cb11-258" aria-hidden="true" tabindex="-1"></a>  ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">label =</span> ticker), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb11-259"><a href="#cb11-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Company Scores in PCA Space"</span>,</span>
+<span id="cb11-260"><a href="#cb11-260" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"PC1 (Size / Scale)"</span>,</span>
+<span id="cb11-261"><a href="#cb11-261" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"PC2 (Profitability / Leverage)"</span>,</span>
+<span id="cb11-262"><a href="#cb11-262" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Sector"</span>) <span class="sc">+</span></span>
+<span id="cb11-263"><a href="#cb11-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb11-264"><a href="#cb11-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-265"><a href="#cb11-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-266"><a href="#cb11-266" aria-hidden="true" tabindex="-1"></a>**Interpretation:** This plot makes it easy to spot outliers and clusters at a glance. Companies far from the origin are unusual in some dimension; companies near each other share similar financial profiles.</span>
+<span id="cb11-267"><a href="#cb11-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-268"><a href="#cb11-268" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb11-269"><a href="#cb11-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-270"><a href="#cb11-270" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
+<span id="cb11-271"><a href="#cb11-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-272"><a href="#cb11-272" aria-hidden="true" tabindex="-1"></a>**What we learned about the topic.**</span>
+<span id="cb11-273"><a href="#cb11-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-274"><a href="#cb11-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The 17 financial and market features are dominated by a small number of underlying dimensions.** Just two or three principal components typically explain 60–80% of the total variance. This means our data has strong internal structure — a very useful finding for later modeling.</span>
+<span id="cb11-275"><a href="#cb11-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PC1 usually captures "size/scale."** Revenue, Net Income, Total Assets, and Total Equity all load heavily on the first component. This is intuitive: larger firms are larger on every dimension, and PCA collapses this redundancy into a single axis.</span>
+<span id="cb11-276"><a href="#cb11-276" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PC2 usually captures "profitability vs. leverage."** ROA, ROE, and Profit Margin load positively, while Debt-to-Equity loads negatively. This confirms the economic intuition that highly leveraged firms tend to have lower profitability ratios.</span>
+<span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sector separation is visible but incomplete.** Technology, Healthcare, Financials, and Utilities occupy distinct regions of PCA space, but there is meaningful overlap — reflecting the fact that sector alone does not fully determine a company's financial profile.</span>
+<span id="cb11-278"><a href="#cb11-278" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PCA confirms the multicollinearity we saw in the correlation matrix.** Revenue, Net Income, and Total Assets behave almost like one variable in PCA space, which validates our earlier concern about redundancy.</span>
+<span id="cb11-279"><a href="#cb11-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-280"><a href="#cb11-280" aria-hidden="true" tabindex="-1"></a>**What this means for the rest of the project.**</span>
+<span id="cb11-281"><a href="#cb11-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For models sensitive to multicollinearity (linear regression, SVM), we can **use PC1, PC2, and PC3 as features** instead of the original 17 — reducing dimensionality without losing much signal.</span>
+<span id="cb11-283"><a href="#cb11-283" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For distance-based models (KNN, SVM), PCA components are **already standardized and uncorrelated**, which is exactly what those methods need.</span>
+<span id="cb11-284"><a href="#cb11-284" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The biplot gives us an interpretable **map of the companies**, which we can reference when interpreting later model outputs.</span>
+<span id="cb11-285"><a href="#cb11-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-286"><a href="#cb11-286" aria-hidden="true" tabindex="-1"></a>**Limitations.**</span>
+<span id="cb11-287"><a href="#cb11-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-288"><a href="#cb11-288" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PCA is a **linear** method: it captures only linear combinations of features. Nonlinear structure (e.g., interaction effects) is not represented.</span>
+<span id="cb11-289"><a href="#cb11-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Because components are abstract, they are less interpretable than original features. We name them by inspection, but a component can carry meaning from multiple correlated variables at once.</span>
+<span id="cb11-290"><a href="#cb11-290" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>With only 40 companies, the PCA solution is sensitive to outliers. Nvidia's extreme volatility and UPS's extreme ROE influence the loadings and should be kept in mind when interpreting results.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
