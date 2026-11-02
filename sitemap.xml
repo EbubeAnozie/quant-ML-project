@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/svms.html</loc>
-    <lastmod>2026-10-11T23:48:54.853Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/regression.html</loc>
-    <lastmod>2026-10-11T23:48:54.853Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/nn.html</loc>
-    <lastmod>2026-10-11T23:48:54.852Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/arm.html</loc>
-    <lastmod>2026-10-11T23:48:54.793Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/pca(pca).html</loc>
-    <lastmod>2026-10-11T23:48:54.852Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/introduction.html</loc>
-    <lastmod>2026-10-11T23:48:54.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/index.html</loc>
-    <lastmod>2026-10-11T23:48:54.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/naivebayes.html</loc>
-    <lastmod>2026-10-11T23:48:54.852Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/dimensionality.html</loc>
-    <lastmod>2026-10-11T23:48:54.812Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/dectrees.html</loc>
-    <lastmod>2026-10-11T23:48:54.811Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/conclusions.html</loc>
+    <lastmod>2026-11-02T01:08:24.348Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/ensembles.html</loc>
-    <lastmod>2026-10-11T23:48:54.850Z</lastmod>
+    <lastmod>2026-11-02T01:08:24.405Z</lastmod>
   </url>
   <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/dataprep_eda.html</loc>
-    <lastmod>2026-10-11T23:48:54.811Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/clustering.html</loc>
-    <lastmod>2026-10-11T23:48:54.796Z</lastmod>
-  </url>
-  <url>
-    <loc>https://EbubeAnozie.github.io/quant-ML-project/conclusions.html</loc>
-    <lastmod>2026-10-11T23:48:54.799Z</lastmod>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/dimensionality.html</loc>
+    <lastmod>2026-11-02T01:08:24.363Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/DataPrep/data.html</loc>
-    <lastmod>2026-10-11T23:48:54.787Z</lastmod>
+    <lastmod>2026-11-02T01:08:24.336Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/arm.html</loc>
+    <lastmod>2026-11-02T01:08:24.342Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/svms.html</loc>
+    <lastmod>2026-11-02T01:08:24.411Z</lastmod>
   </url>
   <url>
     <loc>https://EbubeAnozie.github.io/quant-ML-project/data.html</loc>
-    <lastmod>2026-10-11T23:48:54.799Z</lastmod>
+    <lastmod>2026-11-02T01:08:24.348Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/pca(pca).html</loc>
+    <lastmod>2026-11-02T01:08:24.410Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/nn.html</loc>
+    <lastmod>2026-11-02T01:08:24.410Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/clustering.html</loc>
+    <lastmod>2026-11-02T01:08:24.346Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/naivebayes.html</loc>
+    <lastmod>2026-11-02T01:08:24.410Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/dataprep_eda.html</loc>
+    <lastmod>2026-11-02T01:08:24.363Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/introduction.html</loc>
+    <lastmod>2026-11-02T01:08:24.409Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/dectrees.html</loc>
+    <lastmod>2026-11-02T01:08:24.363Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/regression.html</loc>
+    <lastmod>2026-11-02T01:08:24.411Z</lastmod>
+  </url>
+  <url>
+    <loc>https://EbubeAnozie.github.io/quant-ML-project/index.html</loc>
+    <lastmod>2026-11-02T01:08:24.409Z</lastmod>
   </url>
 </urlset>
