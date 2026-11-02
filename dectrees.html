@@ -318,11 +318,10 @@ Prediction No Yes
 <h1>Conclusions</h1>
 <ol type="1">
 <li>Unlike Naive Bayes or PCA, one can trace a decision tree by hand.</li>
-<li>The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</li>
+<li>The tree naturally handles combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</li>
 <li>With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.</li>
-<li>The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., “Revenue &gt; 158,000,000,000”).</li>
+<li>The financial variables need not to be binned into Low/Medium/High this time. The tree found the optimal cutoff. The tree reveals that <strong>Total Assets</strong>, <strong>Debt-to-Equity</strong>, and <strong>Revenue</strong> are usually the strongest early splitters for predicting High vs.&nbsp;Low ROA. This aligns with the EDA finding that capital structure and scale heavily influence profitability.</li>
 </ol>
-<p>The tree reveal that <strong>Total Assets</strong>, <strong>Debt-to-Equity</strong>, and <strong>Revenue</strong> are usually the strongest early splitters for predicting High vs.&nbsp;Low ROA. This aligns with the EDA findings. Capital structure and scale heavily influence profitability.</p>
 
 
 <!-- -->
@@ -940,14 +939,12 @@ Prediction No Yes
 <span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
 <span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Unlike Naive Bayes or PCA, one can trace a decision tree by hand.</span>
-<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The tree naturally handles combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</span>
 <span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.</span>
-<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., "Revenue &gt; 158,000,000,000").</span>
-<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>The tree reveal that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest</span>
-<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>early splitters for predicting High vs. Low ROA.</span>
-<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>This aligns with the EDA findings.</span>
-<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>Capital structure and scale heavily influence profitability.</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The financial variables need not to be binned into Low/Medium/High this time. The tree found the optimal cutoff.</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>The tree reveals that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>early splitters for predicting High vs. Low ROA.</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>This aligns with the EDA finding that capital structure and scale heavily influence profitability.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
