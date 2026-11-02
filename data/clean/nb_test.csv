@@ -1,0 +1,13 @@
+ticker,High_ROA,Revenue_Bin,Assets_Bin,Debt_Bin,Vol_Bin,Beta_Bin
+TSLA,Yes,High,Medium,Low,High,High
+CVX,Yes,High,High,Low,Low,Medium
+COST,Yes,High,Low,Low,Low,Medium
+UNH,Yes,High,High,Medium,High,Low
+GE,Yes,Medium,Medium,Medium,High,High
+PG,Yes,Medium,Medium,Medium,Low,Low
+WFC,No,High,High,High,Medium,High
+CRM,No,Low,Low,High,High,High
+T,No,High,High,High,Medium,Low
+NEE,No,Low,Low,High,Medium,Low
+COP,Yes,Medium,Medium,Low,High,Medium
+DUK,No,Low,Low,Medium,Low,Low

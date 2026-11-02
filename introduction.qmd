@@ -64,6 +64,21 @@ For example, a company with high revenue may also have substantial total assets,
 meaning that some of the information overlaps. PCA helps address this problem by combining related information into a smaller
 number of summary measures while preserving as much of the important variation in the data as possible.
 
+## Supervised Learning
+If unsupervised learning is like discovering patterns without a guide, one can think of 
+supervised learning as having a teacher who already knows the right answers.
+In this project, the computer are give the historical facts about each company like its size along with the final answer
+like profitability. The job here is to learn the connection so the model can predict the outcome for new companies.
+The first method we use is Naive Bayes. Imagine a doctor diagnosing a patient.
+If someone walks in with a cough and a fever, the doctor doesn’t start from scratch; they use past medical knowledge to
+calculate the odds that it is a cold versus the flu. Naive Bayes does something very similar.
+The second method is a Decision Tree. Imagine playing a game of "20 Questions".
+You ask a series of simple yes/no questions: "Is the revenue very large?" If yes, "Is the debt low?"
+By following the path of questions, one eventually lands on a final answer.
+A Decision Tree builds this exact flowchart automatically.
+Together, these methods are used to figure out which financial traits are the biggest green flags or warning signs
+for a company's success.
+
 ## Research Questions
 
 This project explores the following questions, organized around four themes:
