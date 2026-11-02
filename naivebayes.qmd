@@ -2,7 +2,7 @@
 title: "Naive Bayes"
 ---
 
-# overview
+# Overview
 
 **Naive Bayes** is a supervised machine learning algorithm based on Bayes' Theorem.
 It is used for predicting which category a new observation belongs to based on its features.
@@ -51,6 +51,9 @@ The full labeled dataset is stored at: [`naive_bayes_data.csv`](data/clean/naive
 ## Train/Test Split
 
 70% of the companies are randomly assigned to the training set while the remaining percentage is used for testing.
+These sets must be **disjoint** to prevent data leakage.
+If we tested the model on the same data it trained on,
+it could simply memorize the answers, and we wouldn't know if it generalizes to new, unseen companies.
 The summary is shown below:
 
 ![Train/Test split summary](img_nb_split.png)

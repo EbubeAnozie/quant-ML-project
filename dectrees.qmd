@@ -49,6 +49,8 @@ Similar to entropy, GINI is 0 when a node is pure, and higher when classes are m
 **Information Gain** is the reduction in entropy (or GINI) achieved by a split.
 The algorithm chooses the split that maximizes Information Gain.
 
+![](gini.png)
+
 For any continuous variable (like Revenue), there are infinitely many possible split points.
 One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible
 tree structures depending on which features one chooses, in what order, and how deep the tree grows.
@@ -61,7 +63,7 @@ The `High_ROA` label from the Naïve Bayes tab (1 if a company's ROA is above th
 
 Unlike Naïve Bayes, Decision Trees can handle continuous numeric features well.
 `Revenue`, `TotalAssets`, `Debt_to_Equity`, `volatility`, and `beta` are used. The data is split 
-into a **Training Set (70%)** and a **Testing Set (30%)**.
+into a **Training Set (70%)** and a **Testing Set (30%)**. These sets must be **disjoint** to prevent data leakage.
 
 The full labeled dataset is here: [`decision_tree_data.csv`](data/clean/decision_tree_data.csv)
 
@@ -91,18 +93,52 @@ test_df  <- read_csv("data/clean/dt_test.csv",  show_col_types = FALSE)
 
 # Results
 
+Three different trees are trained by varying the **Complexity Parameter (`cp`)**.
+A smaller `cp` allows the tree to grow deeper (more complex), while a larger `cp` prunes the tree (simpler).
+
+## Tree 1: Default Complexity (cp = 0.01)
+
+```{r}
+#| label: tree1
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Decision Tree 1: Default rpart settings"
+#| fig-width: 8
+#| fig-height: 5
+tree1 <- rpart(High_ROA ~ ., data = train_df, method = "class")
+rpart.plot(tree1, main = "Tree 1: Default (cp = 0.01)", extra = 104)
+```
+
+## Tree 2: Pruned Tree (cp = 0.05)
+
+```{r}
+#| label: tree2
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Decision Tree 2: Heavily pruned (simpler)"
+#| fig-width: 8
+#| fig-height: 5
+tree2 <- rpart(High_ROA ~ ., data = train_df, method = "class", cp = 0.1)
+rpart.plot(tree2, main = "Tree 2: Pruned (cp = 0.1)", extra = 104)
+```
+
+## Tree 3: Deep Tree (cp = 0.001)
+
 ```{r}
 #| label: tree3
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-cap: "Decision Tree: Deep tree (more complex)"
+#| fig-cap: "Decision Tree 3: Deep tree (more complex)"
 #| fig-width: 8
 #| fig-height: 5
 tree3 <- rpart(High_ROA ~ ., data = train_df, method = "class", 
                cp = 0.001, minsplit = 2, minbucket = 1)
-rpart.plot(tree3, main = "Deep (cp = 0.001, minbucket = 1)", extra = 104)
+rpart.plot(tree3, main = "Tree 3: Deep (cp = 0.001, minbucket = 1)", extra = 104)
 ```
+Because our dataset is small, the default rpart settings (minsplit = 20) prevent the tree from growing very deep.
 
 ## Confusion Matrix and Accuracy
 
@@ -147,19 +183,16 @@ ggplot(data = cm_df, mapping = aes(x = Reference, y = Prediction, fill = Freq)) 
   theme_minimal()
 ```
 
-The model correctly predicted 7 out of 12 companies (3 + 4), resulting in an accuracy of 58.3%
-The tree was allowed to grow very deep (cp = 0.001, minbucket = 1),
-which means it created a highly specific rule for nearly every company in the training set.
-This causes overfitting, and the model learned the "noise" in the training dat.
-Because the dataset is small (only 12 companies in the test set),
-every single misclassification changes the accuracy.
-
+The confusion matrix above shows the model's performance on the 30% hold-out test set.
+The model achieved an accuracy of 58.3%. It correctly classified 4 companies as having High ROA and 3 companies as having Low ROA. 
+The limited size of our dataset means that a single Decision Tree will always be a bit unstable as seen from the confusion matrix.
 
 # Conclusions
 1. Unlike Naive Bayes or PCA, one can trace a decision tree by hand.
-2. The tree naturally handles combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.
+2. The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.
 3. With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.
-4. The financial variables need not to be binned into Low/Medium/High this time. The tree found the optimal cutoff.
-The tree reveals that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest
+4. The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., "Revenue > 158,000,000,000").
+
+The trees reveal that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest
 early splitters for predicting High vs. Low ROA.
 This aligns with the EDA finding that capital structure and scale heavily influence profitability.

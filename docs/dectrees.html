@@ -193,6 +193,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
   <ul class="collapse">
+  <li><a href="#tree-1-default-complexity-cp-0.01" id="toc-tree-1-default-complexity-cp-0.01" class="nav-link" data-scroll-target="#tree-1-default-complexity-cp-0.01">Tree 1: Default Complexity (cp = 0.01)</a></li>
+  <li><a href="#tree-2-pruned-tree-cp-0.05" id="toc-tree-2-pruned-tree-cp-0.05" class="nav-link" data-scroll-target="#tree-2-pruned-tree-cp-0.05">Tree 2: Pruned Tree (cp = 0.05)</a></li>
+  <li><a href="#tree-3-deep-tree-cp-0.001" id="toc-tree-3-deep-tree-cp-0.001" class="nav-link" data-scroll-target="#tree-3-deep-tree-cp-0.001">Tree 3: Deep Tree (cp = 0.001)</a></li>
   <li><a href="#confusion-matrix-and-accuracy" id="toc-confusion-matrix-and-accuracy" class="nav-link" data-scroll-target="#confusion-matrix-and-accuracy">Confusion Matrix and Accuracy</a></li>
   </ul></li>
   <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
@@ -235,13 +238,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="how-trees-are-built-gini-entropy-and-information-gain">How Trees Are Built: GINI, Entropy, and Information Gain</h2>
 <p>To build a tree, the algorithm must decide which feature to split on at each step, and at what threshold. It evaluates every possible split and chooses the one that best separates the classes. To measure “best,” it uses <strong>impurity metrics</strong> like GINI and Entropy, and <strong>Information Gain</strong> to compare the before-and-after states.</p>
 <p><strong>Entropy</strong> measures the disorder of a node. If a node contains a 50/50 mix of “Yes” and “No”, the entropy is at its maximum (1.0). If a node is 100% “Yes” or 100% “No”, the entropy is 0 (pure). <strong>GINI Impurity</strong> measures the probability of misclassifying a randomly chosen element. Similar to entropy, GINI is 0 when a node is pure, and higher when classes are mixed. <strong>Information Gain</strong> is the reduction in entropy (or GINI) achieved by a split. The algorithm chooses the split that maximizes Information Gain.</p>
+<p><img src="gini.png" class="img-fluid"></p>
 <p>For any continuous variable (like Revenue), there are infinitely many possible split points. One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible tree structures depending on which features one chooses, in what order, and how deep the tree grows. Because the tree can keep growing until every leaf is pure (or contains 1 company), there are infinite ways to build a tree. <strong>Pruning</strong> is thus used to find a good, finite tree that generalizes well.</p>
 </section>
 </section>
 <section id="data-prep" class="level1">
 <h1>Data Prep</h1>
 <p>The <code>High_ROA</code> label from the Naïve Bayes tab (1 if a company’s ROA is above the median, 0 otherwise) are reused.</p>
-<p>Unlike Naïve Bayes, Decision Trees can handle continuous numeric features well. <code>Revenue</code>, <code>TotalAssets</code>, <code>Debt_to_Equity</code>, <code>volatility</code>, and <code>beta</code> are used. The data is split into a <strong>Training Set (70%)</strong> and a <strong>Testing Set (30%)</strong>.</p>
+<p>Unlike Naïve Bayes, Decision Trees can handle continuous numeric features well. <code>Revenue</code>, <code>TotalAssets</code>, <code>Debt_to_Equity</code>, <code>volatility</code>, and <code>beta</code> are used. The data is split into a <strong>Training Set (70%)</strong> and a <strong>Testing Set (30%)</strong>. These sets must be <strong>disjoint</strong> to prevent data leakage.</p>
 <p>The full labeled dataset is here: <a href="data/clean/decision_tree_data.csv"><code>decision_tree_data.csv</code></a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -275,16 +279,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
+<p>Three different trees are trained by varying the <strong>Complexity Parameter (<code>cp</code>)</strong>. A smaller <code>cp</code> allows the tree to grow deeper (more complex), while a larger <code>cp</code> prunes the tree (simpler).</p>
+<section id="tree-1-default-complexity-cp-0.01" class="level2">
+<h2 class="anchored" data-anchor-id="tree-1-default-complexity-cp-0.01">Tree 1: Default Complexity (cp = 0.01)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dectrees_files/figure-html/tree1-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Decision Tree 1: Default rpart settings</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tree-2-pruned-tree-cp-0.05" class="level2">
+<h2 class="anchored" data-anchor-id="tree-2-pruned-tree-cp-0.05">Tree 2: Pruned Tree (cp = 0.05)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dectrees_files/figure-html/tree2-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Decision Tree 2: Heavily pruned (simpler)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tree-3-deep-tree-cp-0.001" class="level2">
+<h2 class="anchored" data-anchor-id="tree-3-deep-tree-cp-0.001">Tree 3: Deep Tree (cp = 0.001)</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="dectrees_files/figure-html/tree3-1.png" class="img-fluid figure-img" width="768"></p>
-<figcaption>Decision Tree: Deep tree (more complex)</figcaption>
+<figcaption>Decision Tree 3: Deep tree (more complex)</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>Because our dataset is small, the default rpart settings (minsplit = 20) prevent the tree from growing very deep.</p>
+</section>
 <section id="confusion-matrix-and-accuracy" class="level2">
 <h2 class="anchored" data-anchor-id="confusion-matrix-and-accuracy">Confusion Matrix and Accuracy</h2>
 <p>The trees are evaluated on the testing set:</p>
@@ -311,7 +346,7 @@ Prediction No Yes
 </div>
 </div>
 </div>
-<p>The model correctly predicted 7 out of 12 companies (3 + 4), resulting in an accuracy of 58.3% The tree was allowed to grow very deep (cp = 0.001, minbucket = 1), which means it created a highly specific rule for nearly every company in the training set. This causes overfitting, and the model learned the “noise” in the training dat. Because the dataset is small (only 12 companies in the test set), every single misclassification changes the accuracy.</p>
+<p>The confusion matrix above shows the model’s performance on the 30% hold-out test set. The model achieved an accuracy of 58.3%. It correctly classified 4 companies as having High ROA and 3 companies as having Low ROA. The limited size of our dataset means that a single Decision Tree will always be a bit unstable as seen from the confusion matrix.</p>
 </section>
 </section>
 <section id="conclusions" class="level1">
@@ -322,7 +357,7 @@ Prediction No Yes
 <li>With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.</li>
 <li>The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., “Revenue &gt; 158,000,000,000”).</li>
 </ol>
-<p>The tree reveal that <strong>Total Assets</strong>, <strong>Debt-to-Equity</strong>, and <strong>Revenue</strong> are usually the strongest early splitters for predicting High vs.&nbsp;Low ROA. This aligns with the EDA findings. Capital structure and scale heavily influence profitability.</p>
+<p>The trees reveal that <strong>Total Assets</strong>, <strong>Debt-to-Equity</strong>, and <strong>Revenue</strong> are usually the strongest early splitters for predicting High vs.&nbsp;Low ROA. This aligns with the EDA finding that capital structure and scale heavily influence profitability.</p>
 
 
 <!-- -->
@@ -832,122 +867,153 @@ Prediction No Yes
 <span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>**Information Gain** is the reduction in entropy (or GINI) achieved by a split.</span>
 <span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>The algorithm chooses the split that maximizes Information Gain.</span>
 <span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>For any continuous variable (like Revenue), there are infinitely many possible split points.</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>tree structures depending on which features one chooses, in what order, and how deep the tree grows.</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>Because the tree can keep growing until every leaf is pure (or contains 1 company),</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>there are infinite ways to build a tree. **Pruning** is thus used to find a good, finite tree that generalizes well.</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Prep</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="al">![](gini.png)</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>For any continuous variable (like Revenue), there are infinitely many possible split points.</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>tree structures depending on which features one chooses, in what order, and how deep the tree grows.</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>Because the tree can keep growing until every leaf is pure (or contains 1 company),</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>there are infinite ways to build a tree. **Pruning** is thus used to find a good, finite tree that generalizes well.</span>
 <span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>The <span class="in">`High_ROA`</span> label from the Naïve Bayes tab (1 if a company's ROA is above the median, 0 otherwise) are reused. </span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data Prep</span></span>
 <span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>Unlike Naïve Bayes, Decision Trees can handle continuous numeric features well.</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="in">`Revenue`</span>, <span class="in">`TotalAssets`</span>, <span class="in">`Debt_to_Equity`</span>, <span class="in">`volatility`</span>, and <span class="in">`beta`</span> are used. The data is split </span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>into a **Training Set (70%)** and a **Testing Set (30%)**.</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>The full labeled dataset is here: <span class="co">[</span><span class="ot">`decision_tree_data.csv`</span><span class="co">](data/clean/decision_tree_data.csv)</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>The <span class="in">`High_ROA`</span> label from the Naïve Bayes tab (1 if a company's ROA is above the median, 0 otherwise) are reused. </span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>Unlike Naïve Bayes, Decision Trees can handle continuous numeric features well.</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="in">`Revenue`</span>, <span class="in">`TotalAssets`</span>, <span class="in">`Debt_to_Equity`</span>, <span class="in">`volatility`</span>, and <span class="in">`beta`</span> are used. The data is split </span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>into a **Training Set (70%)** and a **Testing Set (30%)**. These sets must be **disjoint** to prevent data leakage.</span>
 <span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="al">![Sample of the continuous labeled dataset.](img_dt_data.png)</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>The full labeled dataset is here: <span class="co">[</span><span class="ot">`decision_tree_data.csv`</span><span class="co">](data/clean/decision_tree_data.csv)</span></span>
 <span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="al">![Train/Test split summary.](img_dt_split.png)</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="al">![Sample of the continuous labeled dataset.](img_dt_data.png)</span></span>
 <span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="al">![Train/Test split summary.](img_dt_split.png)</span></span>
 <span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>The R code below uses the <span class="in">`rpart`</span> package to train the Decision Tree and <span class="in">`rpart.plot`</span> to visualize it.</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
 <span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-code</span></span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>train_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/dt_train.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>test_df  <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/dt_test.csv"</span>,  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>The R code below uses the <span class="in">`rpart`</span> package to train the Decision Tree and <span class="in">`rpart.plot`</span> to visualize it.</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-code</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>train_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/dt_train.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>test_df  <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/clean/dt_test.csv"</span>,  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree3</span></span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Decision Tree: Deep tree (more complex)"</span></span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>tree3 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(High_ROA <span class="sc">~</span> ., <span class="at">data =</span> train_df, <span class="at">method =</span> <span class="st">"class"</span>, </span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>               <span class="at">cp =</span> <span class="fl">0.001</span>, <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="at">minbucket =</span> <span class="dv">1</span>)</span>
-<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(tree3, <span class="at">main =</span> <span class="st">"Deep (cp = 0.001, minbucket = 1)"</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span>
-<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## Confusion Matrix and Accuracy</span></span>
-<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>The trees are evaluated on the testing set:</span>
-<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-cm</span></span>
-<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree3, test_df, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predictions, test_df<span class="sc">$</span>High_ROA)</span>
-<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>cm<span class="sc">$</span>table</span>
-<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-accuracy</span></span>
-<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Accuracy: %.1f%%</span><span class="sc">\n</span><span class="st">"</span>, cm<span class="sc">$</span>overall[<span class="st">"Accuracy"</span>] <span class="sc">*</span> <span class="dv">100</span>))</span>
-<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-cm-plot</span></span>
-<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Confusion Matrix Heatmap"</span></span>
-<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
-<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
-<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>cm_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(cm<span class="sc">$</span>table)</span>
-<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cm_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Prediction"</span>, <span class="st">"Reference"</span>, <span class="st">"Freq"</span>)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>Three different trees are trained by varying the **Complexity Parameter (`cp`)**.</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>A smaller <span class="in">`cp`</span> allows the tree to grow deeper (more complex), while a larger <span class="in">`cp`</span> prunes the tree (simpler).</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tree 1: Default Complexity (cp = 0.01)</span></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree1</span></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Decision Tree 1: Default rpart settings"</span></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>tree1 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(High_ROA <span class="sc">~</span> ., <span class="at">data =</span> train_df, <span class="at">method =</span> <span class="st">"class"</span>)</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(tree1, <span class="at">main =</span> <span class="st">"Tree 1: Default (cp = 0.01)"</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tree 2: Pruned Tree (cp = 0.05)</span></span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree2</span></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Decision Tree 2: Heavily pruned (simpler)"</span></span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>tree2 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(High_ROA <span class="sc">~</span> ., <span class="at">data =</span> train_df, <span class="at">method =</span> <span class="st">"class"</span>, <span class="at">cp =</span> <span class="fl">0.1</span>)</span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(tree2, <span class="at">main =</span> <span class="st">"Tree 2: Pruned (cp = 0.1)"</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tree 3: Deep Tree (cp = 0.001)</span></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree3</span></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Decision Tree 3: Deep tree (more complex)"</span></span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>tree3 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(High_ROA <span class="sc">~</span> ., <span class="at">data =</span> train_df, <span class="at">method =</span> <span class="st">"class"</span>, </span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>               <span class="at">cp =</span> <span class="fl">0.001</span>, <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(tree3, <span class="at">main =</span> <span class="st">"Tree 3: Deep (cp = 0.001, minbucket = 1)"</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>Because our dataset is small, the default rpart settings (minsplit = 20) prevent the tree from growing very deep.</span>
 <span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cm_df, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Reference, <span class="at">y =</span> Prediction, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
-<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">size =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"steelblue"</span>, <span class="at">high =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
-<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix: Decision Tree"</span>,</span>
-<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Actual"</span>, <span class="at">y =</span> <span class="st">"Predicted"</span>) <span class="sc">+</span></span>
-<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>The model correctly predicted 7 out of 12 companies (3 + 4), resulting in an accuracy of 58.3%</span>
-<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>The tree was allowed to grow very deep (cp = 0.001, minbucket = 1),</span>
-<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>which means it created a highly specific rule for nearly every company in the training set.</span>
-<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>This causes overfitting, and the model learned the "noise" in the training dat.</span>
-<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>Because the dataset is small (only 12 companies in the test set),</span>
-<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>every single misclassification changes the accuracy.</span>
-<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="fu">## Confusion Matrix and Accuracy</span></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>The trees are evaluated on the testing set:</span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-cm</span></span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree3, test_df, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predictions, test_df<span class="sc">$</span>High_ROA)</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>cm<span class="sc">$</span>table</span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
-<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Unlike Naive Bayes or PCA, one can trace a decision tree by hand.</span>
-<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</span>
-<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.</span>
-<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., "Revenue &gt; 158,000,000,000").</span>
-<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>The tree reveal that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest</span>
-<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>early splitters for predicting High vs. Low ROA.</span>
-<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>This aligns with the EDA findings.</span>
-<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>Capital structure and scale heavily influence profitability.</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-accuracy</span></span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Accuracy: %.1f%%</span><span class="sc">\n</span><span class="st">"</span>, cm<span class="sc">$</span>overall[<span class="st">"Accuracy"</span>] <span class="sc">*</span> <span class="dv">100</span>))</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dt-cm-plot</span></span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Confusion Matrix Heatmap"</span></span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>cm_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(cm<span class="sc">$</span>table)</span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cm_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Prediction"</span>, <span class="st">"Reference"</span>, <span class="st">"Freq"</span>)</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cm_df, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Reference, <span class="at">y =</span> Prediction, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">size =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"steelblue"</span>, <span class="at">high =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix: Decision Tree"</span>,</span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Actual"</span>, <span class="at">y =</span> <span class="st">"Predicted"</span>) <span class="sc">+</span></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>The confusion matrix above shows the model's performance on the 30% hold-out test set.</span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>The model achieved an accuracy of 58.3%. It correctly classified 4 companies as having High ROA and 3 companies as having Low ROA. </span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>The limited size of our dataset means that a single Decision Tree will always be a bit unstable as seen from the confusion matrix.</span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Unlike Naive Bayes or PCA, one can trace a decision tree by hand.</span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.</span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.</span>
+<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., "Revenue &gt; 158,000,000,000").</span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a>The trees reveal that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest</span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a>early splitters for predicting High vs. Low ROA.</span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a>This aligns with the EDA finding that capital structure and scale heavily influence profitability.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
