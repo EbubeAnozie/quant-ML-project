@@ -151,7 +151,7 @@
     "href": "naivebayes.html#traintest-split",
     "title": "Naive Bayes",
     "section": "Train/Test Split",
-    "text": "Train/Test Split\n70% of the companies are randomly assigned to the training set while the remaining percentage is used for testing. The summary is shown below:\n\n\n\nTrain/Test split summary\n\n\n\n\n\nDistribution of the target variable"
+    "text": "Train/Test Split\n70% of the companies are randomly assigned to the training set while the remaining percentage is used for testing. These sets must be disjoint to prevent data leakage. If we tested the model on the same data it trained on, it could simply memorize the answers, and we wouldn’t know if it generalizes to new, unseen companies. The summary is shown below:\n\n\n\nTrain/Test split summary\n\n\n\n\n\nDistribution of the target variable"
   },
   {
     "objectID": "naivebayes.html#visualizing-the-confusion-matrix",
@@ -284,21 +284,42 @@
     "href": "dectrees.html",
     "title": "Decision Trees",
     "section": "",
-    "text": "Decision Trees are a supervised machine learning method used for both classification and regression. They split the data into subsets based on a series of simple yes/no questions about the features (e.g., “Is Revenue greater than $50 billion?”). The result is a tree-like flowchart where each internal node represents a test on a feature, each branch represents the outcome of that test, and each leaf node represents a final prediction (like “High ROA” or “Low ROA”).\nDecision trees are widely used in finance for credit scoring, loan approval, and risk assessment. Their main advantage is that one can read the exact rules the model used to make a decision.\n\n\n\nA visual representation of recursive partitioning.\n\n\n\n\nTo build a tree, the algorithm must decide which feature to split on at each step, and at what threshold. It evaluates every possible split and chooses the one that best separates the classes. To measure “best,” it uses impurity metrics like GINI and Entropy, and Information Gain to compare the before-and-after states.\nEntropy measures the disorder of a node. If a node contains a 50/50 mix of “Yes” and “No”, the entropy is at its maximum (1.0). If a node is 100% “Yes” or 100% “No”, the entropy is 0 (pure). GINI Impurity measures the probability of misclassifying a randomly chosen element. Similar to entropy, GINI is 0 when a node is pure, and higher when classes are mixed. Information Gain is the reduction in entropy (or GINI) achieved by a split. The algorithm chooses the split that maximizes Information Gain.\nFor any continuous variable (like Revenue), there are infinitely many possible split points. One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible tree structures depending on which features one chooses, in what order, and how deep the tree grows. Because the tree can keep growing until every leaf is pure (or contains 1 company), there are infinite ways to build a tree. Pruning is thus used to find a good, finite tree that generalizes well."
+    "text": "Decision Trees are a supervised machine learning method used for both classification and regression. They split the data into subsets based on a series of simple yes/no questions about the features (e.g., “Is Revenue greater than $50 billion?”). The result is a tree-like flowchart where each internal node represents a test on a feature, each branch represents the outcome of that test, and each leaf node represents a final prediction (like “High ROA” or “Low ROA”).\nDecision trees are widely used in finance for credit scoring, loan approval, and risk assessment. Their main advantage is that one can read the exact rules the model used to make a decision.\n\n\n\nA visual representation of recursive partitioning.\n\n\n\n\nTo build a tree, the algorithm must decide which feature to split on at each step, and at what threshold. It evaluates every possible split and chooses the one that best separates the classes. To measure “best,” it uses impurity metrics like GINI and Entropy, and Information Gain to compare the before-and-after states.\nEntropy measures the disorder of a node. If a node contains a 50/50 mix of “Yes” and “No”, the entropy is at its maximum (1.0). If a node is 100% “Yes” or 100% “No”, the entropy is 0 (pure). GINI Impurity measures the probability of misclassifying a randomly chosen element. Similar to entropy, GINI is 0 when a node is pure, and higher when classes are mixed. Information Gain is the reduction in entropy (or GINI) achieved by a split. The algorithm chooses the split that maximizes Information Gain.\n\nFor any continuous variable (like Revenue), there are infinitely many possible split points. One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible tree structures depending on which features one chooses, in what order, and how deep the tree grows. Because the tree can keep growing until every leaf is pure (or contains 1 company), there are infinite ways to build a tree. Pruning is thus used to find a good, finite tree that generalizes well."
   },
   {
     "objectID": "dectrees.html#how-trees-are-built-gini-entropy-and-information-gain",
     "href": "dectrees.html#how-trees-are-built-gini-entropy-and-information-gain",
     "title": "Decision Trees",
     "section": "",
-    "text": "To build a tree, the algorithm must decide which feature to split on at each step, and at what threshold. It evaluates every possible split and chooses the one that best separates the classes. To measure “best,” it uses impurity metrics like GINI and Entropy, and Information Gain to compare the before-and-after states.\nEntropy measures the disorder of a node. If a node contains a 50/50 mix of “Yes” and “No”, the entropy is at its maximum (1.0). If a node is 100% “Yes” or 100% “No”, the entropy is 0 (pure). GINI Impurity measures the probability of misclassifying a randomly chosen element. Similar to entropy, GINI is 0 when a node is pure, and higher when classes are mixed. Information Gain is the reduction in entropy (or GINI) achieved by a split. The algorithm chooses the split that maximizes Information Gain.\nFor any continuous variable (like Revenue), there are infinitely many possible split points. One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible tree structures depending on which features one chooses, in what order, and how deep the tree grows. Because the tree can keep growing until every leaf is pure (or contains 1 company), there are infinite ways to build a tree. Pruning is thus used to find a good, finite tree that generalizes well."
+    "text": "To build a tree, the algorithm must decide which feature to split on at each step, and at what threshold. It evaluates every possible split and chooses the one that best separates the classes. To measure “best,” it uses impurity metrics like GINI and Entropy, and Information Gain to compare the before-and-after states.\nEntropy measures the disorder of a node. If a node contains a 50/50 mix of “Yes” and “No”, the entropy is at its maximum (1.0). If a node is 100% “Yes” or 100% “No”, the entropy is 0 (pure). GINI Impurity measures the probability of misclassifying a randomly chosen element. Similar to entropy, GINI is 0 when a node is pure, and higher when classes are mixed. Information Gain is the reduction in entropy (or GINI) achieved by a split. The algorithm chooses the split that maximizes Information Gain.\n\nFor any continuous variable (like Revenue), there are infinitely many possible split points. One could split at $50B, or $50.1B, or $50.0001B. Even for categorical splits, there are infinitely many possible tree structures depending on which features one chooses, in what order, and how deep the tree grows. Because the tree can keep growing until every leaf is pure (or contains 1 company), there are infinite ways to build a tree. Pruning is thus used to find a good, finite tree that generalizes well."
+  },
+  {
+    "objectID": "dectrees.html#tree-1-default-complexity-cp-0.01",
+    "href": "dectrees.html#tree-1-default-complexity-cp-0.01",
+    "title": "Decision Trees",
+    "section": "Tree 1: Default Complexity (cp = 0.01)",
+    "text": "Tree 1: Default Complexity (cp = 0.01)\n\n\n\n\n\nDecision Tree 1: Default rpart settings"
+  },
+  {
+    "objectID": "dectrees.html#tree-2-pruned-tree-cp-0.05",
+    "href": "dectrees.html#tree-2-pruned-tree-cp-0.05",
+    "title": "Decision Trees",
+    "section": "Tree 2: Pruned Tree (cp = 0.05)",
+    "text": "Tree 2: Pruned Tree (cp = 0.05)\n\n\n\n\n\nDecision Tree 2: Heavily pruned (simpler)"
+  },
+  {
+    "objectID": "dectrees.html#tree-3-deep-tree-cp-0.001",
+    "href": "dectrees.html#tree-3-deep-tree-cp-0.001",
+    "title": "Decision Trees",
+    "section": "Tree 3: Deep Tree (cp = 0.001)",
+    "text": "Tree 3: Deep Tree (cp = 0.001)\n\n\n\n\n\nDecision Tree 3: Deep tree (more complex)\n\n\n\n\nBecause our dataset is small, the default rpart settings (minsplit = 20) prevent the tree from growing very deep."
   },
   {
     "objectID": "dectrees.html#confusion-matrix-and-accuracy",
     "href": "dectrees.html#confusion-matrix-and-accuracy",
     "title": "Decision Trees",
     "section": "Confusion Matrix and Accuracy",
-    "text": "Confusion Matrix and Accuracy\nThe trees are evaluated on the testing set:\n\n\n          Reference\nPrediction No Yes\n       No   3   3\n       Yes  2   4\n\n\n\n\nAccuracy: 58.3%\n\n\n\n\n\n\n\nConfusion Matrix Heatmap\n\n\n\n\nThe model correctly predicted 7 out of 12 companies (3 + 4), resulting in an accuracy of 58.3% The tree was allowed to grow very deep (cp = 0.001, minbucket = 1), which means it created a highly specific rule for nearly every company in the training set. This causes overfitting, and the model learned the “noise” in the training dat. Because the dataset is small (only 12 companies in the test set), every single misclassification changes the accuracy."
+    "text": "Confusion Matrix and Accuracy\nThe trees are evaluated on the testing set:\n\n\n          Reference\nPrediction No Yes\n       No   3   3\n       Yes  2   4\n\n\n\n\nAccuracy: 58.3%\n\n\n\n\n\n\n\nConfusion Matrix Heatmap\n\n\n\n\nThe confusion matrix above shows the model’s performance on the 30% hold-out test set. The model achieved an accuracy of 58.3%. It correctly classified 4 companies as having High ROA and 3 companies as having Low ROA. The limited size of our dataset means that a single Decision Tree will always be a bit unstable as seen from the confusion matrix."
   },
   {
     "objectID": "regression.html",
