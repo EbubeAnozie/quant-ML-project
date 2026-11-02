@@ -157,11 +157,9 @@ every single misclassification changes the accuracy.
 
 # Conclusions
 1. Unlike Naive Bayes or PCA, one can trace a decision tree by hand.
-2. The trees naturally handle combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.
+2. The tree naturally handles combinations of features (e.g., High Assets AND Low Debt) that linear models or Naïve Bayes might struggle with.
 3. With only 40 companies, a deep tree will perfectly memorize the training data but perform poorly on the test set. This was evident in the result.
-4. The financial variables need not to be binned into Low/Medium/High this time. Trees found their own optimal cutoffs (e.g., "Revenue > 158,000,000,000").
-
-The tree reveal that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest
+4. The financial variables need not to be binned into Low/Medium/High this time. The tree found the optimal cutoff.
+The tree reveals that **Total Assets**, **Debt-to-Equity**, and **Revenue** are usually the strongest
 early splitters for predicting High vs. Low ROA.
-This aligns with the EDA findings.
-Capital structure and scale heavily influence profitability.
+This aligns with the EDA finding that capital structure and scale heavily influence profitability.
