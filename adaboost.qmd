@@ -1,0 +1,326 @@
+---
+title: "AdaBoost"
+subtitle: "Boosting Decision Stumps to Classify High-ROA Firms"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    fig-cap-location: bottom
+---
+
+```{python}
+#| label: setup-ada
+#| echo: false
+import pandas as pd, numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+```
+
+## Overview
+
+**Boosting** is an ensemble method that builds models *sequentially*,
+where each new model focuses on the examples the previous ones got wrong.
+This differs from **bagging**, which builds trees *in parallel* on bootstrap samples and averages them.
+
+AdaBoost uses **decision stumps**, a low variance, depth-1 trees. After each round, misclassified rows get *higher weight*
+and correctly classified rows get *lower weight*,
+so the next stump is forced to focus on hard cases. Each stump gets a **weight α** based on its weighted error:
+$\alpha = \tfrac12 \ln\!\frac{1-\epsilon}{\epsilon}$. So, a lower error means larger α. Predictions are combined as a
+weighted vote $\hat y = \operatorname{sign}\!\big(\sum_t \alpha_t\, h_t(x)\big)$. Stumps that performed better have more say.
+
+```{python}
+#| label: fig-boosting-vs-bagging
+#| fig-cap: "Bagging builds trees in parallel; AdaBoost builds them one after another, each new stump focused on previously misclassified rows."
+#| fig-width: 9
+#| fig-height: 3
+
+fig, axes = plt.subplots(1, 2, figsize=(9,3))
+
+axes[0].set_title("Bagging (parallel)")
+for i, xp in enumerate([0.15, 0.5, 0.85]):
+    axes[0].add_patch(plt.Rectangle((xp-0.08, 0.55), 0.16, 0.25, fc="#cfe8ff", ec="k"))
+    axes[0].text(xp, 0.675, f"tree {i+1}", ha="center", va="center")
+    axes[0].annotate("", xy=(xp, 0.35), xytext=(xp, 0.55),
+                     arrowprops=dict(arrowstyle="->"))
+axes[0].add_patch(plt.Rectangle((0.35, 0.05), 0.3, 0.2, fc="#ffe6b3", ec="k"))
+axes[0].text(0.5, 0.15, "average", ha="center", va="center")
+for xp in [0.15, 0.5, 0.85]:
+    axes[0].annotate("", xy=(0.5 + (xp-0.5)*0.6, 0.25), xytext=(xp, 0.35),
+                     arrowprops=dict(arrowstyle="->"))
+axes[0].set_xlim(0,1); axes[0].set_ylim(0,1); axes[0].axis("off")
+
+axes[1].set_title("AdaBoost (sequential)")
+xs = [0.1, 0.35, 0.6, 0.85]
+for i, xp in enumerate(xs):
+    axes[1].add_patch(plt.Rectangle((xp-0.08, 0.5), 0.16, 0.25,
+                                    fc="#ffe6b3", ec="k", alpha=0.4+0.15*i))
+    axes[1].text(xp, 0.625, f"stump {i+1}\nα{i+1}", ha="center", va="center", fontsize=8)
+    if i < len(xs)-1:
+        axes[1].annotate("", xy=(xs[i+1]-0.08, 0.625), xytext=(xp+0.08, 0.625),
+                         arrowprops=dict(arrowstyle="->"))
+axes[1].add_patch(plt.Rectangle((0.35, 0.05), 0.3, 0.2, fc="#cfe8ff", ec="k"))
+axes[1].text(0.5, 0.15, "weighted vote", ha="center", va="center")
+axes[1].annotate("", xy=(0.5, 0.25), xytext=(xs[-1], 0.5),
+                 arrowprops=dict(arrowstyle="->"))
+axes[1].set_xlim(0,1); axes[1].set_ylim(0,1); axes[1].axis("off")
+
+plt.tight_layout(); plt.show()
+```
+
+```{python}
+#| label: fig-alpha-curve
+#| fig-cap: "Stump weight α as a function of its weighted error ε. Better stumps (lower ε) get larger α."
+#| fig-width: 5
+#| fig-height: 3.5
+
+eps = np.linspace(0.01, 0.49, 200)
+alpha = 0.5*np.log((1-eps)/eps)
+plt.figure(figsize=(5,3.5))
+plt.plot(eps, alpha, lw=2)
+plt.xlabel("stump weighted error ε"); plt.ylabel("stump weight α")
+plt.title("AdaBoost: better stumps get larger α")
+plt.tight_layout(); plt.show()
+```
+
+## Data Prep
+
+The labeled dataset is saved as [`data/clean/adaboost_data.csv`](data/clean/adaboost_data.csv).
+It contains one row per company-year with the raw SEC fields (`Revenue`, `NetIncome`, `TotalAssets`, `TotalLiabilities`, `TotalEquity`, `LongTermDebt`, `OperatingIncome`, `CashFromOperations`), the derived ratios (`ROA`, `ROE`, `Debt_to_Equity`, `Profit_Margin`),
+one engineered feature (`log_Assets`), and the binary target `HighROA`.
+Rows with missing in any of `Debt_to_Equity`, `Profit_Margin`, `log_Assets`, `ROA`, or `sector` were dropped before saving.
+
+```{python}
+#| label: save-adaboost-data
+#| echo: false
+
+df = pd.read_csv("data/clean/company_financials_clean.csv")
+df = df.replace([np.inf, -np.inf], np.nan)
+df["log_Assets"] = np.log1p(df["TotalAssets"])
+df = df.dropna(subset=["Debt_to_Equity","Profit_Margin","log_Assets","ROA","sector"]).copy()
+
+train, test = train_test_split(df, test_size=0.2, random_state=42)
+thr = train["ROA"].median()
+train = train.copy(); test = test.copy()
+train["HighROA"] = (train["ROA"] > thr).astype(int)
+test["HighROA"]  = (test["ROA"]  > thr).astype(int)
+
+full_labeled = pd.concat([train, test]).sort_index()
+full_labeled.to_csv("data/clean/adaboost_data.csv", index=False)
+train.to_csv("data/clean/train_adaboost.csv", index=False)
+test.to_csv("data/clean/test_adaboost.csv",  index=False)
+#print(f"Saved {len(full_labeled)} labeled rows | train = {len(train)} | test = {len(test)} | threshold = {thr:.4f}")
+```
+
+A sample of the first 10 rows is shown in @fig-sample-ada.
+
+```{python}
+#| label: fig-sample-ada
+#| fig-cap: "Sample of the labeled modeling data (first 10 rows of adaboost_data.csv)."
+#| echo: false
+#| fig-width: 12
+#| fig-height: 4.5
+
+_sample = pd.read_csv("data/clean/adaboost_data.csv").head(10)
+fig, ax = plt.subplots(figsize=(17, 4.5))
+ax.axis("off")
+tbl = ax.table(cellText=_sample.round(3).values,
+               colLabels=_sample.columns, loc="center", cellLoc="center")
+tbl.auto_set_font_size(False); tbl.set_fontsize(7); tbl.scale(1, 1.4)
+plt.tight_layout(); plt.show()
+```
+
+- **Two-class label: `HighROA`.** `HighROA = 1` if `ROA` > the **training-set median** ROA, and `0` otherwise.
+The threshold is computed *after* the split, from training rows only.
+
+The feature columns used by the model are `Debt_to_Equity`, `Profit_Margin`, `log_Assets`, and `sector`.
+
+The labeled data is split 80/20 with `random_state=42`, giving roughly 32 training rows and 8 test rows for the 40-row sample.
+The two sets are shown side by side below:
+
+```{python}
+#| label: fig-split-ada
+#| fig-cap: "Training set (left) and testing set (right). Each company-year row appears in exactly one of the two sets — the sets are disjoint."
+#| fig-width: 12
+#| fig-height: 4.5
+
+train = pd.read_csv("data/clean/train_adaboost.csv")
+test  = pd.read_csv("data/clean/test_adaboost.csv")
+cols_show = ["ticker","fiscal_year","ROA","Debt_to_Equity","Profit_Margin","log_Assets","sector","HighROA"]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
+for ax, d, name in [(axes[0], train, "Training set"), (axes[1], test, "Testing set")]:
+    ax.axis("off"); ax.set_title(f"{name} (n={len(d)})")
+    t = ax.table(cellText=d[cols_show].head(8).round(3).values,
+                 colLabels=cols_show, loc="center", cellLoc="center")
+    t.auto_set_font_size(False); t.set_fontsize(7); t.scale(1, 1.4)
+plt.tight_layout(); plt.show()
+```
+
+The two split files are linked here: [`data/clean/train_adaboost.csv`](data/clean/train_adaboost.csv) and [`data/clean/test_adaboost.csv`](data/clean/test_adaboost.csv).
+
+`train_test_split` assigns each row to exactly one of the two sets, so no company-year observation appears in both.
+They must be disjoint because the test set is meant to simulate companies the model has never seen.
+
+`AdaBoostClassifier` in scikit-learn only accepts numeric inputs. So one-hot encoding via
+`OneHotEncoder(handle_unknown="ignore")` was used for `sector` columns 
+that holds strings like `"Technology"` and `"Financials"`.
+```{python}
+#| label: fig-onehot-ada
+#| fig-cap: "Left: the training data as loaded, with `sector` as a string column. Right: the same rows after one-hot encoding, with every input column numeric and ready for AdaBoost."
+#| fig-width: 12
+#| fig-height: 5
+
+num, cat = ["Debt_to_Equity","Profit_Margin","log_Assets"], ["sector"]
+pre = ColumnTransformer([("num","passthrough",num),
+                         ("cat", OneHotEncoder(handle_unknown="ignore"), cat)])
+X_enc = pre.fit_transform(train[num+cat])
+colnames = num + list(pre.named_transformers_["cat"].get_feature_names_out(cat))
+encoded = pd.DataFrame(X_enc, columns=colnames)
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 5))
+axes[0].axis("off"); axes[0].set_title("Before: sector is a string")
+t0 = axes[0].table(cellText=train[["Debt_to_Equity","Profit_Margin","log_Assets","sector"]].head(6).round(3).values,
+                   colLabels=["Debt_to_Equity","Profit_Margin","log_Assets","sector"],
+                   loc="center", cellLoc="center")
+t0.auto_set_font_size(False); t0.set_fontsize(8); t0.scale(1, 1.5)
+
+axes[1].axis("off"); axes[1].set_title("After: all numeric (one-hot)")
+t1 = axes[1].table(cellText=encoded.head(6).round(3).values,
+                   colLabels=[c.replace("sector_","") for c in colnames],
+                   loc="center", cellLoc="center")
+t1.auto_set_font_size(False); t1.set_fontsize(7); t1.scale(1, 1.5)
+plt.tight_layout(); plt.show()
+
+#print(f"Original feature columns: {num + cat}")
+#print(f"Encoded feature columns ({len(colnames)}): {colnames}")
+```
+
+After encoding, the input matrix has `{python} len(colnames)` columns — three numeric plus one binary column per sector.
+
+## Code
+
+The Python script is saved at [`code/adaboost_model.py`](code/adaboost_model.py).
+
+```{python}
+#| label: fit-adaboost
+
+train = pd.read_csv("data/clean/train_adaboost.csv")
+test  = pd.read_csv("data/clean/test_adaboost.csv")
+
+num = ["Debt_to_Equity","Profit_Margin","log_Assets"]
+cat = ["sector"]
+pre = ColumnTransformer([("num","passthrough",num),
+                         ("cat", OneHotEncoder(handle_unknown="ignore"), cat)])
+
+def make_ada(n, lr):
+    return Pipeline([("pre", pre),
+        ("m", AdaBoostClassifier(
+            estimator=DecisionTreeClassifier(max_depth=1),
+            n_estimators=n, learning_rate=lr, random_state=42))])
+
+tr, val = train_test_split(train, test_size=0.25, random_state=1,
+                           stratify=train["HighROA"])
+rounds = [10, 25, 50, 100, 200, 400]
+accs = {lr: [] for lr in [0.1, 0.5, 1.0]}
+for lr in accs:
+    for n in rounds:
+        m = make_ada(n, lr).fit(tr[num+cat], tr["HighROA"])
+        accs[lr].append(accuracy_score(val["HighROA"], m.predict(val[num+cat])))
+
+best = max(((lr, n) for lr in accs for n in rounds),
+           key=lambda t: accs[t[0]][rounds.index(t[1])])
+print("best (learning_rate, n_estimators) =", best)
+
+final = make_ada(best[1], best[0]).fit(train[num+cat], train["HighROA"])
+pred = final.predict(test[num+cat])
+cm = confusion_matrix(test["HighROA"], pred)
+acc = accuracy_score(test["HighROA"], pred)
+#print("AdaBoost test accuracy =", round(acc, 4))
+#print("Confusion matrix:\n", cm)
+```
+
+## Results
+
+```{python}
+#| label: fit-and-score-ada
+#| echo: false
+
+train = pd.read_csv("data/clean/train_adaboost.csv")
+test  = pd.read_csv("data/clean/test_adaboost.csv")
+
+num, cat = ["Debt_to_Equity","Profit_Margin","log_Assets"], ["sector"]
+pre = ColumnTransformer([("num","passthrough",num),
+                         ("cat", OneHotEncoder(handle_unknown="ignore"), cat)])
+
+def make_ada(n, lr):
+    return Pipeline([("pre", pre),
+        ("m", AdaBoostClassifier(
+            estimator=DecisionTreeClassifier(max_depth=1),
+            n_estimators=n, learning_rate=lr, random_state=42))])
+
+tr, val = train_test_split(train, test_size=0.25, random_state=1,
+                           stratify=train["HighROA"])
+rounds = [10, 25, 50, 100, 200, 400]
+accs = {lr: [] for lr in [0.1, 0.5, 1.0]}
+for lr in accs:
+    for n in rounds:
+        m = make_ada(n, lr).fit(tr[num+cat], tr["HighROA"])
+        accs[lr].append(accuracy_score(val["HighROA"], m.predict(val[num+cat])))
+
+best = max(((lr, n) for lr in accs for n in rounds),
+           key=lambda t: accs[t[0]][rounds.index(t[1])])
+
+final = make_ada(best[1], best[0]).fit(train[num+cat], train["HighROA"])
+pred = final.predict(test[num+cat])
+cm   = confusion_matrix(test["HighROA"], pred)
+acc  = accuracy_score(test["HighROA"], pred)
+```
+
+**Accuracy.** Test accuracy = **`{python} f"{acc:.4f}"`** on `{python} len(test)` test companies.
+
+```{python}
+#| label: fig-ada-confusion
+#| fig-cap: "Confusion matrix for AdaBoost on the test set."
+#| fig-width: 4
+#| fig-height: 3
+
+fig, ax = plt.subplots(figsize=(4,3))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Greens", ax=ax,
+            xticklabels=["Pred 0","Pred 1"], yticklabels=["True 0","True 1"])
+ax.set_title(f"AdaBoost confusion matrix (acc={acc:.3f})")
+plt.tight_layout(); plt.show()
+```
+
+**Tuning rounds and learning rate.** The plot below shows validation accuracy for `n_estimators ∈ {10, 25, 50, 100, 200, 400}`
+at learning rates {0.1, 0.5, 1.0}. The best setting was `n_estimators = 25`, `learning_rate = 0.1`.
+
+```{python}
+#| label: fig-ada-rounds
+#| fig-cap: "Validation accuracy of AdaBoost as a function of the number of rounds, for three learning rates."
+#| fig-width: 6
+#| fig-height: 4
+
+fig, ax = plt.subplots(figsize=(6,4))
+for lr, ys in accs.items():
+    ax.plot(rounds, ys, marker="o", label=f"lr={lr}")
+ax.set(xlabel="n_estimators (rounds)", ylabel="validation accuracy",
+       title="AdaBoost: validation accuracy vs rounds")
+ax.legend(); plt.tight_layout(); plt.show()
+```
+
+The single decision tree scored **0.583**; AdaBoost scored **`{python} f"{acc:.4f}"`**.
+Both models performedd comparatively same on this dataset.
+
+## (e) Conclusions
+
+AdaBoost's test accuracy of **`{python} f"{acc:.4f}"`** is not a stable estimate because of the data size. The margin remains
+the dominant feature, consistent with the linear and logistic results. Margin efficiency is the strongest green flag for
+financial performance. Also, leverage is a much weaker signal than the "more debt means more risk" story would predict.
+In summary, the effect of leverage and sector depends on the firm's margin profile.

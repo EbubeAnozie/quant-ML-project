@@ -28,14 +28,17 @@ website:
       - href: dectrees.qmd
         text: DT
 
-      - href: svms.qmd
-        text: SVM
-
       - href: regression.qmd
         text: Regression
 
-      - href: nn.qmd
-        text: NN
+      - href: adaboost.qmd
+        text: AdaBoost
+
+      - href: gb.qmd
+        text: GradientBoosting
+
+      - href: xgb.qmd
+        text: XGBoost
 
       - href: conclusions.qmd
         text: Conclusions
@@ -48,3 +51,11 @@ format:
     smooth-scroll: true
     code-fold: true
     code-tools: true
+
+jupyter: project-py
+
+execute:
+  freeze: auto
+  echo: true
+  warning: false
+  message: false

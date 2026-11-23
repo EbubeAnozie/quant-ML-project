@@ -79,6 +79,14 @@ A Decision Tree builds this exact flowchart automatically.
 Together, these methods are used to figure out which financial traits are the biggest green flags or warning signs
 for a company's success.
 
+The next two methods move from sorting companies into buckets to actually measuring them.
+Linear regression is the simplest idea in the whole project. If you plotted every company as a dot,
+you'd see a cloud of points. Linear regression just draws the best possible straight line through that cloud to guess the
+profitability of a company it hasn't seen. Logistic regression takes that same line but asks if a company a strong performer
+or a weak one. AdaBoost builds a sequence of yes/no questions called stumps. 
+After each stump makes its predictions, the companies it got wrong get flagged and given more weight,
+so the next stump is forced to focus on the hard cases.
+
 ## Research Questions
 
 This project explores the following questions, organized around four themes:

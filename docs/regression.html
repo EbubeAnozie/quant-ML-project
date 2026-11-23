@@ -110,6 +110,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -154,16 +183,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">DT</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./svms.html"> 
-<span class="menu-text">SVM</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./regression.html" aria-current="page"> 
 <span class="menu-text">Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./nn.html"> 
-<span class="menu-text">NN</span></a>
+    <a class="nav-link" href="./adaboost.html"> 
+<span class="menu-text">AdaBoost</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gb.qmd"> 
+<span class="menu-text">GradientBoosting</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./xgb.qmd"> 
+<span class="menu-text">XGBoost</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./conclusions.html"> 
@@ -184,11 +217,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
+  <ul class="collapse">
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">Data Prep</a></li>
   <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
   </ul>
 </nav>
     </div>
@@ -197,7 +231,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Regression</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Regression</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Linear and Logistic Regression on the Company-Year Panel</p>
 </div>
 
 
@@ -214,45 +249,215 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="overview" class="level1">
-<h1>Overview</h1>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p><strong>Linear regression</strong> predicts a continuous numeric outcome by fitting a straight line (or hyperplane) that minimizes squared error. Here, it predicts <strong>ROA</strong> from firm characteristics. <strong>Logistic regression</strong> predicts the probability that an observation belongs to a two-class category. Here, it predicts <strong>P(HighROA = 1)</strong>.</p>
+<p>Linear regression outputs any real number and is scored with RMSE and R².</p>
+<div id="fig-linear-concept" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-linear-concept-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Linear-Regression.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-linear-concept-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Linear regression fits a straight line through the cloud of company points.
+</figcaption>
+</figure>
+</div>
+<p>Logistic regression outputs a probability in [0, 1] and is scored with accuracy and a confusion matrix. Logistic regression computes a linear score <span class="math inline">\(z = \beta_0 + \beta_1 x_1 + \dots + \beta_k x_k\)</span>, then applies the sigmoid <span class="math inline">\(\sigma(z) = \frac{1}{1+e^{-z}}\)</span> to map <span class="math inline">\(z\)</span> into a probability. A <strong>threshold</strong> (usually 0.5) converts that probability into a class by predicting 1 if <span class="math inline">\(\sigma(z) \ge 0.5\)</span>, else 0.</p>
+<div id="cell-fig-sigmoid" class="cell" data-fig-height="4" data-fig-width="6" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">400</span>)<span class="op">;</span> s <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>np.exp(<span class="op">-</span>z))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ax.plot(z, s, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>)<span class="op">;</span> ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ax.fill_between(z, <span class="fl">0.5</span>, s, where<span class="op">=</span>s<span class="op">&gt;=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">.15</span>, color<span class="op">=</span><span class="st">"green"</span>, label<span class="op">=</span><span class="st">"predict 1"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ax.fill_between(z, s, <span class="fl">0.5</span>, where<span class="op">=</span>s<span class="op">&lt;</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">.15</span>, color<span class="op">=</span><span class="st">"red"</span>,   label<span class="op">=</span><span class="st">"predict 0"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(title<span class="op">=</span><span class="st">"Sigmoid: z → σ(z)"</span>, xlabel<span class="op">=</span><span class="st">"z"</span>, ylabel<span class="op">=</span><span class="st">"σ(z)"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ax.legend()<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-sigmoid" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sigmoid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-sigmoid-output-1.png" width="567" height="374" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sigmoid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Logistic: The sigmoid maps a linear score z into a probability.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="data-prep" class="level2">
+<h2 class="anchored" data-anchor-id="data-prep">Data Prep</h2>
+<p>The dataset is saved as <a href="data/clean/regression_data.csv"><code>data/clean/regression_data.csv</code></a>. Rows with missing values in any of <code>Debt_to_Equity</code>, <code>Profit_Margin</code>, <code>log_Assets</code>, <code>ROA</code>, or <code>sector</code> were dropped before saving.</p>
+<p>A sample of the first 10 rows is shown below.</p>
+<div id="cell-fig-sample-reg" class="cell" data-fig-height="4.5" data-fig-width="12" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div id="fig-sample-reg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sample-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-sample-reg-output-1.png" width="1718" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Sample of the modeling data (first 10 rows of regression_data.csv).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two models need different kinds of label, so <code>regression_data.csv</code> carries one column for each.</p>
 <ul>
-<li>What the method is</li>
-<li>How it works</li>
-<li>Why it is appropriate for this project</li>
-<li>What question you will investigate</li>
-<li>Optional explanatory image/diagram</li>
+<li><strong>Linear regression:</strong> Return on assets is a continuous ratio (e.g.&nbsp;0.072 for 7.2%), so it is directly usable as a regression target.</li>
+<li><strong>Logistic regression:</strong> HighROA = 1 if a company’s <code>ROA</code> is above the training-set median ROA, and <code>0</code> otherwise. The threshold is computed after the split, from the training rows only.</li>
+</ul>
+<p>Both models use the same feature columns: <code>Debt_to_Equity</code>, <code>Profit_Margin</code>, <code>log_Assets</code>, and a one-hot encoded <code>sector</code>.</p>
+<p>The labeled data is split 80/20 with <code>random_state=42</code>, giving roughly 32 training rows and 8 test rows for the 40-row sample. The two sets are shown side by side below:</p>
+<div id="cell-fig-split-reg" class="cell" data-fig-height="4.5" data-fig-width="12" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/regression_data.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(df, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>thr <span class="op">=</span> train[<span class="st">"ROA"</span>].median()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (train, test):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    d[<span class="st">"HighROA"</span>] <span class="op">=</span> (d[<span class="st">"ROA"</span>] <span class="op">&gt;</span> thr).astype(<span class="bu">int</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>train.to_csv(<span class="st">"data/clean/train_regression.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>test.to_csv(<span class="st">"data/clean/test_regression.csv"</span>,  index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>cols_show <span class="op">=</span> [<span class="st">"ticker"</span>,<span class="st">"fiscal_year"</span>,<span class="st">"ROA"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"HighROA"</span>]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, d, name <span class="kw">in</span> [(axes[<span class="dv">0</span>], train, <span class="st">"Training set"</span>), (axes[<span class="dv">1</span>], test, <span class="st">"Testing set"</span>)]:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (n=</span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    tbl <span class="op">=</span> ax.table(cellText<span class="op">=</span>d[cols_show].head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>cols_show, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    tbl.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> tbl.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> tbl.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-split-reg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-split-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-split-reg-output-1.png" width="1142" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-split-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Training set (left) and testing set (right). Each company-year row appears in exactly one of the two sets — the sets are disjoint.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two split files are linked here: <a href="data/clean/train_regression.csv"><code>data/clean/train_regression.csv</code></a> and <a href="data/clean/test_regression.csv"><code>data/clean/test_regression.csv</code></a>.</p>
+<p><code>train_test_split</code> assigns each row to exactly one of the two sets, so no company-year observation appears in both. They must be disjoint because if a row were in both, the model could partially memorize it during training.</p>
+</section>
+<section id="code" class="level2">
+<h2 class="anchored" data-anchor-id="code">Code</h2>
+<p>The full Python script is saved at <a href="code/regression_models.py"><code>code/regression_models.py</code></a>.</p>
+<div id="fit-regression-models" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_regression.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_regression.csv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> [<span class="st">"sector"</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>lin <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LinearRegression())]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"ROA"</span>])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>pred_lin <span class="op">=</span> lin.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> root_mean_squared_error(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>r2   <span class="op">=</span> r2_score(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>log <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>))]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>pred_log <span class="op">=</span> log.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>cm  <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>names <span class="op">=</span> num <span class="op">+</span> <span class="bu">list</span>(lin.named_steps[<span class="st">"pre"</span>].named_transformers_[<span class="st">"cat"</span>].get_feature_names_out(cat))</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>coefs_lin <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, lin.named_steps[<span class="st">"m"</span>].coef_))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>coefs_log <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, log.named_steps[<span class="st">"m"</span>].coef_[<span class="dv">0</span>]))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Linear   RMSE = {rmse:.4f}   R² = {r2:.4f}")</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Logistic accuracy = {acc:.4f}")</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#print("Confusion matrix:\n", cm)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
+<ul>
+<li>Test RMSE = 0.0395</li>
+<li>Test R² = -0.0385</li>
+</ul>
+<div id="cell-fig-pred-vs-actual" class="cell" data-fig-height="5" data-fig-width="5" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="dv">5</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ax.scatter(test[<span class="st">"ROA"</span>], pred_lin, s<span class="op">=</span><span class="dv">14</span>, alpha<span class="op">=</span><span class="fl">.6</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>lims <span class="op">=</span> [<span class="bu">min</span>(test[<span class="st">"ROA"</span>].<span class="bu">min</span>(), pred_lin.<span class="bu">min</span>()), <span class="bu">max</span>(test[<span class="st">"ROA"</span>].<span class="bu">max</span>(), pred_lin.<span class="bu">max</span>())]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ax.plot(lims, lims, <span class="st">"r--"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Actual ROA"</span>, ylabel<span class="op">=</span><span class="st">"Predicted ROA"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       title<span class="op">=</span><span class="st">"Linear regression: predicted vs actual"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-pred-vs-actual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pred-vs-actual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-pred-vs-actual-output-1.png" width="472" height="470" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pred-vs-actual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Predicted vs.&nbsp;actual ROA on the test set. Points on the red dashed line are perfect predictions.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Two coefficients in plain words.</strong></p>
+<ul>
+<li><strong><code>Profit_Margin</code> (β = 0.3454).</strong> The one coefficient with a real magnitude. Holding the other features fixed, a company with a profit margin 10 percentage points higher is associated with an ROA about 3.5 points higher.</li>
+<li><strong><code>Debt_to_Equity</code> (β = 0.0019).</strong> Holding the other features fixed, a one-unit higher debt-to-equity ratio is associated with an ROA only 0.19 points higher.</li>
 </ul>
 </section>
-<section id="data" class="level1">
-<h1>Data</h1>
+<section id="logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h3>
+<div id="cell-fig-log-confusion" class="cell" data-fig-height="3" data-fig-width="4" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">3</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>            xticklabels<span class="op">=</span>[<span class="st">"Pred 0"</span>,<span class="st">"Pred 1"</span>], yticklabels<span class="op">=</span>[<span class="st">"True 0"</span>,<span class="st">"True 1"</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Logistic confusion matrix (acc=</span><span class="sc">{</span>acc<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-log-confusion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-log-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-log-confusion-output-1.png" width="366" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-log-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Confusion matrix for logistic regression on the test set.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li>Which variables/dataset are used</li>
-<li>Small screenshot/table of the prepared data</li>
-<li>Link to raw data</li>
-<li>Link to clean data</li>
-<li>Brief explanation of preprocessing</li>
+<li><strong>Test accuracy = 0.6250</strong> on 8 test companies. The model made <strong>0 false positives</strong> but missed half of the true high performers (3 false negatives). When it calls a firm a top performer it tends to be right, but it under-calls.</li>
 </ul>
+<p>Naive Bayes accuracy was <strong>0.75</strong>. It looks like naive bayes performs better than logistic regression which has an accuracy of <strong>0.6250</strong>. But with only 8 test rows, both numbers carry wide uncertainty. Thus, the two models performed <em>comparably</em>.</p>
 </section>
-<section id="code" class="level1">
-<h1>Code</h1>
-<ul>
-<li>Link to GitHub code</li>
-<li>Language: Python/R</li>
-<li>Core packages</li>
-<li>Brief description of implementation</li>
-<li>No pasted code</li>
-</ul>
 </section>
-<section id="results" class="level1">
-<h1>Results</h1>
-<ul>
-<li>Model parameters</li>
-<li>Results and evaluation metrics</li>
-<li>Tables/plots</li>
-<li>Interpretation</li>
-<li>What the results tell us about financial performance/risk</li>
-</ul>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p><code>Profit_Margin</code> dominates every other coefficient. In the linear regression, a company with a profit margin 10 percentage points higher is associated with an ROA about 3.5 points higher (β = 0.3454). In the logistic regression the same pattern holds: β = 0.6377, so a 10-percentage-point higher margin multiplies the odds of being a high-ROA firm by about 1.066.</p>
+<p>Margin efficiency is the dominant linear driver of financial performance. Also, leverage is not a simple linear warning sign in this data, and sector adds only marginal signal.</p>
 
 
 <!-- -->
@@ -711,37 +916,268 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Regression"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Overview</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>What the method is</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>How it works</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Why it is appropriate for this project</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>What question you will investigate</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Optional explanatory image/diagram</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Which variables/dataset are used</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Small screenshot/table of the prepared data</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to raw data</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to clean data</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brief explanation of preprocessing</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Link to GitHub code</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Language: Python/R</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Core packages</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brief description of implementation</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No pasted code</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Model parameters</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Results and evaluation metrics</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tables/plots</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretation</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>What the results tell us about financial performance/risk</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Regression"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Linear and Logistic Regression on the Company-Year Panel"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np, json</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression, LogisticRegression</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OneHotEncoder</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> root_mean_squared_error, r2_score, confusion_matrix, accuracy_score</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>**Linear regression** predicts a continuous numeric outcome by fitting a straight line (or hyperplane) that minimizes</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>squared error. Here, it predicts **ROA** from firm characteristics. **Logistic regression** predicts the probability</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>that an observation belongs to a two-class category. Here, it predicts **P(HighROA = 1)**.</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>Linear regression outputs any real number and is scored with RMSE and R².</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="al">![Linear regression fits a straight line through the cloud of company points.](Linear-Regression.png)</span>{#fig-linear-concept fig-align="center" width="60%"}</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>Logistic regression outputs a probability</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>in <span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span> and is scored with accuracy and a confusion matrix. Logistic regression computes a linear</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>score $z = \beta_0 + \beta_1 x_1 + \dots + \beta_k x_k$, then applies the sigmoid $\sigma(z) = \frac{1}{1+e^{-z}}$ to</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>map $z$ into a probability. A **threshold** (usually 0.5) converts that probability into a class by predicting</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>1 if $\sigma(z) \ge 0.5$, else 0.</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sigmoid</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Logistic: The sigmoid maps a linear score z into a probability."</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">400</span>)<span class="op">;</span> s <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>np.exp(<span class="op">-</span>z))</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>ax.plot(z, s, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>)<span class="op">;</span> ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>ax.fill_between(z, <span class="fl">0.5</span>, s, where<span class="op">=</span>s<span class="op">&gt;=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">.15</span>, color<span class="op">=</span><span class="st">"green"</span>, label<span class="op">=</span><span class="st">"predict 1"</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>ax.fill_between(z, s, <span class="fl">0.5</span>, where<span class="op">=</span>s<span class="op">&lt;</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">.15</span>, color<span class="op">=</span><span class="st">"red"</span>,   label<span class="op">=</span><span class="st">"predict 0"</span>)</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(title<span class="op">=</span><span class="st">"Sigmoid: z → σ(z)"</span>, xlabel<span class="op">=</span><span class="st">"z"</span>, ylabel<span class="op">=</span><span class="st">"σ(z)"</span>)</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>ax.legend()<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Prep</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>The dataset is saved as <span class="co">[</span><span class="ot">`data/clean/regression_data.csv`</span><span class="co">](data/clean/regression_data.csv)</span>.</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>Rows with missing values in any of <span class="in">`Debt_to_Equity`</span>, <span class="in">`Profit_Margin`</span>, <span class="in">`log_Assets`</span>,</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="in">`ROA`</span>, or <span class="in">`sector`</span> were dropped before saving.</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: save-regression-data</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/company_financials_clean.csv"</span>)</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.replace([np.inf, <span class="op">-</span>np.inf], np.nan)</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_Assets"</span>] <span class="op">=</span> np.log1p(df[<span class="st">"TotalAssets"</span>])</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>feat_num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>, <span class="st">"Profit_Margin"</span>, <span class="st">"log_Assets"</span>]</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>feat_num <span class="op">+</span> [<span class="st">"ROA"</span>,<span class="st">"sector"</span>]).copy()</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">"data/clean/regression_data.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Saved {len(df)} rows to data/clean/regression_data.csv")</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>A sample of the first 10 rows is shown below.</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sample-reg</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sample of the modeling data (first 10 rows of regression_data.csv)."</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 12</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>_sample <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/regression_data.csv"</span>).head(<span class="dv">10</span>)</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="fl">4.5</span>))</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> ax.table(cellText<span class="op">=</span>_sample.<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>               colLabels<span class="op">=</span>_sample.columns, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>tbl.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> tbl.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> tbl.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>The two models need different kinds of label, so <span class="in">`regression_data.csv`</span> carries one column for each.</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Linear regression:** Return on assets is a continuous ratio (e.g. 0.072 for 7.2%), so it is directly usable as a regression target.</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Logistic regression:** HighROA = 1 if a company's <span class="in">`ROA`</span> is above the training-set median ROA, and <span class="in">`0`</span> otherwise.</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>The threshold is computed after the split, from the training rows only.</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>Both models use the same feature columns: <span class="in">`Debt_to_Equity`</span>, <span class="in">`Profit_Margin`</span>, <span class="in">`log_Assets`</span>, and a one-hot encoded <span class="in">`sector`</span>.</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>The labeled data is split 80/20 with <span class="in">`random_state=42`</span>, giving roughly 32 training rows and 8 test rows for the 40-row sample.</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>The two sets are shown side by side below:</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-split-reg</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Training set (left) and testing set (right). Each company-year row appears in exactly one of the two sets — the sets are disjoint."</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 12</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/regression_data.csv"</span>)</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(df, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>thr <span class="op">=</span> train[<span class="st">"ROA"</span>].median()</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (train, test):</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    d[<span class="st">"HighROA"</span>] <span class="op">=</span> (d[<span class="st">"ROA"</span>] <span class="op">&gt;</span> thr).astype(<span class="bu">int</span>)</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>train.to_csv(<span class="st">"data/clean/train_regression.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>test.to_csv(<span class="st">"data/clean/test_regression.csv"</span>,  index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>cols_show <span class="op">=</span> [<span class="st">"ticker"</span>,<span class="st">"fiscal_year"</span>,<span class="st">"ROA"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"HighROA"</span>]</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, d, name <span class="kw">in</span> [(axes[<span class="dv">0</span>], train, <span class="st">"Training set"</span>), (axes[<span class="dv">1</span>], test, <span class="st">"Testing set"</span>)]:</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (n=</span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    tbl <span class="op">=</span> ax.table(cellText<span class="op">=</span>d[cols_show].head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>cols_show, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>    tbl.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> tbl.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> tbl.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>The two split files are linked here: <span class="co">[</span><span class="ot">`data/clean/train_regression.csv`</span><span class="co">](data/clean/train_regression.csv)</span> and <span class="co">[</span><span class="ot">`data/clean/test_regression.csv`</span><span class="co">](data/clean/test_regression.csv)</span>.</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a><span class="in">`train_test_split`</span> assigns each row to exactly one of the two sets,</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>so no company-year observation appears in both. They must be disjoint because if a row were in both,</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>the model could partially memorize it during training.</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Code</span></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>The full Python script is saved at <span class="co">[</span><span class="ot">`code/regression_models.py`</span><span class="co">](code/regression_models.py)</span>.</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit-regression-models</span></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_regression.csv"</span>)</span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_regression.csv"</span>)</span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>]</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> [<span class="st">"sector"</span>]</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>lin <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LinearRegression())]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"ROA"</span>])</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>pred_lin <span class="op">=</span> lin.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> root_mean_squared_error(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>r2   <span class="op">=</span> r2_score(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>log <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>))]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>pred_log <span class="op">=</span> log.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>cm  <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a>names <span class="op">=</span> num <span class="op">+</span> <span class="bu">list</span>(lin.named_steps[<span class="st">"pre"</span>].named_transformers_[<span class="st">"cat"</span>].get_feature_names_out(cat))</span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>coefs_lin <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, lin.named_steps[<span class="st">"m"</span>].coef_))</span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a>coefs_log <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, log.named_steps[<span class="st">"m"</span>].coef_[<span class="dv">0</span>]))</span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Linear   RMSE = {rmse:.4f}   R² = {r2:.4f}")</span></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Logistic accuracy = {acc:.4f}")</span></span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a><span class="co">#print("Confusion matrix:\n", cm)</span></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit-and-score</span></span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_regression.csv"</span>)</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_regression.csv"</span>)</span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>]</span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> [<span class="st">"sector"</span>]</span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>lin <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LinearRegression())]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"ROA"</span>])</span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>pred_lin <span class="op">=</span> lin.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> root_mean_squared_error(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>r2   <span class="op">=</span> r2_score(test[<span class="st">"ROA"</span>], pred_lin)</span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>log <span class="op">=</span> Pipeline([(<span class="st">"pre"</span>, pre), (<span class="st">"m"</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>))]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>pred_log <span class="op">=</span> log.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>cm  <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred_log)</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>names <span class="op">=</span> num <span class="op">+</span> <span class="bu">list</span>(lin.named_steps[<span class="st">"pre"</span>].named_transformers_[<span class="st">"cat"</span>].get_feature_names_out(cat))</span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>coefs_lin <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, lin.named_steps[<span class="st">"m"</span>].coef_))</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>coefs_log <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(names, log.named_steps[<span class="st">"m"</span>].coef_[<span class="dv">0</span>]))</span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a><span class="fu">### Linear regression</span></span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Test RMSE = <span class="in">`{python} f"{rmse:.4f}"`</span></span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Test R² = <span class="in">`{python} f"{r2:.4f}"`</span></span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-pred-vs-actual</span></span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Predicted vs. actual ROA on the test set. Points on the red dashed line are perfect predictions."</span></span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5</span></span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="dv">5</span>))</span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>ax.scatter(test[<span class="st">"ROA"</span>], pred_lin, s<span class="op">=</span><span class="dv">14</span>, alpha<span class="op">=</span><span class="fl">.6</span>)</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>lims <span class="op">=</span> [<span class="bu">min</span>(test[<span class="st">"ROA"</span>].<span class="bu">min</span>(), pred_lin.<span class="bu">min</span>()), <span class="bu">max</span>(test[<span class="st">"ROA"</span>].<span class="bu">max</span>(), pred_lin.<span class="bu">max</span>())]</span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>ax.plot(lims, lims, <span class="st">"r--"</span>)</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Actual ROA"</span>, ylabel<span class="op">=</span><span class="st">"Predicted ROA"</span>,</span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a>       title<span class="op">=</span><span class="st">"Linear regression: predicted vs actual"</span>)</span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>**Two coefficients in plain words.**</span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`Profit_Margin` (β = `{python} f"{coefs_lin['Profit_Margin']:.4f}"`).** The one coefficient with a real magnitude.</span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a>Holding the other features fixed, a company with a profit margin 10 percentage points higher is associated with an ROA</span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>about 3.5 points higher.</span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`Debt_to_Equity` (β = `{python} f"{coefs_lin['Debt_to_Equity']:.4f}"`).** Holding the other features fixed,</span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a>a one-unit higher debt-to-equity ratio is associated with an ROA only 0.19 points higher.</span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a><span class="fu">### Logistic regression</span></span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-log-confusion</span></span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Confusion matrix for logistic regression on the test set."</span></span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 4</span></span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">3</span>))</span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>            xticklabels<span class="op">=</span>[<span class="st">"Pred 0"</span>,<span class="st">"Pred 1"</span>], yticklabels<span class="op">=</span>[<span class="st">"True 0"</span>,<span class="st">"True 1"</span>])</span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Logistic confusion matrix (acc=</span><span class="sc">{</span>acc<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Test accuracy = `{python} f"{acc:.4f}"`** on <span class="in">`{python} len(test)`</span> test companies.</span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>The model made **0 false positives** but missed half of the true high performers (3 false negatives).</span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>When it calls a firm a top performer it tends to be right, but it under-calls.</span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>Naive Bayes accuracy was **0.75**. It looks like naive bayes performs better than logistic regression</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a>which has an accuracy of **`{python} f"{acc:.4f}"`**.</span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a>But with only <span class="in">`{python} len(test)`</span> test rows, both numbers carry wide uncertainty.</span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a>Thus, the two models performed *comparably*.</span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusions</span></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a><span class="in">`Profit_Margin`</span> dominates every other coefficient. In the linear regression,</span>
+<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a>a company with a profit margin 10 percentage points higher is associated with an ROA about 3.5 points higher</span>
+<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a>(β = <span class="in">`{python} f"{coefs_lin['Profit_Margin']:.4f}"`</span>). In the logistic regression the same pattern holds:</span>
+<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a>β = <span class="in">`{python} f"{coefs_log['Profit_Margin']:.4f}"`</span>, so a 10-percentage-point higher margin multiplies the odds of being</span>
+<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a>a high-ROA firm by about <span class="in">`{python} f"{np.exp(coefs_log['Profit_Margin']*0.10):.3f}"`</span>.</span>
+<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a>Margin efficiency is the dominant linear driver of financial performance. Also, leverage is not a simple linear warning sign</span>
+<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>in this data, and sector adds only marginal signal.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
