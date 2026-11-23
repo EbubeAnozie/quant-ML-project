@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>AdaBoost</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-cb61c712ca1a7fe70a83faed8e4da2d7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./dataprep_eda.html"> 
+<span class="menu-text">DataPrep/EDA</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering.html"> 
+<span class="menu-text">Clustering</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./pca(pca).html"> 
+<span class="menu-text">PCA(PCA)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./naivebayes.html"> 
+<span class="menu-text">NB</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./dectrees.html"> 
+<span class="menu-text">DT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regression.html"> 
+<span class="menu-text">Regression</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./adaboost.html" aria-current="page"> 
+<span class="menu-text">AdaBoost</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gb.qmd"> 
+<span class="menu-text">GradientBoosting</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./xgb.qmd"> 
+<span class="menu-text">XGBoost</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./conclusions.html"> 
+<span class="menu-text">Conclusions</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">Data Prep</a></li>
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#e-conclusions" id="toc-e-conclusions" class="nav-link" data-scroll-target="#e-conclusions">(e) Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">AdaBoost</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Boosting Decision Stumps to Classify High-ROA Firms</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p><strong>Boosting</strong> is an ensemble method that builds models <em>sequentially</em>, where each new model focuses on the examples the previous ones got wrong. This differs from <strong>bagging</strong>, which builds trees <em>in parallel</em> on bootstrap samples and averages them.</p>
+<p>AdaBoost uses <strong>decision stumps</strong>, a low variance, depth-1 trees. After each round, misclassified rows get <em>higher weight</em> and correctly classified rows get <em>lower weight</em>, so the next stump is forced to focus on hard cases. Each stump gets a <strong>weight α</strong> based on its weighted error: <span class="math inline">\(\alpha = \tfrac12 \ln\!\frac{1-\epsilon}{\epsilon}\)</span>. So, a lower error means larger α. Predictions are combined as a weighted vote <span class="math inline">\(\hat y = \operatorname{sign}\!\big(\sum_t \alpha_t\, h_t(x)\big)\)</span>. Stumps that performed better have more say.</p>
+<div id="cell-fig-boosting-vs-bagging" class="cell" data-fig-height="3" data-fig-width="9" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">3</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Bagging (parallel)"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, xp <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="fl">0.15</span>, <span class="fl">0.5</span>, <span class="fl">0.85</span>]):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].add_patch(plt.Rectangle((xp<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.55</span>), <span class="fl">0.16</span>, <span class="fl">0.25</span>, fc<span class="op">=</span><span class="st">"#cfe8ff"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].text(xp, <span class="fl">0.675</span>, <span class="ss">f"tree </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(xp, <span class="fl">0.35</span>), xytext<span class="op">=</span>(xp, <span class="fl">0.55</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                     arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].add_patch(plt.Rectangle((<span class="fl">0.35</span>, <span class="fl">0.05</span>), <span class="fl">0.3</span>, <span class="fl">0.2</span>, fc<span class="op">=</span><span class="st">"#ffe6b3"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].text(<span class="fl">0.5</span>, <span class="fl">0.15</span>, <span class="st">"average"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> xp <span class="kw">in</span> [<span class="fl">0.15</span>, <span class="fl">0.5</span>, <span class="fl">0.85</span>]:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(<span class="fl">0.5</span> <span class="op">+</span> (xp<span class="op">-</span><span class="fl">0.5</span>)<span class="op">*</span><span class="fl">0.6</span>, <span class="fl">0.25</span>), xytext<span class="op">=</span>(xp, <span class="fl">0.35</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                     arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_ylim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"AdaBoost (sequential)"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">0.1</span>, <span class="fl">0.35</span>, <span class="fl">0.6</span>, <span class="fl">0.85</span>]</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, xp <span class="kw">in</span> <span class="bu">enumerate</span>(xs):</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].add_patch(plt.Rectangle((xp<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.5</span>), <span class="fl">0.16</span>, <span class="fl">0.25</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                                    fc<span class="op">=</span><span class="st">"#ffe6b3"</span>, ec<span class="op">=</span><span class="st">"k"</span>, alpha<span class="op">=</span><span class="fl">0.4</span><span class="op">+</span><span class="fl">0.15</span><span class="op">*</span>i))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].text(xp, <span class="fl">0.625</span>, <span class="ss">f"stump </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">α</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">&lt;</span> <span class="bu">len</span>(xs)<span class="op">-</span><span class="dv">1</span>:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(xs[i<span class="op">+</span><span class="dv">1</span>]<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.625</span>), xytext<span class="op">=</span>(xp<span class="op">+</span><span class="fl">0.08</span>, <span class="fl">0.625</span>),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                         arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].add_patch(plt.Rectangle((<span class="fl">0.35</span>, <span class="fl">0.05</span>), <span class="fl">0.3</span>, <span class="fl">0.2</span>, fc<span class="op">=</span><span class="st">"#cfe8ff"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].text(<span class="fl">0.5</span>, <span class="fl">0.15</span>, <span class="st">"weighted vote"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.25</span>), xytext<span class="op">=</span>(xs[<span class="op">-</span><span class="dv">1</span>], <span class="fl">0.5</span>),</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                 arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_ylim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-boosting-vs-bagging" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boosting-vs-bagging-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-boosting-vs-bagging-output-1.png" width="854" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boosting-vs-bagging-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Bagging builds trees in parallel; AdaBoost builds them one after another, each new stump focused on previously misclassified rows.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-alpha-curve" class="cell" data-fig-height="3.5" data-fig-width="5" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>eps <span class="op">=</span> np.linspace(<span class="fl">0.01</span>, <span class="fl">0.49</span>, <span class="dv">200</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">*</span>np.log((<span class="dv">1</span><span class="op">-</span>eps)<span class="op">/</span>eps)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="fl">3.5</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>plt.plot(eps, alpha, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"stump weighted error ε"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"stump weight α"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"AdaBoost: better stumps get larger α"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-alpha-curve" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-alpha-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-alpha-curve-output-1.png" width="471" height="326" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alpha-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Stump weight α as a function of its weighted error ε. Better stumps (lower ε) get larger α.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="data-prep" class="level2">
+<h2 class="anchored" data-anchor-id="data-prep">Data Prep</h2>
+<p>The labeled dataset is saved as <a href="data/clean/adaboost_data.csv"><code>data/clean/adaboost_data.csv</code></a>. It contains one row per company-year with the raw SEC fields (<code>Revenue</code>, <code>NetIncome</code>, <code>TotalAssets</code>, <code>TotalLiabilities</code>, <code>TotalEquity</code>, <code>LongTermDebt</code>, <code>OperatingIncome</code>, <code>CashFromOperations</code>), the derived ratios (<code>ROA</code>, <code>ROE</code>, <code>Debt_to_Equity</code>, <code>Profit_Margin</code>), one engineered feature (<code>log_Assets</code>), and the binary target <code>HighROA</code>. Rows with missing in any of <code>Debt_to_Equity</code>, <code>Profit_Margin</code>, <code>log_Assets</code>, <code>ROA</code>, or <code>sector</code> were dropped before saving.</p>
+<p>A sample of the first 10 rows is shown in <a href="#fig-sample-ada" class="quarto-xref">Figure&nbsp;3</a>.</p>
+<div id="cell-fig-sample-ada" class="cell" data-fig-height="4.5" data-fig-width="12" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div id="fig-sample-ada" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sample-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-sample-ada-output-1.png" width="1622" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Sample of the labeled modeling data (first 10 rows of adaboost_data.csv).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Two-class label: <code>HighROA</code>.</strong> <code>HighROA = 1</code> if <code>ROA</code> &gt; the <strong>training-set median</strong> ROA, and <code>0</code> otherwise. The threshold is computed <em>after</em> the split, from training rows only.</li>
+</ul>
+<p>The feature columns used by the model are <code>Debt_to_Equity</code>, <code>Profit_Margin</code>, <code>log_Assets</code>, and <code>sector</code>.</p>
+<p>The labeled data is split 80/20 with <code>random_state=42</code>, giving roughly 32 training rows and 8 test rows for the 40-row sample. The two sets are shown side by side below:</p>
+<div id="cell-fig-split-ada" class="cell" data-fig-height="4.5" data-fig-width="12" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_adaboost.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_adaboost.csv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cols_show <span class="op">=</span> [<span class="st">"ticker"</span>,<span class="st">"fiscal_year"</span>,<span class="st">"ROA"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>,<span class="st">"HighROA"</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, d, name <span class="kw">in</span> [(axes[<span class="dv">0</span>], train, <span class="st">"Training set"</span>), (axes[<span class="dv">1</span>], test, <span class="st">"Testing set"</span>)]:</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)<span class="op">;</span> ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (n=</span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> ax.table(cellText<span class="op">=</span>d[cols_show].head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                 colLabels<span class="op">=</span>cols_show, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    t.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> t.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-split-ada" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-split-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-split-ada-output-1.png" width="1142" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-split-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Training set (left) and testing set (right). Each company-year row appears in exactly one of the two sets — the sets are disjoint.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two split files are linked here: <a href="data/clean/train_adaboost.csv"><code>data/clean/train_adaboost.csv</code></a> and <a href="data/clean/test_adaboost.csv"><code>data/clean/test_adaboost.csv</code></a>.</p>
+<p><code>train_test_split</code> assigns each row to exactly one of the two sets, so no company-year observation appears in both. They must be disjoint because the test set is meant to simulate companies the model has never seen.</p>
+<p><code>AdaBoostClassifier</code> in scikit-learn only accepts numeric inputs. So one-hot encoding via <code>OneHotEncoder(handle_unknown="ignore")</code> was used for <code>sector</code> columns that holds strings like <code>"Technology"</code> and <code>"Financials"</code>.</p>
+<div id="cell-fig-onehot-ada" class="cell" data-fig-height="5" data-fig-width="12" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>num, cat <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>], [<span class="st">"sector"</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>X_enc <span class="op">=</span> pre.fit_transform(train[num<span class="op">+</span>cat])</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>colnames <span class="op">=</span> num <span class="op">+</span> <span class="bu">list</span>(pre.named_transformers_[<span class="st">"cat"</span>].get_feature_names_out(cat))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>encoded <span class="op">=</span> pd.DataFrame(X_enc, columns<span class="op">=</span>colnames)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">5</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_title(<span class="st">"Before: sector is a string"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> axes[<span class="dv">0</span>].table(cellText<span class="op">=</span>train[[<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>]].head(<span class="dv">6</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>[<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                   loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>t0.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t0.set_fontsize(<span class="dv">8</span>)<span class="op">;</span> t0.scale(<span class="dv">1</span>, <span class="fl">1.5</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_title(<span class="st">"After: all numeric (one-hot)"</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> axes[<span class="dv">1</span>].table(cellText<span class="op">=</span>encoded.head(<span class="dv">6</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>[c.replace(<span class="st">"sector_"</span>,<span class="st">""</span>) <span class="cf">for</span> c <span class="kw">in</span> colnames],</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                   loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>t1.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t1.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> t1.scale(<span class="dv">1</span>, <span class="fl">1.5</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Original feature columns: {num + cat}")</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Encoded feature columns ({len(colnames)}): {colnames}")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-onehot-ada" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-onehot-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-onehot-ada-output-1.png" width="1526" height="470" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-onehot-ada-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Left: the training data as loaded, with <code>sector</code> as a string column. Right: the same rows after one-hot encoding, with every input column numeric and ready for AdaBoost.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>After encoding, the input matrix has 12 columns — three numeric plus one binary column per sector.</p>
+</section>
+<section id="code" class="level2">
+<h2 class="anchored" data-anchor-id="code">Code</h2>
+<p>The Python script is saved at <a href="code/adaboost_model.py"><code>code/adaboost_model.py</code></a>.</p>
+<div id="fit-adaboost" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_adaboost.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_adaboost.csv"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> [<span class="st">"sector"</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_ada(n, lr):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Pipeline([(<span class="st">"pre"</span>, pre),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"m"</span>, AdaBoostClassifier(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            estimator<span class="op">=</span>DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            n_estimators<span class="op">=</span>n, learning_rate<span class="op">=</span>lr, random_state<span class="op">=</span><span class="dv">42</span>))])</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>tr, val <span class="op">=</span> train_test_split(train, test_size<span class="op">=</span><span class="fl">0.25</span>, random_state<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                           stratify<span class="op">=</span>train[<span class="st">"HighROA"</span>])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>rounds <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>accs <span class="op">=</span> {lr: [] <span class="cf">for</span> lr <span class="kw">in</span> [<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>]}</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lr <span class="kw">in</span> accs:</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> rounds:</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> make_ada(n, lr).fit(tr[num<span class="op">+</span>cat], tr[<span class="st">"HighROA"</span>])</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        accs[lr].append(accuracy_score(val[<span class="st">"HighROA"</span>], m.predict(val[num<span class="op">+</span>cat])))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> <span class="bu">max</span>(((lr, n) <span class="cf">for</span> lr <span class="kw">in</span> accs <span class="cf">for</span> n <span class="kw">in</span> rounds),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>           key<span class="op">=</span><span class="kw">lambda</span> t: accs[t[<span class="dv">0</span>]][rounds.index(t[<span class="dv">1</span>])])</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"best (learning_rate, n_estimators) ="</span>, best)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> make_ada(best[<span class="dv">1</span>], best[<span class="dv">0</span>]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> final.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">#print("AdaBoost test accuracy =", round(acc, 4))</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">#print("Confusion matrix:\n", cm)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>best (learning_rate, n_estimators) = (0.1, 25)</code></pre>
+</div>
+</div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p><strong>Accuracy.</strong> Test accuracy = <strong>0.5000</strong> on 8 test companies.</p>
+<div id="cell-fig-ada-confusion" class="cell" data-fig-height="3" data-fig-width="4" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">3</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"Greens"</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>            xticklabels<span class="op">=</span>[<span class="st">"Pred 0"</span>,<span class="st">"Pred 1"</span>], yticklabels<span class="op">=</span>[<span class="st">"True 0"</span>,<span class="st">"True 1"</span>])</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"AdaBoost confusion matrix (acc=</span><span class="sc">{</span>acc<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-ada-confusion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ada-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-ada-confusion-output-1.png" width="371" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ada-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Confusion matrix for AdaBoost on the test set.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Tuning rounds and learning rate.</strong> The plot below shows validation accuracy for <code>n_estimators ∈ {10, 25, 50, 100, 200, 400}</code> at learning rates {0.1, 0.5, 1.0}. The best setting was <code>n_estimators = 25</code>, <code>learning_rate = 0.1</code>.</p>
+<div id="cell-fig-ada-rounds" class="cell" data-fig-height="4" data-fig-width="6" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lr, ys <span class="kw">in</span> accs.items():</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    ax.plot(rounds, ys, marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="ss">f"lr=</span><span class="sc">{</span>lr<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"n_estimators (rounds)"</span>, ylabel<span class="op">=</span><span class="st">"validation accuracy"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       title<span class="op">=</span><span class="st">"AdaBoost: validation accuracy vs rounds"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax.legend()<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-ada-rounds" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ada-rounds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="adaboost_files/figure-html/fig-ada-rounds-output-1.png" width="568" height="374" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ada-rounds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Validation accuracy of AdaBoost as a function of the number of rounds, for three learning rates.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The single decision tree scored <strong>0.583</strong>; AdaBoost scored <strong>0.5000</strong>. Both models performedd comparatively same on this dataset.</p>
+</section>
+<section id="e-conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="e-conclusions">(e) Conclusions</h2>
+<p>AdaBoost’s test accuracy of <strong>0.5000</strong> is not a stable estimate because of the data size. The margin remains the dominant feature, consistent with the linear and logistic results. Margin efficiency is the strongest green flag for financial performance. Also, leverage is a much weaker signal than the “more debt means more risk” story would predict. In summary, the effect of leverage and sector depends on the firm’s margin profile.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/EbubeAnozie\.github\.io\/quant-ML-project\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "AdaBoost"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Boosting Decision Stumps to Classify High-ROA Firms"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-ada</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OneHotEncoder</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> AdaBoostClassifier</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, accuracy_score</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>**Boosting** is an ensemble method that builds models *sequentially*,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>where each new model focuses on the examples the previous ones got wrong.</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>This differs from **bagging**, which builds trees *in parallel* on bootstrap samples and averages them.</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>AdaBoost uses **decision stumps**, a low variance, depth-1 trees. After each round, misclassified rows get *higher weight*</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>and correctly classified rows get *lower weight*,</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>so the next stump is forced to focus on hard cases. Each stump gets a **weight α** based on its weighted error:</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>$\alpha = \tfrac12 \ln<span class="sc">\!</span>\frac{1-\epsilon}{\epsilon}$. So, a lower error means larger α. Predictions are combined as a</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>weighted vote $\hat y = \operatorname{sign}<span class="sc">\!</span>\big(\sum_t \alpha_t\, h_t(x)\big)$. Stumps that performed better have more say.</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-boosting-vs-bagging</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Bagging builds trees in parallel; AdaBoost builds them one after another, each new stump focused on previously misclassified rows."</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">3</span>))</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Bagging (parallel)"</span>)</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, xp <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="fl">0.15</span>, <span class="fl">0.5</span>, <span class="fl">0.85</span>]):</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].add_patch(plt.Rectangle((xp<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.55</span>), <span class="fl">0.16</span>, <span class="fl">0.25</span>, fc<span class="op">=</span><span class="st">"#cfe8ff"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].text(xp, <span class="fl">0.675</span>, <span class="ss">f"tree </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(xp, <span class="fl">0.35</span>), xytext<span class="op">=</span>(xp, <span class="fl">0.55</span>),</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>                     arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].add_patch(plt.Rectangle((<span class="fl">0.35</span>, <span class="fl">0.05</span>), <span class="fl">0.3</span>, <span class="fl">0.2</span>, fc<span class="op">=</span><span class="st">"#ffe6b3"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].text(<span class="fl">0.5</span>, <span class="fl">0.15</span>, <span class="st">"average"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> xp <span class="kw">in</span> [<span class="fl">0.15</span>, <span class="fl">0.5</span>, <span class="fl">0.85</span>]:</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(<span class="fl">0.5</span> <span class="op">+</span> (xp<span class="op">-</span><span class="fl">0.5</span>)<span class="op">*</span><span class="fl">0.6</span>, <span class="fl">0.25</span>), xytext<span class="op">=</span>(xp, <span class="fl">0.35</span>),</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>                     arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_ylim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"AdaBoost (sequential)"</span>)</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">0.1</span>, <span class="fl">0.35</span>, <span class="fl">0.6</span>, <span class="fl">0.85</span>]</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, xp <span class="kw">in</span> <span class="bu">enumerate</span>(xs):</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].add_patch(plt.Rectangle((xp<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.5</span>), <span class="fl">0.16</span>, <span class="fl">0.25</span>,</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>                                    fc<span class="op">=</span><span class="st">"#ffe6b3"</span>, ec<span class="op">=</span><span class="st">"k"</span>, alpha<span class="op">=</span><span class="fl">0.4</span><span class="op">+</span><span class="fl">0.15</span><span class="op">*</span>i))</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].text(xp, <span class="fl">0.625</span>, <span class="ss">f"stump </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">α</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">&lt;</span> <span class="bu">len</span>(xs)<span class="op">-</span><span class="dv">1</span>:</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(xs[i<span class="op">+</span><span class="dv">1</span>]<span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.625</span>), xytext<span class="op">=</span>(xp<span class="op">+</span><span class="fl">0.08</span>, <span class="fl">0.625</span>),</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>                         arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].add_patch(plt.Rectangle((<span class="fl">0.35</span>, <span class="fl">0.05</span>), <span class="fl">0.3</span>, <span class="fl">0.2</span>, fc<span class="op">=</span><span class="st">"#cfe8ff"</span>, ec<span class="op">=</span><span class="st">"k"</span>))</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].text(<span class="fl">0.5</span>, <span class="fl">0.15</span>, <span class="st">"weighted vote"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].annotate(<span class="st">""</span>, xy<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.25</span>), xytext<span class="op">=</span>(xs[<span class="op">-</span><span class="dv">1</span>], <span class="fl">0.5</span>),</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>                 arrowprops<span class="op">=</span><span class="bu">dict</span>(arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>))</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_ylim(<span class="dv">0</span>,<span class="dv">1</span>)<span class="op">;</span> axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-alpha-curve</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Stump weight α as a function of its weighted error ε. Better stumps (lower ε) get larger α."</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5</span></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3.5</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>eps <span class="op">=</span> np.linspace(<span class="fl">0.01</span>, <span class="fl">0.49</span>, <span class="dv">200</span>)</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">*</span>np.log((<span class="dv">1</span><span class="op">-</span>eps)<span class="op">/</span>eps)</span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="fl">3.5</span>))</span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>plt.plot(eps, alpha, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"stump weighted error ε"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"stump weight α"</span>)</span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"AdaBoost: better stumps get larger α"</span>)</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Prep</span></span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>The labeled dataset is saved as <span class="co">[</span><span class="ot">`data/clean/adaboost_data.csv`</span><span class="co">](data/clean/adaboost_data.csv)</span>.</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>It contains one row per company-year with the raw SEC fields (<span class="in">`Revenue`</span>, <span class="in">`NetIncome`</span>, <span class="in">`TotalAssets`</span>, <span class="in">`TotalLiabilities`</span>, <span class="in">`TotalEquity`</span>, <span class="in">`LongTermDebt`</span>, <span class="in">`OperatingIncome`</span>, <span class="in">`CashFromOperations`</span>), the derived ratios (<span class="in">`ROA`</span>, <span class="in">`ROE`</span>, <span class="in">`Debt_to_Equity`</span>, <span class="in">`Profit_Margin`</span>),</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>one engineered feature (<span class="in">`log_Assets`</span>), and the binary target <span class="in">`HighROA`</span>.</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>Rows with missing in any of <span class="in">`Debt_to_Equity`</span>, <span class="in">`Profit_Margin`</span>, <span class="in">`log_Assets`</span>, <span class="in">`ROA`</span>, or <span class="in">`sector`</span> were dropped before saving.</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: save-adaboost-data</span></span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/company_financials_clean.csv"</span>)</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.replace([np.inf, <span class="op">-</span>np.inf], np.nan)</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_Assets"</span>] <span class="op">=</span> np.log1p(df[<span class="st">"TotalAssets"</span>])</span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"ROA"</span>,<span class="st">"sector"</span>]).copy()</span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(df, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>thr <span class="op">=</span> train[<span class="st">"ROA"</span>].median()</span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> train.copy()<span class="op">;</span> test <span class="op">=</span> test.copy()</span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"HighROA"</span>] <span class="op">=</span> (train[<span class="st">"ROA"</span>] <span class="op">&gt;</span> thr).astype(<span class="bu">int</span>)</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>test[<span class="st">"HighROA"</span>]  <span class="op">=</span> (test[<span class="st">"ROA"</span>]  <span class="op">&gt;</span> thr).astype(<span class="bu">int</span>)</span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>full_labeled <span class="op">=</span> pd.concat([train, test]).sort_index()</span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>full_labeled.to_csv(<span class="st">"data/clean/adaboost_data.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>train.to_csv(<span class="st">"data/clean/train_adaboost.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>test.to_csv(<span class="st">"data/clean/test_adaboost.csv"</span>,  index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Saved {len(full_labeled)} labeled rows | train = {len(train)} | test = {len(test)} | threshold = {thr:.4f}")</span></span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>A sample of the first 10 rows is shown in @fig-sample-ada.</span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sample-ada</span></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sample of the labeled modeling data (first 10 rows of adaboost_data.csv)."</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 12</span></span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>_sample <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/adaboost_data.csv"</span>).head(<span class="dv">10</span>)</span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">17</span>, <span class="fl">4.5</span>))</span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> ax.table(cellText<span class="op">=</span>_sample.<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>               colLabels<span class="op">=</span>_sample.columns, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>tbl.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> tbl.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> tbl.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Two-class label: `HighROA`.** `HighROA = 1` if `ROA` &gt; the **training-set median** ROA, and <span class="in">`0`</span> otherwise.</span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>The threshold is computed *after* the split, from training rows only.</span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>The feature columns used by the model are <span class="in">`Debt_to_Equity`</span>, <span class="in">`Profit_Margin`</span>, <span class="in">`log_Assets`</span>, and <span class="in">`sector`</span>.</span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>The labeled data is split 80/20 with <span class="in">`random_state=42`</span>, giving roughly 32 training rows and 8 test rows for the 40-row sample.</span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>The two sets are shown side by side below:</span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-split-ada</span></span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Training set (left) and testing set (right). Each company-year row appears in exactly one of the two sets — the sets are disjoint."</span></span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 12</span></span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_adaboost.csv"</span>)</span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_adaboost.csv"</span>)</span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>cols_show <span class="op">=</span> [<span class="st">"ticker"</span>,<span class="st">"fiscal_year"</span>,<span class="st">"ROA"</span>,<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>,<span class="st">"HighROA"</span>]</span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, d, name <span class="kw">in</span> [(axes[<span class="dv">0</span>], train, <span class="st">"Training set"</span>), (axes[<span class="dv">1</span>], test, <span class="st">"Testing set"</span>)]:</span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)<span class="op">;</span> ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (n=</span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> ax.table(cellText<span class="op">=</span>d[cols_show].head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>                 colLabels<span class="op">=</span>cols_show, loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>    t.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> t.scale(<span class="dv">1</span>, <span class="fl">1.4</span>)</span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>The two split files are linked here: <span class="co">[</span><span class="ot">`data/clean/train_adaboost.csv`</span><span class="co">](data/clean/train_adaboost.csv)</span> and <span class="co">[</span><span class="ot">`data/clean/test_adaboost.csv`</span><span class="co">](data/clean/test_adaboost.csv)</span>.</span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a><span class="in">`train_test_split`</span> assigns each row to exactly one of the two sets, so no company-year observation appears in both.</span>
+<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a>They must be disjoint because the test set is meant to simulate companies the model has never seen.</span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a><span class="in">`AdaBoostClassifier`</span> in scikit-learn only accepts numeric inputs. So one-hot encoding via</span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">`OneHotEncoder(handle_unknown="ignore")`</span> was used for <span class="in">`sector`</span> columns </span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a>that holds strings like <span class="in">`"Technology"`</span> and <span class="in">`"Financials"`</span>.</span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-onehot-ada</span></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Left: the training data as loaded, with `sector` as a string column. Right: the same rows after one-hot encoding, with every input column numeric and ready for AdaBoost."</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 12</span></span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>num, cat <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>], [<span class="st">"sector"</span>]</span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a>X_enc <span class="op">=</span> pre.fit_transform(train[num<span class="op">+</span>cat])</span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>colnames <span class="op">=</span> num <span class="op">+</span> <span class="bu">list</span>(pre.named_transformers_[<span class="st">"cat"</span>].get_feature_names_out(cat))</span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a>encoded <span class="op">=</span> pd.DataFrame(X_enc, columns<span class="op">=</span>colnames)</span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">5</span>))</span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_title(<span class="st">"Before: sector is a string"</span>)</span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> axes[<span class="dv">0</span>].table(cellText<span class="op">=</span>train[[<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>]].head(<span class="dv">6</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>[<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>,<span class="st">"sector"</span>],</span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a>                   loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a>t0.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t0.set_fontsize(<span class="dv">8</span>)<span class="op">;</span> t0.scale(<span class="dv">1</span>, <span class="fl">1.5</span>)</span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_title(<span class="st">"After: all numeric (one-hot)"</span>)</span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> axes[<span class="dv">1</span>].table(cellText<span class="op">=</span>encoded.head(<span class="dv">6</span>).<span class="bu">round</span>(<span class="dv">3</span>).values,</span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a>                   colLabels<span class="op">=</span>[c.replace(<span class="st">"sector_"</span>,<span class="st">""</span>) <span class="cf">for</span> c <span class="kw">in</span> colnames],</span>
+<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a>                   loc<span class="op">=</span><span class="st">"center"</span>, cellLoc<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a>t1.auto_set_font_size(<span class="va">False</span>)<span class="op">;</span> t1.set_fontsize(<span class="dv">7</span>)<span class="op">;</span> t1.scale(<span class="dv">1</span>, <span class="fl">1.5</span>)</span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Original feature columns: {num + cat}")</span></span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a><span class="co">#print(f"Encoded feature columns ({len(colnames)}): {colnames}")</span></span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a>After encoding, the input matrix has <span class="in">`{python} len(colnames)`</span> columns — three numeric plus one binary column per sector.</span>
+<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a><span class="fu">## Code</span></span>
+<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a>The Python script is saved at <span class="co">[</span><span class="ot">`code/adaboost_model.py`</span><span class="co">](code/adaboost_model.py)</span>.</span>
+<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit-adaboost</span></span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_adaboost.csv"</span>)</span>
+<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_adaboost.csv"</span>)</span>
+<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>]</span>
+<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> [<span class="st">"sector"</span>]</span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_ada(n, lr):</span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Pipeline([(<span class="st">"pre"</span>, pre),</span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"m"</span>, AdaBoostClassifier(</span>
+<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a>            estimator<span class="op">=</span>DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a>            n_estimators<span class="op">=</span>n, learning_rate<span class="op">=</span>lr, random_state<span class="op">=</span><span class="dv">42</span>))])</span>
+<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a>tr, val <span class="op">=</span> train_test_split(train, test_size<span class="op">=</span><span class="fl">0.25</span>, random_state<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a>                           stratify<span class="op">=</span>train[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>rounds <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>]</span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a>accs <span class="op">=</span> {lr: [] <span class="cf">for</span> lr <span class="kw">in</span> [<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>]}</span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lr <span class="kw">in</span> accs:</span>
+<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> rounds:</span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> make_ada(n, lr).fit(tr[num<span class="op">+</span>cat], tr[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a>        accs[lr].append(accuracy_score(val[<span class="st">"HighROA"</span>], m.predict(val[num<span class="op">+</span>cat])))</span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> <span class="bu">max</span>(((lr, n) <span class="cf">for</span> lr <span class="kw">in</span> accs <span class="cf">for</span> n <span class="kw">in</span> rounds),</span>
+<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a>           key<span class="op">=</span><span class="kw">lambda</span> t: accs[t[<span class="dv">0</span>]][rounds.index(t[<span class="dv">1</span>])])</span>
+<span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"best (learning_rate, n_estimators) ="</span>, best)</span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> make_ada(best[<span class="dv">1</span>], best[<span class="dv">0</span>]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> final.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="co">#print("AdaBoost test accuracy =", round(acc, 4))</span></span>
+<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a><span class="co">#print("Confusion matrix:\n", cm)</span></span>
+<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
+<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit-and-score-ada</span></span>
+<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/train_adaboost.csv"</span>)</span>
+<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a>test  <span class="op">=</span> pd.read_csv(<span class="st">"data/clean/test_adaboost.csv"</span>)</span>
+<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a>num, cat <span class="op">=</span> [<span class="st">"Debt_to_Equity"</span>,<span class="st">"Profit_Margin"</span>,<span class="st">"log_Assets"</span>], [<span class="st">"sector"</span>]</span>
+<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">"num"</span>,<span class="st">"passthrough"</span>,num),</span>
+<span id="cb9-278"><a href="#cb9-278" aria-hidden="true" tabindex="-1"></a>                         (<span class="st">"cat"</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>), cat)])</span>
+<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-280"><a href="#cb9-280" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_ada(n, lr):</span>
+<span id="cb9-281"><a href="#cb9-281" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Pipeline([(<span class="st">"pre"</span>, pre),</span>
+<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"m"</span>, AdaBoostClassifier(</span>
+<span id="cb9-283"><a href="#cb9-283" aria-hidden="true" tabindex="-1"></a>            estimator<span class="op">=</span>DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb9-284"><a href="#cb9-284" aria-hidden="true" tabindex="-1"></a>            n_estimators<span class="op">=</span>n, learning_rate<span class="op">=</span>lr, random_state<span class="op">=</span><span class="dv">42</span>))])</span>
+<span id="cb9-285"><a href="#cb9-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-286"><a href="#cb9-286" aria-hidden="true" tabindex="-1"></a>tr, val <span class="op">=</span> train_test_split(train, test_size<span class="op">=</span><span class="fl">0.25</span>, random_state<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb9-287"><a href="#cb9-287" aria-hidden="true" tabindex="-1"></a>                           stratify<span class="op">=</span>train[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-288"><a href="#cb9-288" aria-hidden="true" tabindex="-1"></a>rounds <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>]</span>
+<span id="cb9-289"><a href="#cb9-289" aria-hidden="true" tabindex="-1"></a>accs <span class="op">=</span> {lr: [] <span class="cf">for</span> lr <span class="kw">in</span> [<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>]}</span>
+<span id="cb9-290"><a href="#cb9-290" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lr <span class="kw">in</span> accs:</span>
+<span id="cb9-291"><a href="#cb9-291" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> rounds:</span>
+<span id="cb9-292"><a href="#cb9-292" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> make_ada(n, lr).fit(tr[num<span class="op">+</span>cat], tr[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-293"><a href="#cb9-293" aria-hidden="true" tabindex="-1"></a>        accs[lr].append(accuracy_score(val[<span class="st">"HighROA"</span>], m.predict(val[num<span class="op">+</span>cat])))</span>
+<span id="cb9-294"><a href="#cb9-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-295"><a href="#cb9-295" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> <span class="bu">max</span>(((lr, n) <span class="cf">for</span> lr <span class="kw">in</span> accs <span class="cf">for</span> n <span class="kw">in</span> rounds),</span>
+<span id="cb9-296"><a href="#cb9-296" aria-hidden="true" tabindex="-1"></a>           key<span class="op">=</span><span class="kw">lambda</span> t: accs[t[<span class="dv">0</span>]][rounds.index(t[<span class="dv">1</span>])])</span>
+<span id="cb9-297"><a href="#cb9-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-298"><a href="#cb9-298" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> make_ada(best[<span class="dv">1</span>], best[<span class="dv">0</span>]).fit(train[num<span class="op">+</span>cat], train[<span class="st">"HighROA"</span>])</span>
+<span id="cb9-299"><a href="#cb9-299" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> final.predict(test[num<span class="op">+</span>cat])</span>
+<span id="cb9-300"><a href="#cb9-300" aria-hidden="true" tabindex="-1"></a>cm   <span class="op">=</span> confusion_matrix(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb9-301"><a href="#cb9-301" aria-hidden="true" tabindex="-1"></a>acc  <span class="op">=</span> accuracy_score(test[<span class="st">"HighROA"</span>], pred)</span>
+<span id="cb9-302"><a href="#cb9-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-303"><a href="#cb9-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-304"><a href="#cb9-304" aria-hidden="true" tabindex="-1"></a>**Accuracy.** Test accuracy = **`{python} f"{acc:.4f}"`** on <span class="in">`{python} len(test)`</span> test companies.</span>
+<span id="cb9-305"><a href="#cb9-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-308"><a href="#cb9-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-309"><a href="#cb9-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ada-confusion</span></span>
+<span id="cb9-310"><a href="#cb9-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Confusion matrix for AdaBoost on the test set."</span></span>
+<span id="cb9-311"><a href="#cb9-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 4</span></span>
+<span id="cb9-312"><a href="#cb9-312" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb9-313"><a href="#cb9-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-314"><a href="#cb9-314" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">3</span>))</span>
+<span id="cb9-315"><a href="#cb9-315" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"Greens"</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb9-316"><a href="#cb9-316" aria-hidden="true" tabindex="-1"></a>            xticklabels<span class="op">=</span>[<span class="st">"Pred 0"</span>,<span class="st">"Pred 1"</span>], yticklabels<span class="op">=</span>[<span class="st">"True 0"</span>,<span class="st">"True 1"</span>])</span>
+<span id="cb9-317"><a href="#cb9-317" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"AdaBoost confusion matrix (acc=</span><span class="sc">{</span>acc<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb9-318"><a href="#cb9-318" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-319"><a href="#cb9-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-320"><a href="#cb9-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-321"><a href="#cb9-321" aria-hidden="true" tabindex="-1"></a>**Tuning rounds and learning rate.** The plot below shows validation accuracy for <span class="in">`n_estimators ∈ {10, 25, 50, 100, 200, 400}`</span></span>
+<span id="cb9-322"><a href="#cb9-322" aria-hidden="true" tabindex="-1"></a>at learning rates {0.1, 0.5, 1.0}. The best setting was <span class="in">`n_estimators = 25`</span>, <span class="in">`learning_rate = 0.1`</span>.</span>
+<span id="cb9-323"><a href="#cb9-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-326"><a href="#cb9-326" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-327"><a href="#cb9-327" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ada-rounds</span></span>
+<span id="cb9-328"><a href="#cb9-328" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Validation accuracy of AdaBoost as a function of the number of rounds, for three learning rates."</span></span>
+<span id="cb9-329"><a href="#cb9-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb9-330"><a href="#cb9-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb9-331"><a href="#cb9-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-332"><a href="#cb9-332" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb9-333"><a href="#cb9-333" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lr, ys <span class="kw">in</span> accs.items():</span>
+<span id="cb9-334"><a href="#cb9-334" aria-hidden="true" tabindex="-1"></a>    ax.plot(rounds, ys, marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="ss">f"lr=</span><span class="sc">{</span>lr<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-335"><a href="#cb9-335" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"n_estimators (rounds)"</span>, ylabel<span class="op">=</span><span class="st">"validation accuracy"</span>,</span>
+<span id="cb9-336"><a href="#cb9-336" aria-hidden="true" tabindex="-1"></a>       title<span class="op">=</span><span class="st">"AdaBoost: validation accuracy vs rounds"</span>)</span>
+<span id="cb9-337"><a href="#cb9-337" aria-hidden="true" tabindex="-1"></a>ax.legend()<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span>
+<span id="cb9-338"><a href="#cb9-338" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-339"><a href="#cb9-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-340"><a href="#cb9-340" aria-hidden="true" tabindex="-1"></a>The single decision tree scored **0.583**; AdaBoost scored **`{python} f"{acc:.4f}"`**.</span>
+<span id="cb9-341"><a href="#cb9-341" aria-hidden="true" tabindex="-1"></a>Both models performedd comparatively same on this dataset.</span>
+<span id="cb9-342"><a href="#cb9-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-343"><a href="#cb9-343" aria-hidden="true" tabindex="-1"></a><span class="fu">## (e) Conclusions</span></span>
+<span id="cb9-344"><a href="#cb9-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-345"><a href="#cb9-345" aria-hidden="true" tabindex="-1"></a>AdaBoost's test accuracy of **`{python} f"{acc:.4f}"`** is not a stable estimate because of the data size. The margin remains</span>
+<span id="cb9-346"><a href="#cb9-346" aria-hidden="true" tabindex="-1"></a>the dominant feature, consistent with the linear and logistic results. Margin efficiency is the strongest green flag for</span>
+<span id="cb9-347"><a href="#cb9-347" aria-hidden="true" tabindex="-1"></a>financial performance. Also, leverage is a much weaker signal than the "more debt means more risk" story would predict.</span>
+<span id="cb9-348"><a href="#cb9-348" aria-hidden="true" tabindex="-1"></a>In summary, the effect of leverage and sector depends on the firm's margin profile.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
